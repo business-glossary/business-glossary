@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block menu %}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+	<h1>Business Glossary</h1>
+</div>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Term</th>
+			<th>Term Description</th>
+			<th>Business Owner</th>
+			<th>Category</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for term in glossary %}
+		<tr>
+			<td><a href="{{ url_for('show_term', selected_term=term.id) }}">{{ term.term }}</a></td>
+			<td>{{ term.description }}</td>
+			<td>{{ term.owner }}</td>
+			<td>
+				{{ term.category }}
+				{% for c in term.categories %}
+					{{ c.name }}
+				{% endfor %}
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

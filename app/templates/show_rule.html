@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="page-header">
+	<h1>Rule: {{ rule.name }}</h1>
+</div>
+
+<ul class="nav nav-tabs">
+	<li class="active"><a href="#">Rule</a></li>
+	<!--li><a href="#">Related Documents</a></li-->
+</ul>
+
+<p class="lead"/>
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">Rule Details</h3>
+	</div>
+	<div class="panel-body">
+	  <div class="row">
+		<div class="col-md-12">
+		  <div class="list-group">
+			<div class="list-group-item">
+			  <h4 class="list-group-item-heading">Rule Identifier</h4>
+			  <p class="list-group-item-text">{{ rule.identifier }}</p>
+			</div>
+		  </div>
+		</div>
+	  </div><!-- row -->
+	  <div class="row">
+		<div class="col-md-12">
+		  <div class="list-group">
+			<div class="list-group-item">
+			  <h4 class="list-group-item-heading">Description</h4>
+			  <p class="list-group-item-text">{{ rule.description }}</p>
+			</div>
+		  </div>
+		</div>
+	  </div><!-- row -->
+	  <div class="row">
+		<div class="col-md-6">
+		  <div class="list-group">
+			<div class="list-group-item">
+			  <h4 class="list-group-item-heading">Created On</h4>
+			  <p class="list-group-item-text">{{ momentjs(rule.created_on).calendar() }}</p>
+			</div>
+		  </div>
+		</div>
+		<div class="col-md-6">
+		  <div class="list-group">
+			<div class="list-group-item">
+			  <h4 class="list-group-item-heading">Last Updated</h4>
+			  <p class="list-group-item-text">{{ momentjs(rule.created_on).calendar() }}</p>
+			</div>
+		  </div>
+		</div>
+	  </div><!-- row -->
+
+	</div><!-- panel body -->
+</div><!-- panel -->
+{% endblock %}

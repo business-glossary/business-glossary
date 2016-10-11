@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="page-header">
+	<h1>{{ term.term }}</h1>
+</div>
+
+<ul class="nav nav-tabs">
+	<li><a href="{{ url_for('show_term', selected_term=term.id) }}">Term</a></li>
+	<li class="active"><a href="{{ url_for('show_documents', selected_term=term.id) }}">Related Documents</a></li>
+	<li><a href="{{ url_for('show_assets', selected_term=term.id) }}">Related Assets</a></li>
+	<li><a href="{{ url_for('show_rules', selected_term=term.id) }}">Related Rules</a></li>
+</ul>
+
+<p class="lead"/>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Document Name</th>
+			<th>Document Description</th>
+			<th>Document Type</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		{% for document in documents %}
+		<tr>
+			<td><a href="/static/files/{{ document.path }}">{{ document.name }}</a></td>
+			<td>{{ document.description }}</td>
+			<td>
+				{% for t in document.types %}
+					<span class="label label-default">{{ t.type }}</span>
+				{% endfor %}
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

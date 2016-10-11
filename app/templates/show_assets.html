@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="page-header">
+	<h1>{{ term.term }}</h1>
+</div>
+
+<ul class="nav nav-tabs">
+	<li><a href="{{ url_for('show_term', selected_term=term.id) }}">Term</a></li>
+	<li><a href="{{ url_for('show_documents', selected_term=term.id) }}">Related Documents</a></li>
+	<li class="active"><a href="{{ url_for('show_assets', selected_term=term.id) }}">Related Assets</a></li>
+	<li><a href="{{ url_for('show_rules', selected_term=term.id) }}">Related Rules</a></li>
+</ul>
+
+<p class="lead"/>
+
+<!--
+<div class="col-md-6">
+	<div class="panel panel-default">
+		<div class="panel-heading"><h3 class="panel-title">Columns</h3></div>
+		<div class="panel-body">
+			<p>Table columns associated with this term.</p>
+		</div>
+-->
+
+		<table class="table list-group-item-text">
+			<thead>
+				<tr>
+					<th>Location</th>
+					<th>Table</th>
+					<th>Column</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for a in assets %}
+				<tr>
+					<td><a href="{{ url_for('show_tables', selected_location=a.table.location) }}">{{ a.table.location }}</a></td>
+					<td><a href="{{ url_for('show_table', selected_table=a.table.id) }}">{{ a.table.name }}</a></td>
+					<td>{{ a.name }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+<!--
+	</div>
+</div>
+</div>
+-->
+<!-- row -->
+
+{% endblock %}

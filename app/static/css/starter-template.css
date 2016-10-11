@@ -1,0 +1,35 @@
+@font-face {
+font-family: boqbrush;
+src: url("/static/fonts/BOQ-BrushV3.otf") format("opentype");
+}
+
+body {
+  padding-top: 60px;
+}
+/*
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+*/
+
+.navbar-brand {
+	font-family: boqbrush, "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 24px;
+}
+/*
+.navbar-default {
+	background-image: linear-gradient(to bottom,#418ecb 0,#1b75bc 100%);
+}	
+*/
+.navbar-default .navbar-brand, .page-header h1 {
+	color: #1b75bc;
+}
+/*
+.navbar-default .navbar-brand, .page-header h1 {
+	color: #fff;
+}
+*/
+.page-header h1 {
+	font-size: 30px;
+}

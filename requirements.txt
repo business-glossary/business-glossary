@@ -1,0 +1,4 @@
+Flask==0.11
+Flask-Admin==1.4.2
+Flask-SQLAlchemy==2.1
+SQLAlchemy==1.1.0b3

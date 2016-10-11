@@ -116,16 +116,23 @@ def show_tables(selected_location):
 	return render_template('show_tables.html', selected_location=selected_location, tables=tables)
 
 @app.route('/table/<selected_table>')
-def show_table(selected_table):
+@app.route('/table/<selected_table>/details')
+def show_table_details(selected_table):
 
 	table = Table.query.filter_by(id=selected_table).first()
-
 	columns = table.columns
 
-	print columns
+	return render_template('show_table_details.html', table=table, columns=columns)
 
-	return render_template('show_table.html', table=table, columns=columns)
+@app.route('/table/<selected_table>/columns')
+def show_table_columns(selected_table):
 
+	table = Table.query.filter_by(id=selected_table).first()
+	columns = table.columns
+
+	return render_template('show_table_columns.html', table=table, columns=columns)
+	
+	
 # Testing
 
 @app.route('/source_code')

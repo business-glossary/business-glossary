@@ -11,24 +11,26 @@ import csv
 
 file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_table.csv"
 
-try:
-	with open(file_name, 'rb') as csvfile:
-		reader = csv.DictReader(csvfile, delimiter=',')
-		for row in reader:
-			print (row['location'], row['table'])
-			
-			record = Table(**{
-				'name' : row['table'],
-				'location' : row['location'],
-				})
-			db.session.add(record)
+#try:
+with open(file_name, 'rb') as csvfile:
+	reader = csv.DictReader(csvfile, delimiter=',')
+	for row in reader:
+		print (row['location'], row['table'], row['description'])
+		
+		record = Table(**{
+			'name' : row['table'],
+			'description' : row['description'],
 
-			db.session.commit()
+			'location' : row['location']
+			})
+		db.session.add(record)
+
+		db.session.commit()
 			
-except:
-	db.session.rollback()
-finally:
-	db.session.close()
+#except:
+#	db.session.rollback()
+#finally:
+#	db.session.close()
 
 ###############################################################################
 #
@@ -51,6 +53,7 @@ with open(file_name, 'rb') as csvfile:
 		
 		record = Column(**{
 			'name' : row['name'],
+			'description' : row['description'],
 			'type' : row['type'],
 			'length' : row['length'],
 			'format' : row['format'],

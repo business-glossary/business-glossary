@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="page-header">
+	<h1>Table: {{ table.name }}</h1>
+</div>
+
+<ul class="nav nav-tabs">
+	<li class="active"><a href="{{ url_for('show_table_details', selected_table=table.id) }}">Table</a></li>
+	<li><a href="{{ url_for('show_table_columns', selected_table=table.id) }}">Columns</a></li>
+</ul>
+
+<p class="lead"/>
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">Table Details</h3>
+	</div>
+	<div class="panel-body">
+	  <div class="row">
+		<div class="col-md-6">
+		  <div class="list-group">
+			<div class="list-group-item">
+			  <h4 class="list-group-item-heading">Name</h4>
+			  <p class="list-group-item-text">{{ table.name }}</p>
+			</div>
+		  </div>
+		</div>
+		<div class="col-md-6">
+		  <div class="list-group">
+			<div class="list-group-item">
+			  <h4 class="list-group-item-heading">Location</h4>
+			  <p class="list-group-item-text">{{ table.location }}</p>
+			</div>
+		  </div>
+		</div>
+	  </div><!-- row -->
+	  <div class="row">
+		<div class="col-md-12">
+		  <div class="list-group">
+			<div class="list-group-item">
+			  <h4 class="list-group-item-heading">Description</h4>
+			  <p class="list-group-item-text">{{ table.description }}</p>
+			</div>
+		  </div>
+		</div>
+	  </div><!-- row -->
+	</div><!-- panel body -->
+</div><!-- panel -->
+{% endblock %}

@@ -22,7 +22,7 @@
 	<tbody>
 		{% for t in tables %}
 		<tr>
-			<td><a href="{{ url_for('show_table', selected_table=t.id) }}">{{ t.name }}</a></td>
+			<td><a href="{{ url_for('show_table_details', selected_table=t.id) }}">{{ t.name }}</a></td>
 		</tr>
 		{% endfor %}
 	</tbody>

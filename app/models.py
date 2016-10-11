@@ -98,6 +98,7 @@ class Table(db.Model):
 
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(100), unique=True, nullable=False)
+	description = db.Column(db.String(100))	
 	location = db.Column(db.String(100), nullable=False)
 
 	def __repr__(self):
@@ -107,9 +108,10 @@ class Column(db.Model):
 
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(100), nullable=False)
-	type = db.Column(db.String(100))
-	length = db.Column(db.String(100))
-	format = db.Column(db.String(100))
+	description = db.Column(db.String(100))
+	type = db.Column(db.String(50))
+	length = db.Column(db.String(10))
+	format = db.Column(db.String(50))
 	
 	table_id = db.Column(db.Integer, db.ForeignKey('table.id'))
 	table = db.relationship("Table", backref=db.backref('columns', lazy='dynamic'))

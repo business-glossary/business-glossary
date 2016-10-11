@@ -36,8 +36,8 @@
 				{% for a in assets %}
 				<tr>
 					<td><a href="{{ url_for('show_tables', selected_location=a.table.location) }}">{{ a.table.location }}</a></td>
-					<td><a href="{{ url_for('show_table', selected_table=a.table.id) }}">{{ a.table.name }}</a></td>
-					<td>{{ a.name }}</td>
+					<td><a href="{{ url_for('show_table_details', selected_table=a.table.id) }}">{{ a.table.name }}</a></td>
+					<td><a href="{{ url_for('show_table_columns', selected_table=a.table.id) }}">{{ a.name }}</a></td>
 				</tr>
 				{% endfor %}
 			</tbody>

@@ -13,42 +13,42 @@ term_category_relationship = db.Table('term_category_relationship',
 document_types_relationship = db.Table('document_types_table',
 	db.Column('document_id', db.Integer, db.ForeignKey('document.id'), nullable=False),
 	db.Column('document_type_id',db.Integer, db.ForeignKey('document_type.id'),nullable=False),
-	db.PrimaryKeyConstraint('document_id', 'document_type_id') )	
+	db.PrimaryKeyConstraint('document_id', 'document_type_id') )
 
 term_column_relationship = db.Table('term_column_relationship',
 	db.Column('term_id', db.Integer, db.ForeignKey('term.id'), nullable=False),
 	db.Column('column_id',db.Integer, db.ForeignKey('column.id'),nullable=False),
-	db.PrimaryKeyConstraint('term_id', 'column_id') )	
+	db.PrimaryKeyConstraint('term_id', 'column_id') )
 
 term_document_relationship = db.Table('term_document_relationship',
 	db.Column('term_id', db.Integer, db.ForeignKey('term.id'), nullable=False),
 	db.Column('document_id',db.Integer, db.ForeignKey('document.id'),nullable=False),
-	db.PrimaryKeyConstraint('term_id', 'document_id') )	
+	db.PrimaryKeyConstraint('term_id', 'document_id') )
 
 term_rule_relationship = db.Table('term_rule_relationship',
 	db.Column('term_id', db.Integer, db.ForeignKey('term.id'), nullable=False),
 	db.Column('rule_id',db.Integer, db.ForeignKey('rule.id'),nullable=False),
-	db.PrimaryKeyConstraint('term_id', 'rule_id') )	
+	db.PrimaryKeyConstraint('term_id', 'rule_id') )
 
 class Term(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	term = db.Column(db.String(100))
-	description = db.Column(db.String(500))
+	description = db.Column(db.Text)
 	abbreviation = db.Column(db.String(10))
-	
+
 	categories = db.relationship('Category', secondary=term_category_relationship, backref='terms' )
-	
+
 	columns = db.relationship('Column', secondary=term_column_relationship, backref='terms' )
 
 	documents = db.relationship('Document', secondary=term_document_relationship, backref='terms' )
 
 	rules = db.relationship('Rule', secondary=term_rule_relationship, backref='terms' )
-	
+
 	links = db.relationship('Link', backref="terms", cascade="all, delete-orphan" , lazy='dynamic')
 
 	status_id = db.Column(db.Integer, db.ForeignKey('term_status.id'))
 	status = db.relationship("TermStatus", backref=db.backref('terms', lazy='dynamic'))
-	
+
 	owner_id = db.Column(db.Integer, db.ForeignKey('person.id'))
 	steward_id = db.Column(db.Integer, db.ForeignKey('person.id'))
 
@@ -57,7 +57,7 @@ class Term(db.Model):
 
 	created_on = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
 	updated_on = db.Column(db.DateTime(timezone=True), server_default=db.func.now(), onupdate=db.func.now())
-	
+
 	def __repr__(self):
 		return (self.term)
 
@@ -81,10 +81,10 @@ class Link(db.Model):
 	text = db.Column(db.String(100), unique=True, nullable=False)
 	address = db.Column(db.String(200), unique=True, nullable=False)
 	term_id = db.Column(db.Integer, db.ForeignKey('term.id'))
-	
+
 	def __repr__(self):
 		return (self.text)
-		
+
 class Person(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(50), unique=True, nullable=False)
@@ -93,12 +93,12 @@ class Person(db.Model):
 
 	def __repr__(self):
 		return (self.name)
-		
+
 class Table(db.Model):
 
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(100), unique=True, nullable=False)
-	description = db.Column(db.String(100))	
+	description = db.Column(db.String(100))
 	location = db.Column(db.String(100), nullable=False)
 
 	def __repr__(self):
@@ -112,7 +112,7 @@ class Column(db.Model):
 	type = db.Column(db.String(50))
 	length = db.Column(db.String(10))
 	format = db.Column(db.String(50))
-	
+
 	table_id = db.Column(db.Integer, db.ForeignKey('table.id'))
 	table = db.relationship("Table", backref=db.backref('columns', lazy='dynamic'))
 
@@ -120,17 +120,17 @@ class Column(db.Model):
 		return (self.name)
 
 class Rule(db.Model):
-	
+
 	id = db.Column(db.Integer, primary_key = True)
 	identifier = db.Column(db.String(20), nullable=False)
 	name = db.Column(db.String(100))
 	description = db.Column(db.String(200))
 	created_on = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
 	updated_on = db.Column(db.DateTime(timezone=True), server_default=db.func.now(), onupdate=db.func.now())
-	
+
 	def __repr__(self):
 		return (self.name)
-		
+
 class Document(db.Model):
 
 	id = db.Column(db.Integer, primary_key = True)
@@ -139,7 +139,7 @@ class Document(db.Model):
 	description = db.Column(db.String(200))
 
 	types = db.relationship('DocumentType', secondary=document_types_relationship)
-	
+
 	def __repr__(self):
 		return (self.name)
 

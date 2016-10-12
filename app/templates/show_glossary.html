@@ -24,9 +24,8 @@
 			<td>{{ term.description }}</td>
 			<td>{{ term.owner }}</td>
 			<td>
-				{{ term.category }}
 				{% for c in term.categories %}
-					{{ c.name }}
+					<h5><span class="label label-default">{{ c.name }}</span></h5>
 				{% endfor %}
 		</tr>
 		{% endfor %}

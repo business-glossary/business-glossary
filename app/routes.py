@@ -81,7 +81,7 @@ def show_documents(selected_term):
 
 	print documents
 
-	return render_template('show_documents.html', term=term, documents=Document.query.order_by(Document.name).all())
+	return render_template('show_documents.html', term=term, documents=documents)
 
 @app.route('/assets/<int:selected_term>')
 def show_assets(selected_term):

@@ -6,6 +6,7 @@ import os.path as op
 
 from flask_admin import Admin, form
 from flask_admin.contrib.sqla import ModelView
+from flask_admin.form import rules
 
 # Create directory for file fields to use
 file_path = op.join(op.dirname(__file__), 'static/files')
@@ -38,7 +39,10 @@ class RuleView(ModelView):
     form_excluded_columns = ('created_on', 'updated_on')
 
 class TermView(ModelView):
-	form_excluded_columns = ('created_on', 'updated_on')
+	form_create_rules = ('term', 'description', 'abbreviation', 'owner', 'steward', 'status', 'categories', 'links', 'rules', 'documents')
+	form_edit_rules = ('term', 'description', 'abbreviation', 'owner', 'steward', 'status', 'categories', 'links', 'rules', 'documents')
+	column_list = ['term', 'description', 'abbreviation', 'status']
+	form_excluded_columns = ('created_on', 'updated_on', 'columns')
 	column_searchable_list = ['term']
 
 class ColumnView(ModelView):

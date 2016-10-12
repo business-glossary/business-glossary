@@ -1,5 +1,5 @@
 from app import app, db, models
-from app.models import Category, Term, Person, TermStatus, Link, Table, Column, DocumentType, Rule
+from app.models import Category, Term, Person, TermStatus, Link, Location, Table, Column, DocumentType, Rule
 
 import csv
 
@@ -16,12 +16,14 @@ with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
 	for row in reader:
 		print (row['location'], row['table'], row['description'])
-		
+
+		l = Location.query.filter_by(name=row['location']).first()
+
 		record = Table(**{
 			'name' : row['table'],
 			'description' : row['description'],
 
-			'location' : row['location']
+			'location' : l
 			})
 		db.session.add(record)
 

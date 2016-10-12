@@ -1,5 +1,5 @@
 from app import app, db, models
-from app.models import Category, Term, Person, TermStatus, Link, Table, Column, DocumentType, Rule
+from app.models import Category, Term, Person, TermStatus, Link, Location, Table, Column, DocumentType, Rule
 
 db.create_all()
 
@@ -96,13 +96,16 @@ db.session.commit()
 
 # Create Table and Columns
 
-t = Table(name='ACCOUNT_HISTORY_2016', location='CRASL')
+l = Location(name='CRASL', description='/saslev1comp/boqdata/CreditRisk/StagingLayer');
+
+t = Table(name='ACCOUNT_HISTORY_2016', location=l)
 
 c1 = Column(name='K_TIME', type='NUM', length='8', format='DATE9.', table=t)
 c2 = Column(name='ACCOUNT_NO', type='NUM', length='8', format='21.', table=t)
 c3 = Column(name='APPLICATIONNUMBER', type='NUM', length='8', format='3.', table=t)
 c4 = Column(name='ICBS_CODE', type='NUM', length='8', format='20.', table=t)
 
+db.session.add(l)
 db.session.add(t)
 db.session.add(c1)
 db.session.add(c2)

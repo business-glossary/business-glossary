@@ -94,13 +94,24 @@ class Person(db.Model):
 	def __repr__(self):
 		return (self.name)
 
+class Location (db.Model):
+		
+	id = db.Column(db.Integer, primary_key = True)
+	name = db.Column(db.String(100), unique=True, nullable=False)
+	description = db.Column(db.String(100))
+	notes = db.Column(db.String(100))
+
+	def __repr__(self):
+		return (self.name)
+		
 class Table(db.Model):
 
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(100), unique=True, nullable=False)
 	description = db.Column(db.String(100))
-	location = db.Column(db.String(100), nullable=False)
-
+	location_id = db.Column(db.Integer, db.ForeignKey('location.id'))
+	location = db.relationship("Location", backref=db.backref('tables', lazy='dynamic'))
+	
 	def __repr__(self):
 		return (self.name)
 

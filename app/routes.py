@@ -1,6 +1,6 @@
 from app import app, db
 from flask import render_template, request, flash, session, url_for, redirect, jsonify, send_from_directory
-from models import Document, DocumentType, Term, Category, Person, Link, Table, Column, Rule
+from models import Document, DocumentType, Term, Category, Person, Link, Location, Table, Column, Rule
 import os
 import os.path as op
 
@@ -108,13 +108,23 @@ def show_rule(selected_rule):
 
 	return render_template('show_rule.html', rule=rule)
 
-@app.route('/tables/<selected_location>')
-def show_tables(selected_location):
+@app.route('/location/<selected_location>')
+@app.route('/location/<selected_location>/details')
+def show_location_details(selected_location):
 
-	tables = Table.query.filter_by(location=selected_location).all()
+	location = Location.query.filter_by(id=selected_location).first()
 
-	return render_template('show_tables.html', selected_location=selected_location, tables=tables)
+	return render_template('show_location_details.html', location=location)
 
+@app.route('/location/<selected_location>/tables')
+def show_location_tables(selected_location):
+
+	location = Location.query.filter_by(id=selected_location).first()
+	tables = location.tables
+
+	return render_template('show_location_tables.html', location=location, tables=tables)
+	
+	
 @app.route('/table/<selected_table>')
 @app.route('/table/<selected_table>/details')
 def show_table_details(selected_table):

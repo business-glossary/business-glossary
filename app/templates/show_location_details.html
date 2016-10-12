@@ -3,19 +3,19 @@
 {% block content %}
 
 <div class="page-header">
-	<h1>Table: {{ table.name }}</h1>
+	<h1>Location: {{ location.name }}</h1>
 </div>
 
 <ul class="nav nav-tabs">
-	<li class="active"><a href="{{ url_for('show_table_details', selected_table=table.id) }}">Table</a></li>
-	<li><a href="{{ url_for('show_table_columns', selected_table=table.id) }}">Columns</a></li>
+	<li class="active"><a href="#">Location</a></li>
+	<li><a href="{{ url_for('show_location_tables', selected_location=location.id) }}">Tables</a></li>
 </ul>
 
 <p class="lead"/>
 
 <div class="panel panel-default">
 	<div class="panel-heading">
-		<h3 class="panel-title">Table Details</h3>
+		<h3 class="panel-title">Location</h3>
 	</div>
 	<div class="panel-body">
 	  <div class="row">
@@ -23,15 +23,15 @@
 		  <div class="list-group">
 			<div class="list-group-item">
 			  <h4 class="list-group-item-heading">Name</h4>
-			  <p class="list-group-item-text">{{ table.name }}</p>
+			  <p class="list-group-item-text">{{ location.name }}</p>
 			</div>
 		  </div>
 		</div>
 		<div class="col-md-6">
 		  <div class="list-group">
 			<div class="list-group-item">
-			  <h4 class="list-group-item-heading">Location</h4>
-			  <p class="list-group-item-text"><a href="{{ url_for('show_location_details', selected_location=table.location.id) }}">{{ table.location }}</a></p>
+			  <h4 class="list-group-item-heading">Description</h4>
+			  <p class="list-group-item-text">{{ location.description }}</p>
 			</div>
 		  </div>
 		</div>
@@ -40,8 +40,8 @@
 		<div class="col-md-12">
 		  <div class="list-group">
 			<div class="list-group-item">
-			  <h4 class="list-group-item-heading">Description</h4>
-			  <p class="list-group-item-text">{{ table.description }}</p>
+			  <h4 class="list-group-item-heading">Notes</h4>
+			  <p class="list-group-item-text">{{ location.notes }}</p>
 			</div>
 		  </div>
 		</div>

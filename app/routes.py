@@ -8,6 +8,8 @@ from flask_admin import Admin, form
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import rules
 
+from config import TERMS_PER_PAGE
+
 # Create directory for file fields to use
 file_path = op.join(op.dirname(__file__), 'static/files')
 
@@ -40,9 +42,9 @@ class RuleView(ModelView):
 
 class TermView(ModelView):
 	form_create_rules = ('term', 'description', 'abbreviation', 'owner', 'steward', 'status', 'categories', 'links', 'rules', 'documents')
-	form_edit_rules = ('term', 'description', 'abbreviation', 'owner', 'steward', 'status', 'categories', 'links', 'rules', 'documents')
+	form_edit_rules = ('term', 'description', 'abbreviation', 'owner', 'steward', 'status', 'categories', 'links', 'rules', 'documents', 'columns')
 	column_list = ['term', 'description', 'abbreviation', 'status']
-	form_excluded_columns = ('created_on', 'updated_on', 'columns')
+	form_excluded_columns = ('created_on', 'updated_on')
 	column_searchable_list = ['term']
 
 class ColumnView(ModelView):
@@ -66,8 +68,11 @@ def about():
 	return render_template('about.html')
 
 @app.route('/')
-def glossary():
-	return render_template('show_glossary.html', glossary = Term.query.order_by(Term.term).all())
+@app.route('/glossary/')
+@app.route('/glossary/<int:page>')
+def glossary(page=1):
+	glossary = Term.query.order_by(Term.term).paginate(page, TERMS_PER_PAGE, False)
+	return render_template('show_glossary.html', glossary=glossary)
 
 @app.route('/term/<int:selected_term>')
 def show_term(selected_term):

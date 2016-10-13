@@ -64,3 +64,6 @@ target/
 
 # Exclude html templates from source project
 _*.html
+
+# Exclude uploaded static files
+app/static/files

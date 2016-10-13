@@ -67,11 +67,11 @@ with open(file_name, 'rb') as csvfile:
 		db.session.commit()				
 
 		
-###############################################################################
+# ##############################################################################
 #
 # Load Terms
 #
-###############################################################################
+# ##############################################################################
 
 file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_terms.csv"
 
@@ -96,11 +96,11 @@ with open(file_name, 'rb') as csvfile:
 
 		db.session.commit()
 		
-###############################################################################
+# ##############################################################################
 #
 # Load Term Categories
 #
-###############################################################################
+# ##############################################################################
 
 file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_categories.csv"
 
@@ -116,11 +116,11 @@ with open(file_name, 'rb') as csvfile:
 
 		db.session.commit()		
 
-###############################################################################
+# ##############################################################################
 #
-# Load Term Categories
+# Load Links
 #
-###############################################################################
+# ##############################################################################
 
 file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_links.csv"
 
@@ -142,11 +142,11 @@ with open(file_name, 'rb') as csvfile:
 
 		db.session.commit()		
 		
-###############################################################################
+# ##############################################################################
 #
 # Load Rules
 #
-###############################################################################
+# ##############################################################################
 
 file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_rules.csv"
 
@@ -168,93 +168,4 @@ with open(file_name, 'rb') as csvfile:
 		
 		t.rules.append(r)
 
-		db.session.commit()			
-
-###############################################################################
-#
-# Load Locations
-#
-###############################################################################
-
-file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_locations.csv"
-
-with open(file_name, 'rb') as csvfile:
-	reader = csv.DictReader(csvfile, delimiter=',')
-	for row in reader:
-		print row
-
-		record = Location(**{
-			'name' : row['name'],
-			'description' : row['description'],
-			'notes' : row['notes']
-			})
-		db.session.add(record)
-
-		db.session.commit()	
-		
-###############################################################################
-#
-# Load Table Metadata
-#
-###############################################################################
-
-file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_table.csv"
-
-#try:
-with open(file_name, 'rb') as csvfile:
-	reader = csv.DictReader(csvfile, delimiter=',')
-	for row in reader:
-		print (row['location'], row['table'], row['description'])
-
-		l = Location.query.filter_by(name=row['location']).first()
-
-		record = Table(**{
-			'name' : row['table'],
-			'description' : row['description'],
-
-			'location' : l
-			})
-		db.session.add(record)
-
 		db.session.commit()
-			
-#except:
-#	db.session.rollback()
-#finally:
-#	db.session.close()
-
-###############################################################################
-#
-# Load Column Metadata
-#
-###############################################################################
-
-file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_column.csv"
-
-# We had a failure here so need to work on the exception handling
-
-#try:
-
-with open(file_name, 'rb') as csvfile:
-	reader = csv.DictReader(csvfile, delimiter=',')
-	for row in reader:
-		print row
-		
-		t = Table.query.filter_by(name=row['table']).first()
-		
-		record = Column(**{
-			'name' : row['name'],
-			'description' : row['description'],
-			'type' : row['type'],
-			'length' : row['length'],
-			'format' : row['format'],
-			'table' : t
-			})
-		db.session.add(record) # Add all the records
-
-		db.session.commit() # Attempt to commit all the records
-			
-#except:
-	#db.session.rollback() # Rollback the changes on error
-#finally:
-	#db.session.close() # Close the connection

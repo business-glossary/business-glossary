@@ -117,6 +117,15 @@ def show_rule(selected_rule):
 
 	return render_template('show_rule.html', rule=rule)
 
+@app.route('/rule/documents/<int:selected_rule>')
+def show_rule_documents(selected_rule):
+
+    rule = Rule.query.filter_by(id=selected_rule).first()
+    print rule.documents
+    documents = rule.documents
+
+    return render_template('show_rule_documents.html', rule=rule, documents=documents)
+
 @app.route('/location/<selected_location>')
 @app.route('/location/<selected_location>/details')
 def show_location_details(selected_location):
@@ -132,8 +141,8 @@ def show_location_tables(selected_location):
 	tables = location.tables
 
 	return render_template('show_location_tables.html', location=location, tables=tables)
-	
-	
+
+
 @app.route('/table/<selected_table>')
 @app.route('/table/<selected_table>/details')
 def show_table_details(selected_table):
@@ -150,8 +159,7 @@ def show_table_columns(selected_table):
 	columns = table.columns
 
 	return render_template('show_table_columns.html', table=table, columns=columns)
-	
-	
+
 # Testing
 
 @app.route('/source_code')

@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="page-header">
+	<h1>Rule: {{ rule.name }}</h1>
+</div>
+
+<ul class="nav nav-tabs">
+	<li><a href="{{ url_for('show_rule', selected_rule=rule.id) }}">Rule</a></li>
+	<li class="active"><a href="#">Documents</a></li>
+</ul>
+
+<p class="lead"/>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+			<th>Type</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		{% for document in documents %}
+		<tr>
+			<td><a href="/static/files/{{ document.path }}">{{ document.name }}</a></td>
+			<td>{{ document.description }}</td>
+			<td>
+				{% for t in document.types %}
+					<span class="label label-default">{{ t.type }}</span>
+				{% endfor %}
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

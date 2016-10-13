@@ -7,7 +7,7 @@ db.create_all()
 
 # Load TermStatus
 
-file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_status.csv"
+file_name = r"C:\Users\Alan\Projects\bg_interface\bg_interface_status.csv"
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -22,7 +22,7 @@ with open(file_name, 'rb') as csvfile:
 
 # Load Category
 
-file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_category.csv"
+file_name = r"C:\Users\Alan\Projects\bg_interface\bg_interface_category.csv"
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -35,10 +35,10 @@ with open(file_name, 'rb') as csvfile:
 			})
 		db.session.add(record)
 		db.session.commit()
-		
+
 # Load DocumentType
 
-file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_document_type.csv"
+file_name = r"C:\Users\Alan\Projects\bg_interface\bg_interface_document_type.csv"
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -49,11 +49,11 @@ with open(file_name, 'rb') as csvfile:
 			'type' : row['document_type']
 			})
 		db.session.add(record)
-		db.session.commit()			
+		db.session.commit()
 
 # Load Person
 
-file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_person.csv"
+file_name = r"C:\Users\Alan\Projects\bg_interface\bg_interface_person.csv"
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -64,16 +64,16 @@ with open(file_name, 'rb') as csvfile:
 			'name' : row['person']
 			})
 		db.session.add(record)
-		db.session.commit()				
+		db.session.commit()
 
-		
+
 # ##############################################################################
 #
 # Load Terms
 #
 # ##############################################################################
 
-file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_terms.csv"
+file_name = r"C:\Users\Alan\Projects\bg_interface\bg_interface_terms.csv"
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -95,14 +95,14 @@ with open(file_name, 'rb') as csvfile:
 		db.session.add(record)
 
 		db.session.commit()
-		
+
 # ##############################################################################
 #
 # Load Term Categories
 #
 # ##############################################################################
 
-file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_categories.csv"
+file_name = r"C:\Users\Alan\Projects\bg_interface\bg_interface_categories.csv"
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -114,7 +114,7 @@ with open(file_name, 'rb') as csvfile:
 
 		t.categories.append(c)
 
-		db.session.commit()		
+		db.session.commit()
 
 # ##############################################################################
 #
@@ -122,7 +122,7 @@ with open(file_name, 'rb') as csvfile:
 #
 # ##############################################################################
 
-file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_links.csv"
+file_name = r"C:\Users\Alan\Projects\bg_interface\bg_interface_links.csv"
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -134,21 +134,21 @@ with open(file_name, 'rb') as csvfile:
 			'address' : row['address']
 			})
 		db.session.add(record)
-		
+
 		t = Term.query.filter_by(term=row['term']).first()
 		l = Link.query.filter_by(text=row['text']).first()
-		
+
 		t.links.append(l)
 
-		db.session.commit()		
-		
+		db.session.commit()
+
 # ##############################################################################
 #
 # Load Rules
 #
 # ##############################################################################
 
-file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_rules.csv"
+file_name = r"C:\Users\Alan\Projects\bg_interface\bg_interface_rules.csv"
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -163,9 +163,9 @@ with open(file_name, 'rb') as csvfile:
 			'description' : row['description']
 			})
 		db.session.add(record)
-		
+
 		r = Rule.query.filter_by(identifier=row['identifier']).first()
-		
+
 		t.rules.append(r)
 
 		db.session.commit()

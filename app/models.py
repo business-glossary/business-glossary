@@ -30,6 +30,12 @@ term_rule_relationship = db.Table('term_rule_relationship',
 	db.Column('rule_id',db.Integer, db.ForeignKey('rule.id'),nullable=False),
 	db.PrimaryKeyConstraint('term_id', 'rule_id') )
 
+rule_document_relationship = db.Table('rule_document_relationship',
+	db.Column('rule_id', db.Integer, db.ForeignKey('rule.id'), nullable=False),
+	db.Column('document_id',db.Integer, db.ForeignKey('document.id'),nullable=False),
+	db.PrimaryKeyConstraint('rule_id', 'document_id') )
+
+
 class Term(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	term = db.Column(db.String(100))
@@ -95,7 +101,7 @@ class Person(db.Model):
 		return (self.name)
 
 class Location (db.Model):
-		
+
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(100), unique=True, nullable=False)
 	host = db.Column(db.String(50))
@@ -105,7 +111,7 @@ class Location (db.Model):
 
 	def __repr__(self):
 		return (self.name)
-		
+
 class Table(db.Model):
 
 	id = db.Column(db.Integer, primary_key = True)
@@ -113,7 +119,7 @@ class Table(db.Model):
 	description = db.Column(db.String(length=100))
 	location_id = db.Column(db.Integer, db.ForeignKey('location.id'))
 	location = db.relationship("Location", backref=db.backref('tables', lazy='dynamic'))
-	
+
 	def __repr__(self):
 		return (self.name)
 
@@ -140,6 +146,8 @@ class Rule(db.Model):
 	description = db.Column(db.String(200))
 	created_on = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
 	updated_on = db.Column(db.DateTime(timezone=True), server_default=db.func.now(), onupdate=db.func.now())
+
+	documents = db.relationship('Document', secondary=rule_document_relationship, backref='rules' )
 
 	def __repr__(self):
 		return (self.name)

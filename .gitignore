@@ -67,3 +67,4 @@ _*.html
 
 # Exclude uploaded static files
 app/static/files
+app/static/source_code

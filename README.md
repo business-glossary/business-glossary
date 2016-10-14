@@ -1,6 +1,6 @@
 # Business Glossary
 
-A simple business glossary to store and deseminate business taxonmy and vocabulary.
+A simple business glossary to store and disseminate business taxonomy and vocabulary.
 
 # Running the Application
 

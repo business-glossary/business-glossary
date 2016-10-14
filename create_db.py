@@ -23,8 +23,8 @@ db.session.add(c1, c2)
 
 # Create people
 
-p1 = Person(name='Paul Taylor')
-p2 = Person(name='Burton Wu')
+p1 = Person(name='Jo Black')
+p2 = Person(name='Fred Young')
 db.session.add(p1)
 db.session.add(p2)
 
@@ -41,7 +41,7 @@ l3 = Link(text='Credit Reporting - Office of the Australian Information Commissi
 
 l4 = Link(text='Privacy (Credit Reporting) Code 2014 (Version 1.2)',
 	address='https://www.oaic.gov.au/privacy-law/privacy-registers/privacy-codes/privacy-credit-reporting-code-2014-version-1-2')
-	
+
 # Create terms
 
 desc1 = """Comprehensive credit reporting commenced on 12 March 2014 under changes to the Privacy Act and is the most significant change to Australia's credit reporting system in over 25 years. Comprehensive credit reporting changes the level of consumer credit information that can be held on an individual's credit file.
@@ -96,14 +96,14 @@ db.session.commit()
 
 # Create Table and Columns
 
-l = Location(name='CRASL', description='/saslev1comp/boqdata/CreditRisk/StagingLayer');
+l = Location(name='PROD_DB', description='/data/prod/risk_mart');
 
-t = Table(name='ACCOUNT_HISTORY_2016', location=l)
+t = Table(name='ACCOUNT_HISTORY', location=l)
 
-c1 = Column(name='K_TIME', type='NUM', length='8', format='DATE9.', table=t)
-c2 = Column(name='ACCOUNT_NO', type='NUM', length='8', format='21.', table=t)
-c3 = Column(name='APPLICATIONNUMBER', type='NUM', length='8', format='3.', table=t)
-c4 = Column(name='ICBS_CODE', type='NUM', length='8', format='20.', table=t)
+c1 = Column(name='DATE_KEY', type='NUM', length='8', format='DATE9.', table=t)
+c2 = Column(name='ACCOUNT_ID', type='NUM', length='8', format='21.', table=t)
+c3 = Column(name='APPLICATION_ID', type='NUM', length='8', format='3.', table=t)
+c4 = Column(name='BALANCE_AMT', type='NUM', length='8', format='20.', table=t)
 
 db.session.add(l)
 db.session.add(t)

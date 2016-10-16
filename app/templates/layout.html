@@ -20,7 +20,8 @@
     <![endif]-->
 
 	<script type=text/javascript src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-	<script type=text/javascript src="{{ url_for('static', filename='js/moment.js') }}"></script>
+  {{ moment.include_jquery() }}
+  {{ moment.include_moment() }}
 	<script type=text/javascript>
 	var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 	</script>
@@ -46,7 +47,7 @@
 	          </ul>
 		      <ul class="nav navbar-nav navbar-right">
 	            <li><a href="{{ url_for('admin.index') }}">Admin</a></li>
-	            <li><a href="{{ url_for('about') }}">About</a></li>
+	            <li><a href="{{ url_for('main.about') }}">About</a></li>
 		      </ul>
 	        </div><!-- /.nav-collapse -->
 		</div>

@@ -1,5 +1,7 @@
 from app import db
+
 from sqlalchemy.event import listens_for
+
 import os
 import os.path as op
 

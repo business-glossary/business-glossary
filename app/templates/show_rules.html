@@ -7,10 +7,10 @@
 </div>
 
 <ul class="nav nav-tabs">
-	<li><a href="{{ url_for('show_term', selected_term=term.id) }}">Term</a></li>
-	<li><a href="{{ url_for('show_documents', selected_term=term.id) }}">Related Documents</a></li>
-	<li><a href="{{ url_for('show_assets', selected_term=term.id) }}">Related Assets</a></li>
-	<li class="active"><a href="{{ url_for('show_rules', selected_term=term.id) }}">Related Rules</a></li>
+	<li><a href="{{ url_for('main.show_term', selected_term=term.id) }}">Term</a></li>
+	<li><a href="{{ url_for('main.show_documents', selected_term=term.id) }}">Related Documents</a></li>
+	<li><a href="{{ url_for('main.show_assets', selected_term=term.id) }}">Related Assets</a></li>
+	<li class="active"><a href="{{ url_for('main.show_rules', selected_term=term.id) }}">Related Rules</a></li>
 </ul>
 
 <p class="lead"/>
@@ -27,7 +27,7 @@
 				<div class="list-group">
 					<div class="list-group-item">
 						<h4 class="list-group-item-heading">Identifier</h4>
-						<p class="list-group-item-text"><a href="{{ url_for('show_rule', selected_rule=rule.id) }}">{{ rule.identifier }}</a></p>
+						<p class="list-group-item-text"><a href="{{ url_for('main.show_rule', selected_rule=rule.id) }}">{{ rule.identifier }}</a></p>
 					</div>
 				</div>
 			</div>

@@ -7,10 +7,10 @@
 </div>
 
 <ul class="nav nav-tabs">
-	<li><a href="{{ url_for('show_term', selected_term=term.id) }}">Term</a></li>
-	<li><a href="{{ url_for('show_documents', selected_term=term.id) }}">Related Documents</a></li>
-	<li class="active"><a href="{{ url_for('show_assets', selected_term=term.id) }}">Related Assets</a></li>
-	<li><a href="{{ url_for('show_rules', selected_term=term.id) }}">Related Rules</a></li>
+	<li><a href="{{ url_for('main.show_term', selected_term=term.id) }}">Term</a></li>
+	<li><a href="{{ url_for('main.show_documents', selected_term=term.id) }}">Related Documents</a></li>
+	<li class="active"><a href="{{ url_for('main.show_assets', selected_term=term.id) }}">Related Assets</a></li>
+	<li><a href="{{ url_for('main.show_rules', selected_term=term.id) }}">Related Rules</a></li>
 </ul>
 
 <p class="lead"/>
@@ -35,9 +35,9 @@
 			<tbody>
 				{% for a in assets %}
 				<tr>
-					<td><a href="{{ url_for('show_location_details', selected_location=a.table.location.id) }}">{{ a.table.location.name }}</a></td>
-					<td><a href="{{ url_for('show_table_details', selected_table=a.table.id) }}">{{ a.table.name }}</a></td>
-					<td><a href="{{ url_for('show_table_columns', selected_table=a.table.id) }}">{{ a.name }}</a></td>
+					<td><a href="{{ url_for('main.show_location_details', selected_location=a.table.location.id) }}">{{ a.table.location.name }}</a></td>
+					<td><a href="{{ url_for('main.show_table_details', selected_table=a.table.id) }}">{{ a.table.name }}</a></td>
+					<td><a href="{{ url_for('main.show_table_columns', selected_table=a.table.id) }}">{{ a.name }}</a></td>
 				</tr>
 				{% endfor %}
 			</tbody>

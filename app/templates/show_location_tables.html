@@ -7,8 +7,8 @@
 </div>
 
 <ul class="nav nav-tabs">
-	<li><a href="{{ url_for('show_location_details', selected_location=location.id) }}">Location</a></li>
-	<li class="active"><a href="{{ url_for('show_location_tables', selected_location=location.id) }}">Tables</a></li>
+	<li><a href="{{ url_for('main.show_location_details', selected_location=location.id) }}">Location</a></li>
+	<li class="active"><a href="{{ url_for('main.show_location_tables', selected_location=location.id) }}">Tables</a></li>
 </ul>
 
 <p class="lead"/>
@@ -23,7 +23,7 @@
 	<tbody>
 		{% for table in tables %}
 		<tr>
-			<td class="col-md-4"><a href="{{ url_for('show_table_details', selected_table=table.id) }}">{{ table.name }}</a></td>
+			<td class="col-md-4"><a href="{{ url_for('main.show_table_details', selected_table=table.id) }}">{{ table.name }}</a></td>
 			<td class="col-md-4">{{ table.description }}</td>
 		</tr>
 		{% endfor %}

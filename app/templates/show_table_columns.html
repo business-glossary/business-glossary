@@ -7,8 +7,8 @@
 </div>
 
 <ul class="nav nav-tabs">
-	<li><a href="{{ url_for('show_table_details', selected_table=table.id) }}">Table</a></li>
-	<li class="active"><a href="{{ url_for('show_table_columns', selected_table=table.id) }}">Columns</a></li>
+	<li><a href="{{ url_for('main.show_table_details', selected_table=table.id) }}">Table</a></li>
+	<li class="active"><a href="{{ url_for('main.show_table_columns', selected_table=table.id) }}">Columns</a></li>
 </ul>
 
 <p class="lead"/>

@@ -8,7 +8,7 @@
 
 <ul class="nav nav-tabs">
 	<li class="active"><a href="#">Rule</a></li>
-	<li><a href="{{ url_for('show_rule_documents', selected_rule=rule.id) }}">Related Documents</a></li>
+	<li><a href="{{ url_for('main.show_rule_documents', selected_rule=rule.id) }}">Related Documents</a></li>
 </ul>
 
 <p class="lead"/>
@@ -43,7 +43,7 @@
 		  <div class="list-group">
 			<div class="list-group-item">
 			  <h4 class="list-group-item-heading">Created On</h4>
-			  <p class="list-group-item-text">{{ momentjs(rule.created_on).calendar() }}</p>
+			  <p class="list-group-item-text">{{ moment(rule.created_on).calendar() }}</p>
 			</div>
 		  </div>
 		</div>
@@ -51,7 +51,7 @@
 		  <div class="list-group">
 			<div class="list-group-item">
 			  <h4 class="list-group-item-heading">Last Updated</h4>
-			  <p class="list-group-item-text">{{ momentjs(rule.created_on).calendar() }}</p>
+			  <p class="list-group-item-text">{{ moment(rule.created_on).calendar() }}</p>
 			</div>
 		  </div>
 		</div>

@@ -1,9 +1,32 @@
-SECRET_KEY = 'enter your secret key here'
+import os
 
-DEBUG = True
+basedir = os.path.abspath(os.path.dirname(__file__))
+print "BASEDIR=" + basedir
 
-SQLALCHEMY_DATABASE_URI = "sqlite:///glossary.db"
+class Config(object):
+    SECRET_KEY = 'enter your secret key here'
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
+    TERMS_PER_PAGE = 5
 
-SQLALCHEMY_TRACK_MODIFICATIONS = False
+class DevelopmentConfig(Config):
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
+        'sqlite:///' + os.path.join(basedir, 'glossary_dev.db')
+    SQLALCHEMY_ECHO = True
 
-TERMS_PER_PAGE = 5
+class TestingConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
+        'sqlite:///' + os.path.join(basedir, 'glossary_test.db')
+
+class ProductionConfig(Config):
+    SQLALCHEMY_DATABASE_URI = os.environ.get('PROD_DATABASE_URL') or \
+        'sqlite:///' + os.path.join(basedir, 'glossary.db')
+
+config = {
+    'development': DevelopmentConfig,
+    'testing': TestingConfig,
+    'production': ProductionConfig,
+
+    'default': DevelopmentConfig
+}

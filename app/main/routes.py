@@ -182,3 +182,24 @@ def source_code():
     root_dir = os.path.dirname(os.getcwd())
     print root_dir
     return send_from_directory(os.path.join('.', 'static', 'source_code'), filename, as_attachment=False, mimetype='text/html')
+
+@main.route('/search')
+def search():
+	return render_template('term_search.html')
+
+@main.route('/autocomplete', methods=['GET'])
+def autocomplete():
+    search = request.args.get('q')
+
+    query = Term.query.filter(Term.term.like('%' + str(search) + '%'))
+    results = [mv.term for mv in query.all()]
+
+	# term = Term.query.filter(Term.term.like("%" + query + "%")).all()
+
+    #result = {}
+    #for t in term:
+    #    result.append(t.term)
+
+    print results.count
+
+    return jsonify(matching_results=results)

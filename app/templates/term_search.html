@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<script type="text/javascript">
+$(function() {
+	$("#autocomplete").autocomplete({
+		source:function(request, response) {
+			$.getJSON("{{ url_for('main.autocomplete') }}", {
+                q: request.term, // in flask, "q" will be the argument to look for using request.args
+            }, function(data) {
+                response(data.matching_results); // matching_results from jsonify
+            });
+		},
+		minLength: 2,
+		select: function(event, ui) {
+			console.log(ui.item.value); // might help later
+		}
+	 });
+})
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+	<div class="form-group ui-widget">
+		<label>Terms</label>
+		<input type="text" name="autocomplete" id="autocomplete" class="form-control autocomplete" placeholder="Enter a term" />
+	</div>
+</div>
+
+<!--input type="text" name="autocomplete" id="autocomplete" class="form-control input-lg" placeholder="Enter term" /-->
+
+{% endblock %}

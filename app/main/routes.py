@@ -84,10 +84,9 @@ def about():
 
 @main.route('/')
 @main.route('/glossary/')
-@main.route('/glossary/<int:page>')
-def glossary(page=1):
-	glossary = Term.query.order_by(Term.term).paginate(page, app.config['TERMS_PER_PAGE'], False)
-	return render_template('show_glossary.html', glossary=glossary)
+def glossary():
+    glossary = Term.query.order_by(Term.term).all()
+    return render_template('show_glossary.html', glossary=glossary)
 
 @main.route('/term/<int:selected_term>')
 def show_term(selected_term):
@@ -182,3 +181,24 @@ def source_code():
     root_dir = os.path.dirname(os.getcwd())
     print root_dir
     return send_from_directory(os.path.join('.', 'static', 'source_code'), filename, as_attachment=False, mimetype='text/html')
+
+@main.route('/search')
+def search():
+	return render_template('term_search.html')
+
+@main.route('/autocomplete', methods=['GET'])
+def autocomplete():
+    search = request.args.get('q')
+
+    query = Term.query.filter(Term.term.like('%' + str(search) + '%'))
+    results = [mv.term for mv in query.all()]
+
+	# term = Term.query.filter(Term.term.like("%" + query + "%")).all()
+
+    #result = {}
+    #for t in term:
+    #    result.append(t.term)
+
+    print results.count
+
+    return jsonify(matching_results=results)

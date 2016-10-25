@@ -84,10 +84,9 @@ def about():
 
 @main.route('/')
 @main.route('/glossary/')
-@main.route('/glossary/<int:page>')
-def glossary(page=1):
-	glossary = Term.query.order_by(Term.term).paginate(page, app.config['TERMS_PER_PAGE'], False)
-	return render_template('show_glossary.html', glossary=glossary)
+def glossary():
+    glossary = Term.query.order_by(Term.term).all()
+    return render_template('show_glossary.html', glossary=glossary)
 
 @main.route('/term/<int:selected_term>')
 def show_term(selected_term):

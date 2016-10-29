@@ -39,7 +39,7 @@ $(document).ready(function() {
 				<td>{{ term.owner }}</td>
 				<td>
 					{% for c in term.categories %}
-						<h5><span class="label label-default">{{ c.name }}</span></h5>
+						<h5><span class="label label-default">{{ c.name.lower() }}</span></h5>
 					{% endfor %}
 				</td>
 			</tr>

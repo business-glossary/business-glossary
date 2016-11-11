@@ -2,10 +2,27 @@ from app import db
 
 from sqlalchemy.event import listens_for
 
+from sqlalchemy.sql import expression
+from sqlalchemy.ext.compiler import compiles
+from sqlalchemy.types import DateTime
+
 import os
 import os.path as op
 
 file_path = op.join(op.dirname(__file__), 'static/files')
+
+# Define function to handle UTC in MSSQL
+
+class utcnow(expression.FunctionElement):
+    type = DateTime()
+
+@compiles(utcnow, 'postgresql')
+def pg_utcnow(element, compiler, **kw):
+    return "TIMEZONE('utc', CURRENT_TIMESTAMP)"
+
+@compiles(utcnow, 'mssql')
+def ms_utcnow(element, compiler, **kw):
+    return "GETUTCDATE()"
 
 term_category_relationship = db.Table('term_category_relationship',
 	db.Column('term_id', db.Integer, db.ForeignKey('term.id'), nullable=False),
@@ -63,8 +80,8 @@ class Term(db.Model):
 	owner = db.relationship("Person", foreign_keys=[owner_id])
 	steward = db.relationship("Person", foreign_keys=[steward_id])
 
-	created_on = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
-	updated_on = db.Column(db.DateTime(timezone=True), server_default=db.func.now(), onupdate=db.func.now())
+	created_on = db.Column(db.DateTime, server_default=utcnow())
+	updated_on = db.Column(db.DateTime, server_default=utcnow(), onupdate=utcnow())
 
 	def __repr__(self):
 		return (self.term)
@@ -96,8 +113,6 @@ class Link(db.Model):
 class Person(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(50), unique=True, nullable=False)
-#	owner_terms = db.relationship('Term', backref='owned_terms', foreign_keys=[owner_id], lazy='dynamic')
-#	steward_terms = db.relationship('Term', backref='stewardship_terms', foreign_keys=[steward_id], lazy='dynamic')
 
 	def __repr__(self):
 		return (self.name)
@@ -147,8 +162,8 @@ class Rule(db.Model):
 	name = db.Column(db.String(100))
 	description = db.Column(db.String(100))
 	notes = db.Column(db.Text)
-	created_on = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
-	updated_on = db.Column(db.DateTime(timezone=True), server_default=db.func.now(), onupdate=db.func.now())
+	created_on = db.Column(db.DateTime, server_default=utcnow())
+	updated_on = db.Column(db.DateTime, server_default=utcnow(), onupdate=utcnow())
 
 	documents = db.relationship('Document', secondary=rule_document_relationship, backref='rules' )
 

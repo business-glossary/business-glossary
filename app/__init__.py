@@ -4,6 +4,7 @@
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flaskext.markdown import Markdown
 from flask_moment import Moment
 #from config import config
 
@@ -16,6 +17,7 @@ import os
 app = Flask(__name__)
 db = SQLAlchemy(app)
 moment = Moment(app)
+md = Markdown(app, extensions=['fenced_code'])
 
 app.config.from_object(os.getenv('BG_CONFIG') or 'config.DevelopmentConfig')
 

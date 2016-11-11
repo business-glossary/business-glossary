@@ -145,7 +145,8 @@ class Rule(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	identifier = db.Column(db.String(20), nullable=False)
 	name = db.Column(db.String(100))
-	description = db.Column(db.String(200))
+	description = db.Column(db.String(100))
+	notes = db.Column(db.Text)
 	created_on = db.Column(db.DateTime(timezone=True), server_default=db.func.now())
 	updated_on = db.Column(db.DateTime(timezone=True), server_default=db.func.now(), onupdate=db.func.now())
 

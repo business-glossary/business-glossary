@@ -54,6 +54,11 @@ class TermView(ModelView):
 	form_excluded_columns = ('created_on', 'updated_on')
 	column_searchable_list = ['term']
 
+class TableView(ModelView):
+	column_default_sort = 'name'
+	column_filters = ['location']
+	form_excluded_columns = ('columns')
+
 class ColumnView(ModelView):
 	column_filters = ['table', 'name']
 
@@ -62,7 +67,8 @@ admin = Admin(app, name='BUSINESS GLOSSARY', template_mode='bootstrap3', base_te
 admin.add_view(ModelView(Category, db.session))
 admin.add_view(ModelView(Person, db.session))
 admin.add_view(ModelView(Link, db.session))
-admin.add_view(ModelView(Table, db.session))
+admin.add_view(ModelView(Location, db.session))
+admin.add_view(TableView(Table, db.session))
 admin.add_view(ColumnView(Column, db.session))
 admin.add_view(FileView(Document, db.session))
 admin.add_view(ModelView(DocumentType, db.session))

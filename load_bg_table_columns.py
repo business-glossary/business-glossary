@@ -4,7 +4,12 @@
 from app import app, db, models
 from app.models import Category, Term, Person, TermStatus, Link, Location, Table, Column, DocumentType, Rule
 
-import csv
+import csv,os
+
+# Define the path where the interface files are
+
+file_path = r"V:\CreditRisk\Staging\TindalA"
+# file_path = r"C:\Users\Alan\Projects\bg_interface\bg_interface_status.csv"
 
 # Delete all rows from table
 
@@ -18,7 +23,7 @@ print x, "rows deleted"
 #
 # ##############################################################################
 
-file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_locations.csv"
+file_name = os.path.join(file_path, "bg_interface_locations.csv")
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -45,7 +50,7 @@ with open(file_name, 'rb') as csvfile:
 #
 # ##############################################################################
 
-file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_table.csv"
+file_name = os.path.join(file_path, "bg_interface_table.csv")
 
 print "Loading table metadata..."
 
@@ -81,7 +86,7 @@ with open(file_name, 'rb') as csvfile:
 #
 # ##############################################################################
 
-file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_column.csv"
+file_name = os.path.join(file_path, "bg_interface_column.csv")
 
 # We had a failure here so need to work on the exception handling
 

@@ -1,13 +1,19 @@
 from app import app, db, models
 from app.models import Category, Term, Person, TermStatus, Link, Location, Table, Column, DocumentType, Rule
 
-import csv
+import csv, os
 
+# Define the path where the interface files are
+
+file_path = r"V:\CreditRisk\Staging\TindalA"
+# file_path = r"C:\Users\Alan\Projects\bg_interface\bg_interface_status.csv"
+
+db.drop_all()
 db.create_all()
 
 # Load TermStatus
 
-file_name = r"C:\Users\Alan\Projects\bg_interface\bg_interface_status.csv"
+file_name = os.path.join(file_path, "bg_interface_status.csv")
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -22,7 +28,7 @@ with open(file_name, 'rb') as csvfile:
 
 # Load Category
 
-file_name = r"C:\Users\Alan\Projects\bg_interface\bg_interface_category.csv"
+file_name = os.path.join(file_path, "bg_interface_category.csv")
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -38,7 +44,7 @@ with open(file_name, 'rb') as csvfile:
 
 # Load DocumentType
 
-file_name = r"C:\Users\Alan\Projects\bg_interface\bg_interface_document_type.csv"
+file_name = os.path.join(file_path, "bg_interface_document_type.csv")
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -53,7 +59,7 @@ with open(file_name, 'rb') as csvfile:
 
 # Load Person
 
-file_name = r"C:\Users\Alan\Projects\bg_interface\bg_interface_person.csv"
+file_name = os.path.join(file_path, "bg_interface_person.csv")
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -73,7 +79,7 @@ with open(file_name, 'rb') as csvfile:
 #
 # ##############################################################################
 
-file_name = r"C:\Users\Alan\Projects\bg_interface\bg_interface_terms.csv"
+file_name = os.path.join(file_path, "bg_interface_terms.csv")
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -102,7 +108,7 @@ with open(file_name, 'rb') as csvfile:
 #
 # ##############################################################################
 
-file_name = r"C:\Users\Alan\Projects\bg_interface\bg_interface_categories.csv"
+file_name = os.path.join(file_path, "bg_interface_categories.csv")
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -122,7 +128,7 @@ with open(file_name, 'rb') as csvfile:
 #
 # ##############################################################################
 
-file_name = r"C:\Users\Alan\Projects\bg_interface\bg_interface_links.csv"
+file_name = os.path.join(file_path, "bg_interface_links.csv")
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -148,7 +154,7 @@ with open(file_name, 'rb') as csvfile:
 #
 # ##############################################################################
 
-file_name = r"C:\Users\Alan\Projects\bg_interface\bg_interface_rules.csv"
+file_name = os.path.join(file_path, "bg_interface_rules.csv")
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -156,11 +162,14 @@ with open(file_name, 'rb') as csvfile:
 		print row
 
 		t = Term.query.filter_by(term=row['term']).first()
+		
+		notes = row['notes'].replace('\\n', '\n').replace('\\r','\r')
 
 		record = Rule(**{
 			'identifier' : row['identifier'],
 			'name' : row['name'],
-			'description' : row['description']
+			'description' : row['description'],
+			'notes' : notes
 			})
 		db.session.add(record)
 

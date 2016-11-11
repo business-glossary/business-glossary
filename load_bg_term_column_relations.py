@@ -1,9 +1,14 @@
 from app import app, db, models
 from app.models import Category, Term, Person, TermStatus, Link, Location, Table, Column, DocumentType, Rule
 
-import csv
+import csv, os
 
-file_name = r"V:\CreditRisk\Staging\TindalA\bg_interface_columns_term.csv"
+# Define the path where the interface files are
+
+file_path = r"V:\CreditRisk\Staging\TindalA"
+# file_path = r"C:\Users\Alan\Projects\bg_interface\bg_interface_status.csv"
+
+file_name = os.path.join(file_path, "bg_interface_columns_term.csv")
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')

@@ -48,8 +48,11 @@ class RuleView(ModelView):
     form_excluded_columns = ('created_on', 'updated_on')
 
 class TermView(ModelView):
-	form_create_rules = ('term', 'description', 'abbreviation', 'owner', 'steward', 'status', 'categories', 'links', 'rules', 'documents')
-	form_edit_rules = ('term', 'description', 'abbreviation', 'owner', 'steward', 'status', 'categories', 'links', 'rules', 'documents', 'columns')
+	form_create_rules = ('term', 'description', 'abbreviation', 'owner',
+        'steward', 'status', 'categories', 'links', 'rules', 'documents')
+	form_edit_rules = ('term', 'description', 'abbreviation', 'owner',
+        'steward', 'status', 'categories', 'links', 'rules', 'related_terms',
+        'documents', 'columns')
 	column_list = ['term', 'description', 'abbreviation', 'status']
 	form_excluded_columns = ('created_on', 'updated_on')
 	column_searchable_list = ['term']

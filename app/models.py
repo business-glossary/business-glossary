@@ -59,37 +59,46 @@ rule_document_relationship = db.Table('rule_document_relationship',
 	db.Column('document_id',db.Integer, db.ForeignKey('document.id'),nullable=False),
 	db.PrimaryKeyConstraint('rule_id', 'document_id') )
 
+term_to_term_relationship = db.Table('term_to_term_relationship',
+    db.Column("term_id", db.Integer, db.ForeignKey("term.id"), primary_key=True),
+    db.Column("related_term_id", db.Integer, db.ForeignKey("term.id"), primary_key=True))
 
 class Term(db.Model):
-	id = db.Column(db.Integer, primary_key = True)
-	term = db.Column(db.String(100))
-	description = db.Column(db.Text)
-	abbreviation = db.Column(db.String(10))
+    id = db.Column(db.Integer, primary_key = True)
+    term = db.Column(db.String(100))
+    description = db.Column(db.Text)
+    abbreviation = db.Column(db.String(10))
 
-	categories = db.relationship('Category', secondary=term_category_relationship, backref='terms' )
+    categories = db.relationship('Category', secondary=term_category_relationship, backref='terms' )
 
-	columns = db.relationship('Column', secondary=term_column_relationship, backref='terms' )
+    columns = db.relationship('Column', secondary=term_column_relationship, backref='terms' )
 
-	documents = db.relationship('Document', secondary=term_document_relationship, backref='terms' )
+    documents = db.relationship('Document', secondary=term_document_relationship, backref='terms' )
 
-	rules = db.relationship('Rule', secondary=term_rule_relationship, backref='terms' )
+    rules = db.relationship('Rule', secondary=term_rule_relationship, backref='terms' )
 
-	links = db.relationship('Link', backref="terms", cascade="all, delete-orphan" , lazy='dynamic')
+    links = db.relationship('Link', backref="terms", cascade="all, delete-orphan" , lazy='dynamic')
 
-	status_id = db.Column(db.Integer, db.ForeignKey('term_status.id'))
-	status = db.relationship("TermStatus", backref=db.backref('terms', lazy='dynamic'))
+    status_id = db.Column(db.Integer, db.ForeignKey('term_status.id'))
+    status = db.relationship("TermStatus", backref=db.backref('terms', lazy='dynamic'))
 
-	owner_id = db.Column(db.Integer, db.ForeignKey('person.id'))
-	steward_id = db.Column(db.Integer, db.ForeignKey('person.id'))
+    owner_id = db.Column(db.Integer, db.ForeignKey('person.id'))
+    steward_id = db.Column(db.Integer, db.ForeignKey('person.id'))
 
-	owner = db.relationship("Person", foreign_keys=[owner_id])
-	steward = db.relationship("Person", foreign_keys=[steward_id])
+    owner = db.relationship("Person", foreign_keys=[owner_id])
+    steward = db.relationship("Person", foreign_keys=[steward_id])
 
-	created_on = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-	updated_on = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    related_terms = db.relationship("Term",
+        secondary=term_to_term_relationship,
+        primaryjoin=id==term_to_term_relationship.c.term_id,
+        secondaryjoin=id==term_to_term_relationship.c.related_term_id,
+        backref="related_to")
 
-	def __repr__(self):
-		return (self.term)
+    created_on = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    updated_on = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+
+    def __repr__(self):
+        return (self.term)
 
 class TermStatus(db.Model):
 	id = db.Column(db.Integer, primary_key = True)

@@ -62,9 +62,6 @@ target/
 # Mac artefacts
 .DS_Store
 
-# Exclude html templates from source project
-_*.html
-
 # Exclude uploaded static files
 app/static/files/
 app/static/source_code/

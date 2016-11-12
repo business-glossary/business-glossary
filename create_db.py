@@ -115,7 +115,7 @@ db.session.add(c4)
 # Create Business Rule
 
 t = Term.query.filter_by(id=1).first()
-r = Rule(identifier='BR_001', name='New Customer Rule', description='Detailed description of the rule.  Typically written in structured English or pseudo code.  Consider using a flowchart or UML activity diagram to depict procedural logic.')
+r = Rule(identifier='BR_001', name='New Customer Rule', description='This is a new customer rule', notes='Detailed description of the rule.  Typically written in structured English or pseudo code.  Consider using a flowchart or UML activity diagram to depict procedural logic.')
 t.rules.append(r)
 db.session.add(r)
 

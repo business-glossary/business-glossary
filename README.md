@@ -16,7 +16,7 @@ python manage.py runserver
 
 ## Setup
 
-Running the above commands will create an application using the development config by default, using a SQLite database named glossary_dev.db.
+Running the above commands will create an application using the development configuration by default. This uses an SQLite database named glossary_dev.db.
 
 You can also define two environment variables to control the configuration and database it should use.
 

@@ -66,5 +66,6 @@ target/
 _*.html
 
 # Exclude uploaded static files
-app/static/files
-app/static/source_code
+app/static/files/
+app/static/source_code/
+app/static/images/

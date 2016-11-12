@@ -6,6 +6,7 @@ from sqlalchemy.sql import expression
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.types import DateTime
 
+import datetime
 import os
 import os.path as op
 
@@ -23,6 +24,10 @@ def pg_utcnow(element, compiler, **kw):
 @compiles(utcnow, 'mssql')
 def ms_utcnow(element, compiler, **kw):
     return "GETUTCDATE()"
+
+@compiles(utcnow, 'mysql')
+def my_utcnow(element, compiler, **kw):
+    return "CURRENT_TIMESTAMP"
 
 term_category_relationship = db.Table('term_category_relationship',
 	db.Column('term_id', db.Integer, db.ForeignKey('term.id'), nullable=False),
@@ -80,8 +85,8 @@ class Term(db.Model):
 	owner = db.relationship("Person", foreign_keys=[owner_id])
 	steward = db.relationship("Person", foreign_keys=[steward_id])
 
-	created_on = db.Column(db.DateTime, server_default=utcnow())
-	updated_on = db.Column(db.DateTime, server_default=utcnow(), onupdate=utcnow())
+	created_on = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+	updated_on = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
 	def __repr__(self):
 		return (self.term)
@@ -162,8 +167,8 @@ class Rule(db.Model):
 	name = db.Column(db.String(100))
 	description = db.Column(db.String(100))
 	notes = db.Column(db.Text)
-	created_on = db.Column(db.DateTime, server_default=utcnow())
-	updated_on = db.Column(db.DateTime, server_default=utcnow(), onupdate=utcnow())
+	created_on = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+	updated_on = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
 	documents = db.relationship('Document', secondary=rule_document_relationship, backref='rules' )
 

@@ -5,8 +5,8 @@ import csv, os
 
 # Define the path where the interface files are
 
-file_path = r"V:\CreditRisk\Staging\TindalA"
-# file_path = r"C:\Users\Alan\Projects\bg_interface\bg_interface_status.csv"
+#file_path = r"V:\CreditRisk\Staging\TindalA"
+file_path = r"C:\Users\Alan\Projects\bg_interface"
 
 db.drop_all()
 db.create_all()
@@ -14,6 +14,8 @@ db.create_all()
 # Load TermStatus
 
 file_name = os.path.join(file_path, "bg_interface_status.csv")
+
+print "\nLoading status\n"
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -29,6 +31,8 @@ with open(file_name, 'rb') as csvfile:
 # Load Category
 
 file_name = os.path.join(file_path, "bg_interface_category.csv")
+
+print "\nLoading categories\n"
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -46,6 +50,8 @@ with open(file_name, 'rb') as csvfile:
 
 file_name = os.path.join(file_path, "bg_interface_document_type.csv")
 
+print "\nLoading types\n"
+
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
 	for row in reader:
@@ -60,6 +66,8 @@ with open(file_name, 'rb') as csvfile:
 # Load Person
 
 file_name = os.path.join(file_path, "bg_interface_person.csv")
+
+print "\nLoading people\n"
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -80,6 +88,8 @@ with open(file_name, 'rb') as csvfile:
 # ##############################################################################
 
 file_name = os.path.join(file_path, "bg_interface_terms.csv")
+
+print "\nLoading terms\n"
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -110,6 +120,8 @@ with open(file_name, 'rb') as csvfile:
 
 file_name = os.path.join(file_path, "bg_interface_categories.csv")
 
+print "\nLoading categories\n"
+
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
 	for row in reader:
@@ -129,6 +141,8 @@ with open(file_name, 'rb') as csvfile:
 # ##############################################################################
 
 file_name = os.path.join(file_path, "bg_interface_links.csv")
+
+print "\nLoading links\n"
 
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
@@ -156,15 +170,15 @@ with open(file_name, 'rb') as csvfile:
 
 file_name = os.path.join(file_path, "bg_interface_rules.csv")
 
+print "\nLoading rules\n"
+
 with open(file_name, 'rb') as csvfile:
 	reader = csv.DictReader(csvfile, delimiter=',')
 	for row in reader:
-		print row
 
-		t = Term.query.filter_by(term=row['term']).first()
-		
 		notes = row['notes'].replace('\\n', '\n').replace('\\r','\r')
 
+		# Add the rule
 		record = Rule(**{
 			'identifier' : row['identifier'],
 			'name' : row['name'],
@@ -173,8 +187,17 @@ with open(file_name, 'rb') as csvfile:
 			})
 		db.session.add(record)
 
+		# Get the rule again
 		r = Rule.query.filter_by(identifier=row['identifier']).first()
 
-		t.rules.append(r)
+		# Find the term to associate with
+		t = Term.query.filter_by(term=row['term']).first()
+
+		# If the term is found associate with the rule
+		if t:
+			t.rules.append(r)
+			print "Rule %s loaded" % r.name
+		else:
+			print "Associated term %s not found for rule %s" % (row['term'], row['name'])
 
 		db.session.commit()

@@ -165,7 +165,6 @@ def show_location_tables(selected_location):
 
 	return render_template('show_location_tables.html', location=location, tables=tables)
 
-
 @main.route('/table/<selected_table>')
 @main.route('/table/<selected_table>/details')
 def show_table_details(selected_table):
@@ -183,6 +182,10 @@ def show_table_columns(selected_table):
 
 	return render_template('show_table_columns.html', table=table, columns=columns)
 
+@main.route('/processes')
+def processes():
+	return render_template('show_processes.html')
+	
 @main.route('/source_code')
 def source_code():
     """This is a proof-of-concept for return a position in source code to the browser"""
@@ -190,3 +193,7 @@ def source_code():
     root_dir = os.path.dirname(os.getcwd())
     print root_dir
     return send_from_directory(os.path.join('.', 'static', 'source_code'), filename, as_attachment=False, mimetype='text/html')
+
+@app.route('/graph2')
+def graph2():
+	return render_template('graph2.html')

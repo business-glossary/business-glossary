@@ -62,6 +62,9 @@ target/
 # Mac artefacts
 .DS_Store
 
+# Ignore Microsoft Internet Information Services config file
+web.config
+
 # Exclude uploaded static files
 app/static/files/
 app/static/source_code/

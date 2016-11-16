@@ -3,15 +3,42 @@ from app.models import Category, Term, Person, TermStatus, Link, Location, Table
 
 import csv, os
 
-# Define the path where the interface files are
+from os.path import dirname, join
 
-#file_path = r"V:\CreditRisk\Staging\TindalA"
-file_path = r"C:\Users\Alan\Projects\bg_interface"
+from config import BASE_DIR
+
+###############################################################################
+#
+# Define the path where the interface files are
+#
+###############################################################################
+#
+# Interface files are placed in a directory name bg_interface at the same level 
+# as the application directory, i.e.
+#
+#   - bg_interface
+#   - business_glossary
+#
+# Call os.path.dirname twice to walk up to the parent directory
+#
+###############################################################################
+
+file_path = join(dirname(BASE_DIR), 'bg_interface')
+
+###############################################################################
+#
+# Drop and recreate all tables
+#
+###############################################################################
 
 db.drop_all()
 db.create_all()
 
+################################################################################
+#
 # Load TermStatus
+#
+################################################################################
 
 file_name = os.path.join(file_path, "bg_interface_status.csv")
 
@@ -28,7 +55,11 @@ with open(file_name, 'rb') as csvfile:
 		db.session.add(record)
 		db.session.commit()
 
+################################################################################
+#
 # Load Category
+#
+################################################################################
 
 file_name = os.path.join(file_path, "bg_interface_category.csv")
 
@@ -46,7 +77,11 @@ with open(file_name, 'rb') as csvfile:
 		db.session.add(record)
 		db.session.commit()
 
+################################################################################
+#
 # Load DocumentType
+#
+################################################################################
 
 file_name = os.path.join(file_path, "bg_interface_document_type.csv")
 
@@ -63,7 +98,11 @@ with open(file_name, 'rb') as csvfile:
 		db.session.add(record)
 		db.session.commit()
 
+################################################################################
+#
 # Load Person
+#
+################################################################################
 
 file_name = os.path.join(file_path, "bg_interface_person.csv")
 
@@ -81,11 +120,11 @@ with open(file_name, 'rb') as csvfile:
 		db.session.commit()
 
 
-# ##############################################################################
+################################################################################
 #
 # Load Terms
 #
-# ##############################################################################
+################################################################################
 
 file_name = os.path.join(file_path, "bg_interface_terms.csv")
 
@@ -112,11 +151,11 @@ with open(file_name, 'rb') as csvfile:
 
 		db.session.commit()
 
-# ##############################################################################
+################################################################################
 #
 # Load Term Categories
 #
-# ##############################################################################
+################################################################################
 
 file_name = os.path.join(file_path, "bg_interface_categories.csv")
 
@@ -134,11 +173,11 @@ with open(file_name, 'rb') as csvfile:
 
 		db.session.commit()
 
-# ##############################################################################
+################################################################################
 #
 # Load Links
 #
-# ##############################################################################
+################################################################################
 
 file_name = os.path.join(file_path, "bg_interface_links.csv")
 
@@ -162,11 +201,11 @@ with open(file_name, 'rb') as csvfile:
 
 		db.session.commit()
 
-# ##############################################################################
+################################################################################
 #
 # Load Rules
 #
-# ##############################################################################
+################################################################################
 
 file_name = os.path.join(file_path, "bg_interface_rules.csv")
 

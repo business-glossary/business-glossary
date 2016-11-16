@@ -4,24 +4,43 @@
 from app import app, db, models
 from app.models import Category, Term, Person, TermStatus, Link, Location, Table, Column, DocumentType, Rule
 
-import csv,os
+import csv, os
 
+from os.path import dirname, join
+
+from config import BASE_DIR
+
+###############################################################################
+#
 # Define the path where the interface files are
+#
+###############################################################################
 
-#file_path = r"V:\CreditRisk\Staging\TindalA"
-file_path = r"C:\Users\Alan\Projects\bg_interface"
+# Interface files are placed in a directory name bg_interface at the same level 
+# as the application directory, i.e.
+#
+#   - bg_interface
+#   - business_glossary
+#
+# Call os.path.dirname twice to walk up to the parent directory
 
-# Delete all rows from table
+file_path = join(dirname(BASE_DIR), 'bg_interface')
+
+###############################################################################
+#
+# Delete all Columns
+#
+###############################################################################
 
 x = Column.query.delete()
 
-print x, "rows deleted"
+print x, "columns deleted"
 
-# ##############################################################################
+###############################################################################
 #
 # Load Locations
 #
-# ##############################################################################
+###############################################################################
 
 file_name = os.path.join(file_path, "bg_interface_locations.csv")
 
@@ -46,11 +65,11 @@ with open(file_name, 'rb') as csvfile:
 			db.session.add(record)
 			db.session.commit()
 
-# ##############################################################################
+################################################################################
 #
 # Load Table Metadata
 #
-# ##############################################################################
+################################################################################
 
 file_name = os.path.join(file_path, "bg_interface_table.csv")
 
@@ -82,11 +101,11 @@ with open(file_name, 'rb') as csvfile:
 #finally:
 #	db.session.close()
 
-# ##############################################################################
+################################################################################
 #
 # Load Column Metadata
 #
-# ##############################################################################
+################################################################################
 
 file_name = os.path.join(file_path, "bg_interface_column.csv")
 

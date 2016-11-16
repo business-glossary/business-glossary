@@ -8,27 +8,27 @@ from . import main
 
 from ..models import Document, DocumentType, Term, Category, Person, Link, Location, Table, Column, Rule
 
-#####################
-#### admin views ####
-#####################
+from config import BASE_DIR
+
+import os
+import os.path as op
 
 from flask_admin import Admin, form
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import rules
 
-import os
-import os.path as op
-
 # Create directory for file fields to use
-file_path = op.join(op.dirname(__file__), 'static/files')
-
-print "FILE_PATH=", file_path
+file_path = op.join(BASE_DIR, 'app', 'static', 'files')
 
 try:
     os.mkdir(file_path)
 except OSError:
     pass
 
+#####################
+#### admin views ####
+#####################
+	
 class FileView(ModelView):
 	# Override form field to use Flask-Admin FileUploadField
 	form_overrides = {

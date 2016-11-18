@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="page-header">
+	<h1>Search Results</h1>
+</div>
+
+<h2>Terms</h2>
+
+{% if term | length > 0 %}
+<table class="table list-group-item-text">
+    <thead>
+        <tr>
+            <th>Term</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for term in terms %}
+        <tr>
+            <td class="col-md-2"><a href="{{ url_for('main.show_term', selected_term=term.id) }}">{{ term.term }}</a></td>
+            <td class="col-md-10">{{ term.description }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No terms found</p>
+{% endif %}
+
+<h2>Columns</h2>
+
+<table class="table list-group-item-text">
+    <thead>
+        <tr>
+            <th>Location</th>
+            <th>Table</th>
+            <th>Column</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for column in columns %}
+        <tr>
+            <td><a href="{{ url_for('main.show_location_details', selected_location=column.table.location.id) }}">{{ column.table.location.name }}</a></td>
+            <td><a href="{{ url_for('main.show_table_details', selected_table=column.table.id) }}">{{ column.table.name }}</a></td>
+            <td><a href="{{ url_for('main.show_table_columns', selected_table=column.table.id) }}">{{ column.name }}</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

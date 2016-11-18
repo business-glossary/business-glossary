@@ -28,7 +28,7 @@ except OSError:
 #####################
 #### admin views ####
 #####################
-	
+
 class FileView(ModelView):
 	# Override form field to use Flask-Admin FileUploadField
 	form_overrides = {
@@ -182,10 +182,25 @@ def show_table_columns(selected_table):
 
 	return render_template('show_table_columns.html', table=table, columns=columns)
 
+@main.route('/search', methods=['GET', 'POST'])
+def search():
+    if request.method == "POST":
+        search = request.form['search']
+        
+        from sqlalchemy import or_
+        
+        terms = Term.query.filter(or_(Term.term.like('%' + str(search) + '%'), 
+                                      Term.description.like('%' + str(search) + '%'),
+                                      Term.abbreviation.like('%' + str(search) + '%')))
+        columns = Column.query.filter(Column.name.like('%' + str(search) + '%'))
+
+        return render_template("results.html", terms=terms, columns=columns)
+    return render_template('search.html')    
+    
 @main.route('/processes')
 def processes():
 	return render_template('show_processes.html')
-	
+
 @main.route('/source_code')
 def source_code():
     """This is a proof-of-concept for return a position in source code to the browser"""

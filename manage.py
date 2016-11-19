@@ -38,7 +38,6 @@ def test(coverage=False):
         covdir = os.path.join(BASE_DIR, 'htmlcov')
         COV.html_report(directory=covdir)
         print('HTML version: file://%s/index.html' % covdir)
-        COV.erase()
 
 if __name__ == '__main__':
     manager.run()

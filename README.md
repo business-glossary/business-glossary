@@ -1,4 +1,4 @@
-[![Travis CI](https://travis-ci.org/atindale/business-glossary.svg?branch=master)
+[![Build Status](https://travis-ci.org/atindale/business-glossary.svg?branch=master)](https://travis-ci.org/atindale/business-glossary)
 
 # Business Glossary
 

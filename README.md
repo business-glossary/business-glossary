@@ -1,3 +1,5 @@
+[![Travis CI](https://travis-ci.org/atindale/business-glossary.svg?branch=master)
+
 # Business Glossary
 
 A simple business glossary to store and disseminate business taxonomy and vocabulary.

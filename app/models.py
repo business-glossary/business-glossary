@@ -100,6 +100,12 @@ class Term(db.Model):
     def __repr__(self):
         return (self.term)
 
+    def get_id(self):
+        try:
+            return unicode(self.id)  # python 2
+        except NameError:
+            return str(self.id)  # python 3
+
 class TermStatus(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	status = db.Column(db.String(20), unique=True, nullable=False)

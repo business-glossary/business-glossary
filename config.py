@@ -5,7 +5,7 @@ print "BASE_DIR=" + BASE_DIR
 
 class Config(object):
     SECRET_KEY = 'enter your secret key here'
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     TERMS_PER_PAGE = 5
 
 class DevelopmentConfig(Config):
@@ -18,6 +18,7 @@ class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
         'sqlite:///' + os.path.join(BASE_DIR, 'glossary_test.db')
+    SQLALCHEMY_ECHO = False
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('PROD_DATABASE_URL') or \

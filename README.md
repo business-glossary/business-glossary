@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/atindale/business-glossary.svg?branch=master)](https://travis-ci.org/atindale/business-glossary)
+[![Coverage Status](https://coveralls.io/repos/github/atindale/business-glossary/badge.svg?branch=master)](https://coveralls.io/github/atindale/business-glossary?branch=master)
 
 # Business Glossary
 

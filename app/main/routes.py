@@ -102,14 +102,8 @@ def show_term(selected_term):
 @main.route('/documents/<int:selected_term>')
 def show_documents(selected_term):
 	documents = Document.query.order_by(Document.name).all()
-
 	term = Term.query.filter_by(id=selected_term).first()
-
 	documents = term.documents
-
-	print "Documents...."
-
-	print documents
 
 	return render_template('show_documents.html', term=term, documents=documents)
 
@@ -118,8 +112,6 @@ def show_assets(selected_term):
 
 	term = Term.query.filter_by(id=selected_term).first()
 	assets = term.columns
-
-	print assets
 
 	return render_template('show_assets.html', term=term, assets=assets)
 
@@ -142,7 +134,6 @@ def show_rule(selected_rule):
 def show_rule_documents(selected_rule):
 
     rule = Rule.query.filter_by(id=selected_rule).first()
-    print rule.documents
     documents = rule.documents
 
     return render_template('show_rule_documents.html', rule=rule, documents=documents)
@@ -187,10 +178,12 @@ def search():
 
         from sqlalchemy import or_
 
-        terms = Term.query.filter(or_(Term.term.like('%' + str(search) + '%'),
-                                      Term.description.like('%' + str(search) + '%'),
-                                      Term.abbreviation.like('%' + str(search) + '%')))
-        columns = Column.query.filter(Column.name.like('%' + str(search) + '%'))
+        terms = Term.query.filter(or_(Term.term.ilike('%' + str(search) + '%'),
+                                      Term.description.ilike('%' + str(search) + '%'),
+                                      Term.abbreviation.ilike('%' + str(search) + '%'))).all()
+        columns = Column.query.filter(Column.name.ilike('%' + str(search) + '%')).all()
+
+        #print "terms=", terms.term
 
         return render_template("results.html", terms=terms, columns=columns)
     return render_template('search.html')

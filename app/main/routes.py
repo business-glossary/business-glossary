@@ -1,9 +1,7 @@
-#from app import app, db
 from flask import render_template, request, flash, session, url_for, redirect, jsonify, send_from_directory
 
-#from app import main
-from app import db
-from app import app
+from app import app, db
+
 from . import main
 
 from ..models import Document, DocumentType, Term, Category, Person, Link, Location, Table, Column, Rule
@@ -99,7 +97,7 @@ def glossary():
 
 @main.route('/term/<int:selected_term>')
 def show_term(selected_term):
-	return render_template('show_term.html', term = Term.query.filter_by(id=selected_term).first())
+	return render_template('show_term.html', term=Term.query.filter_by(id=selected_term).first())
 
 @main.route('/documents/<int:selected_term>')
 def show_documents(selected_term):
@@ -186,17 +184,17 @@ def show_table_columns(selected_table):
 def search():
     if request.method == "POST":
         search = request.form['search']
-        
+
         from sqlalchemy import or_
-        
-        terms = Term.query.filter(or_(Term.term.like('%' + str(search) + '%'), 
+
+        terms = Term.query.filter(or_(Term.term.like('%' + str(search) + '%'),
                                       Term.description.like('%' + str(search) + '%'),
                                       Term.abbreviation.like('%' + str(search) + '%')))
         columns = Column.query.filter(Column.name.like('%' + str(search) + '%'))
 
         return render_template("results.html", terms=terms, columns=columns)
-    return render_template('search.html')    
-    
+    return render_template('search.html')
+
 @main.route('/processes')
 def processes():
 	return render_template('show_processes.html')

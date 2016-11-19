@@ -7,7 +7,7 @@
 
 <h2>Terms</h2>
 
-{% if term | length > 0 %}
+{% if terms|length > 0 %}
 <table class="table list-group-item-text">
     <thead>
         <tr>
@@ -15,8 +15,8 @@
             <th>Description</th>
         </tr>
     </thead>
+	{% for term in terms %}
     <tbody>
-    {% for term in terms %}
         <tr>
             <td class="col-md-2"><a href="{{ url_for('main.show_term', selected_term=term.id) }}">{{ term.term }}</a></td>
             <td class="col-md-10">{{ term.description }}</td>
@@ -30,6 +30,7 @@
 
 <h2>Columns</h2>
 
+{% if columns|length > 0 %}
 <table class="table list-group-item-text">
     <thead>
         <tr>
@@ -48,5 +49,8 @@
     {% endfor %}
     </tbody>
 </table>
+{% else %}
+<p>No columns found</p>
+{% endif %}
 
 {% endblock %}

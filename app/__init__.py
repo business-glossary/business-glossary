@@ -15,16 +15,19 @@ import os
 ################
 
 app = Flask(__name__)
+
+app.config.from_object(os.getenv('BG_CONFIG') or 'config.DevelopmentConfig')
+
 db = SQLAlchemy(app)
 moment = Moment(app)
 md = Markdown(app, extensions=['fenced_code'])
 
-app.config.from_object(os.getenv('BG_CONFIG') or 'config.DevelopmentConfig')
-
+print
 print "BG_CONFIG=%s" % os.getenv('BG_CONFIG')
 print "TERMS_PER_PAGE=%s" % app.config['TERMS_PER_PAGE']
 print "SQLALCHEMY_DATABASE_URI=" + app.config['SQLALCHEMY_DATABASE_URI']
 print "SQLALCHEMY_TRACK_MODIFICATIONS=%s" % app.config['SQLALCHEMY_TRACK_MODIFICATIONS']
+print
 
 #################################
 #### register our blueprints ####

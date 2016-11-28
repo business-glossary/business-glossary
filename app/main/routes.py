@@ -190,7 +190,6 @@ def show_table_columns(selected_table):
 
 
 @main.route('/search', methods=['GET', 'POST'])
-@login_required
 def search():
     if request.method == "POST":
         search = request.form['search']

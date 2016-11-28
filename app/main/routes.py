@@ -103,6 +103,12 @@ def glossary():
     return render_template('show_glossary.html', glossary=glossary)
 
 
+@main.route('/abbreviations/')
+def abbreviations():
+    glossary = Term.query.filter(Term.abbreviation!="").order_by(Term.abbreviation).all()
+    return render_template('show_abbreviations.html', glossary=glossary)
+
+    
 @main.route('/term/<int:selected_term>')
 def show_term(selected_term):
 	return render_template('show_term.html', term=Term.query.filter_by(id=selected_term).first())

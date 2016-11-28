@@ -1,0 +1,20 @@
+<ul class="nav nav-tabs">
+    <li{% if active_page == "term" %} class="active"{% endif %}>
+        <a href="{{ url_for('main.show_term', selected_term=term.id) }}">Term</a>
+    </li>
+    <li{% if active_page == "documents" %} class="active"{% elif term.documents|length == 0 %} class="disabled"{% else %}{% endif %}>
+        <a href="{{ url_for('main.show_documents', selected_term=term.id) }}">
+            Related Documents{% if term.documents|length > 0 %} <span class="badge">{{ term.documents|length }}</span>{% endif %}
+        </a>
+    </li>
+    <li{% if active_page == "assets" %} class="active"{% elif not term.columns %} class="disabled"{% else %}{% endif %}>
+        <a href="{{ url_for('main.show_assets', selected_term=term.id) }}">
+            Related Assets{% if term.columns|length > 0 %} <span class="badge">{{ term.columns|length }}</span>{% endif %}
+        </a>
+    </li>
+    <li{% if active_page == "rules" %} class="active"{% elif not term.rules %} class="disabled"{% else %}{% endif %}>
+        <a href="{{ url_for('main.show_rules', selected_term=term.id) }}">
+            Related Rules{% if term.rules|length > 0 %} <span class="badge">{{ term.rules|length }}</span>{% endif %}
+        </a>
+    </li>
+</ul>

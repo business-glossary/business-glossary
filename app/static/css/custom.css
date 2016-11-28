@@ -22,6 +22,11 @@ body {
   border-radius: 25px;
 }
 
+.badge {
+	font-weight: 300;
+	font-size: 10px;
+}	
+
 .dashboard-page {
     font-size: 11px;
 }

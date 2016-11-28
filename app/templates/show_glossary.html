@@ -7,12 +7,15 @@
 <script type="text/javascript">
 $(document).ready(function() {
     $('#example').DataTable({
+        "scrollY":        "600px",
+        "scrollCollapse": true,
+        "paging":         false,    
 		"columnDefs": [
 			{ "searchable": false, "targets": [ 2 ] },
 			{ "orderable": false, "targets": [ 2, 3 ] },
 		]
 	});
-} );
+});
 </script>
 {% endblock %}
 

@@ -1,3 +1,4 @@
+{% import "macros/wtf.html" as wtf %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,11 +6,13 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Business Glossary</title>
+    <title>{% block title %}{% if title %}{{ title }}{% else %}{{ config["APPLICATION_NAME"] }}{% endif %}{% endblock %}</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -30,8 +33,25 @@
 
 </head>
 <body>
-
     {% include "_navbar.html" %}
+
+    {%- block body_inner%}
+    <div class="container">
+        <div id="messages-wrap">
+            <div id="messages">
+            {% for category, msg in get_flashed_messages(with_categories=true) %}
+                {% if loop.first %}
+                    <br />
+                {% endif %}
+                <div class="alert alert-{{ category|alert_class }}">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    {{ msg }}
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+    {%- endblock body_inner %}
 
 	<div class="container">
 		{% block content %}

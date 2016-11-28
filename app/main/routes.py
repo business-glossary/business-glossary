@@ -1,12 +1,9 @@
 from flask import render_template, request, flash, session, url_for, redirect, jsonify, send_from_directory
-
 from app import app, db
-
 from . import main
-
 from ..models import Document, DocumentType, Term, Category, Person, Link, Location, Table, Column, Rule
-
 from config import BASE_DIR
+from flask_security import login_required, current_user
 
 import os
 import os.path as op
@@ -14,6 +11,10 @@ import os.path as op
 from flask_admin import Admin, form
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form import rules
+
+# WTForms helpers
+from ..utils import wtf
+wtf.add_helpers(app)
 
 # Create directory for file fields to use
 file_path = op.join(BASE_DIR, 'app', 'static', 'files')
@@ -27,7 +28,12 @@ except OSError:
 #### admin views ####
 #####################
 
-class FileView(ModelView):
+class ProtectedModelView(ModelView):
+
+    def is_accessible(self):
+        return current_user.has_role('admin')
+
+class FileView(ProtectedModelView):
 	# Override form field to use Flask-Admin FileUploadField
 	form_overrides = {
 		'path': form.FileUploadField
@@ -42,10 +48,10 @@ class FileView(ModelView):
 		}
 	}
 
-class RuleView(ModelView):
+class RuleView(ProtectedModelView):
     form_excluded_columns = ('created_on', 'updated_on')
 
-class TermView(ModelView):
+class TermView(ProtectedModelView):
 	form_create_rules = ('term', 'description', 'abbreviation', 'owner',
         'steward', 'status', 'categories', 'links', 'rules', 'documents')
 	form_edit_rules = ('term', 'description', 'abbreviation', 'owner',
@@ -55,24 +61,24 @@ class TermView(ModelView):
 	form_excluded_columns = ('created_on', 'updated_on')
 	column_searchable_list = ['term']
 
-class TableView(ModelView):
+class TableView(ProtectedModelView):
 	column_default_sort = 'name'
 	column_filters = ['location']
 	form_excluded_columns = ('columns')
 
-class ColumnView(ModelView):
+class ColumnView(ProtectedModelView):
 	column_filters = ['table', 'name']
 
 admin = Admin(app, name='BUSINESS GLOSSARY', template_mode='bootstrap3', base_template='/admin/new_master.html')
 
-admin.add_view(ModelView(Category, db.session))
-admin.add_view(ModelView(Person, db.session))
-admin.add_view(ModelView(Link, db.session))
-admin.add_view(ModelView(Location, db.session))
+admin.add_view(ProtectedModelView(Category, db.session))
+admin.add_view(ProtectedModelView(Person, db.session))
+admin.add_view(ProtectedModelView(Link, db.session))
+admin.add_view(ProtectedModelView(Location, db.session))
 admin.add_view(TableView(Table, db.session))
 admin.add_view(ColumnView(Column, db.session))
 admin.add_view(FileView(Document, db.session))
-admin.add_view(ModelView(DocumentType, db.session))
+admin.add_view(ProtectedModelView(DocumentType, db.session))
 admin.add_view(RuleView(Rule, db.session))
 
 import warnings
@@ -89,15 +95,18 @@ with warnings.catch_warnings():
 def about():
 	return render_template('about.html')
 
+
 @main.route('/')
 @main.route('/glossary/')
 def glossary():
     glossary = Term.query.order_by(Term.term).all()
     return render_template('show_glossary.html', glossary=glossary)
 
+
 @main.route('/term/<int:selected_term>')
 def show_term(selected_term):
 	return render_template('show_term.html', term=Term.query.filter_by(id=selected_term).first())
+
 
 @main.route('/documents/<int:selected_term>')
 def show_documents(selected_term):
@@ -107,6 +116,7 @@ def show_documents(selected_term):
 
 	return render_template('show_documents.html', term=term, documents=documents)
 
+
 @main.route('/assets/<int:selected_term>')
 def show_assets(selected_term):
 
@@ -114,6 +124,7 @@ def show_assets(selected_term):
 	assets = term.columns
 
 	return render_template('show_assets.html', term=term, assets=assets)
+
 
 @main.route('/rules/<int:selected_term>')
 def show_rules(selected_term):
@@ -123,12 +134,14 @@ def show_rules(selected_term):
 
 	return render_template('show_rules.html', term=term, rules=rules)
 
+
 @main.route('/rule/<int:selected_rule>')
 def show_rule(selected_rule):
 
 	rule = Rule.query.filter_by(id=selected_rule).first()
 
 	return render_template('show_rule.html', rule=rule)
+
 
 @main.route('/rule/documents/<int:selected_rule>')
 def show_rule_documents(selected_rule):
@@ -138,6 +151,7 @@ def show_rule_documents(selected_rule):
 
     return render_template('show_rule_documents.html', rule=rule, documents=documents)
 
+
 @main.route('/location/<selected_location>')
 @main.route('/location/<selected_location>/details')
 def show_location_details(selected_location):
@@ -146,6 +160,7 @@ def show_location_details(selected_location):
 
 	return render_template('show_location_details.html', location=location)
 
+
 @main.route('/location/<selected_location>/tables')
 def show_location_tables(selected_location):
 
@@ -153,6 +168,7 @@ def show_location_tables(selected_location):
 	tables = location.tables
 
 	return render_template('show_location_tables.html', location=location, tables=tables)
+
 
 @main.route('/table/<selected_table>')
 @main.route('/table/<selected_table>/details')
@@ -163,6 +179,7 @@ def show_table_details(selected_table):
 
 	return render_template('show_table_details.html', table=table, columns=columns)
 
+
 @main.route('/table/<selected_table>/columns')
 def show_table_columns(selected_table):
 
@@ -171,7 +188,9 @@ def show_table_columns(selected_table):
 
 	return render_template('show_table_columns.html', table=table, columns=columns)
 
+
 @main.route('/search', methods=['GET', 'POST'])
+@login_required
 def search():
     if request.method == "POST":
         search = request.form['search']
@@ -188,9 +207,11 @@ def search():
         return render_template("results.html", terms=terms, columns=columns)
     return render_template('search.html')
 
+
 @main.route('/processes')
 def processes():
 	return render_template('show_processes.html')
+
 
 @main.route('/source_code')
 def source_code():
@@ -199,6 +220,7 @@ def source_code():
     root_dir = os.path.dirname(os.getcwd())
     print root_dir
     return send_from_directory(os.path.join('.', 'static', 'source_code'), filename, as_attachment=False, mimetype='text/html')
+
 
 @app.route('/graph2')
 def graph2():

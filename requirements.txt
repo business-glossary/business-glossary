@@ -7,3 +7,4 @@ Flask-Markdown==0.3
 Flask-Moment==0.5.1
 Flask-Security==1.7.5
 pytz==2016.7
+bcrypt==3.1.1

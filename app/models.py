@@ -212,13 +212,12 @@ class DocumentType(db.Model):
 	def __unicode__(self):
 		return self.type
 
-# Delete hooks for models, delete files if models are getting deleted
 @listens_for(Document, 'after_delete')
 def del_file(mapper, connection, target):
+    '''Delete hooks for models, delete files if models are getting deleted'''
+    print "file_path=", file_path
 
-	print "file_path=", file_path
-
-	if target.path:
+    if target.path:
 		try:
 			os.remove(op.join(file_path, target.path))
 		except OSError:

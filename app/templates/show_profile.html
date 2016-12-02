@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>User Profile</h1>
+</div>
+
+<br/>
+
+<table class="table">
+    <tbody>
+        <tr>
+            <th>User Name</th>
+            <td>{{ current_user.name }}</td>
+        </tr>
+        <tr>
+            <th>Email Address</th>
+            <td>{{ current_user.email }}</td>
+        </tr>
+        <tr>
+            <th>Roles</th>
+            <td>{% for role in current_user.roles %}{{ role.name }}{% endfor %}</td>
+        </tr>
+        <tr>
+            <th>Confirmed At</th>
+            <td>{{ moment(current_user.confirmed_at).calendar() }}</td>
+        </tr>
+        <tr>
+            <th>Last Login</th>
+            <td>{{ moment(current_user.last_login_at).calendar() }}</td>
+        </tr>
+        <tr>
+            <th>Current Login</th>
+            <td>{{ moment(current_user.current_login_at).calendar() }}</td>
+        </tr>
+        <tr>
+            <th>Last Login IP</th>
+            <td>{{ current_user.last_login_ip }}</td>
+        </tr>
+        <tr>
+            <th>Current Login IP</th>
+            <td>{{ current_user.current_login_ip }}</td>
+        </tr>
+        <tr>
+            <th>Login Count</th>
+            <td>{{ current_user.login_count }}</td>
+        </tr>
+    </tbody>
+</table>
+
+{% endblock %}

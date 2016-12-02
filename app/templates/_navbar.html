@@ -26,7 +26,9 @@
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a></li>
+                        {% if current_user.is_active %}
+                        <li><a href="{{ url_for('main.profile') }}"><i class="fa fa-user fa-fw"></i> User Profile</a></li>
+                        {% endif %}
                         {% if current_user.has_role("admin") %}
                         <li{% if 'admin' == request.endpoint %} class="active"{% endif %}>
                             <a href="{{ url_for('admin.index') }}"><i class="fa fa-pencil fa-fw"></i> Administration</a>

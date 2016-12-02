@@ -21,6 +21,7 @@ class Config(object):
     SECURITY_REGISTERABLE = False
     SECURITY_RECOVERABLE = True
     SECURITY_TRACKABLE = True
+    SECURITY_CHANGEABLE = True
 
     SECURITY_PASSWORD_HASH = "bcrypt"
 

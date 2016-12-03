@@ -8,7 +8,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     TERMS_PER_PAGE = 5
 
-    MAIL_SERVER = 'mail.pl.boq.com.au'
+    MAIL_SERVER = 'mail.example.com'
     MAIL_PORT = 25
     MAIL_USE_SSL = False
     MAIL_USERNAME = ''

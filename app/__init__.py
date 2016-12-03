@@ -17,6 +17,7 @@ import os
 app = Flask(__name__)
 
 app.config.from_object(os.getenv('BG_CONFIG') or 'config.DevelopmentConfig')
+app.config.from_envvar('BG_SETTINGS', silent=True)
 
 db = SQLAlchemy(app)
 moment = Moment(app)
@@ -24,6 +25,8 @@ mail = Mail(app)
 md = Markdown(app, extensions=['fenced_code', 'tables'])
 
 print
+print "BG_SETTINGS=%s" % os.getenv('BG_SETTINGS')
+print "MAIL_SERVER=%s" % app.config['MAIL_SERVER']
 print "BG_CONFIG=%s" % os.getenv('BG_CONFIG')
 print "TERMS_PER_PAGE=%s" % app.config['TERMS_PER_PAGE']
 print "SQLALCHEMY_DATABASE_URI=" + app.config['SQLALCHEMY_DATABASE_URI']

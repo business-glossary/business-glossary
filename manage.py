@@ -36,6 +36,13 @@ def add_admin(email, password):
     print "Created admin user: %s" % (user, )
 
 @manager.command
+def load_data(filename):
+    '''Load data into application'''
+    from app.loader import load_yaml
+
+    load_yaml.load(filename)
+
+@manager.command
 def test(coverage=False):
     """Run the unit tests."""
     if coverage and not os.environ.get('FLASK_COVERAGE'):

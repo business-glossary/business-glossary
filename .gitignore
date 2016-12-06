@@ -65,6 +65,9 @@ target/
 # Ignore config files
 *.cfg
 
+# Ignore Visual Studio Code settings
+.vscode 
+
 # Ignore Microsoft Internet Information Services config file
 web.config
 

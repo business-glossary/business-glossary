@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="page-header">
+	<h1>Rules</h1>
+</div>
+
+<table class="table list-group-item-text">
+    <thead>
+        <tr>
+            <th>Identifier</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for rule in rules %}
+        <tr>
+            
+            <td><a href="{{ url_for('main.show_rule', selected_rule=rule.id) }}">{{ rule.identifier }}</a></td>
+            <td>{{ rule.name }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -106,6 +106,13 @@ def glossary():
     return render_template('show_glossary.html', glossary=glossary)
 
 
+@main.route('/glossary_rules/')
+def glossary_rules():
+    rules = Rule.query.order_by(Rule.identifier).all()
+
+    return render_template('show_glossary_rules.html', rules=rules)
+
+
 @main.route('/abbreviations/')
 def abbreviations():
     glossary = Term.query.filter(Term.abbreviation!="").order_by(Term.abbreviation).all()

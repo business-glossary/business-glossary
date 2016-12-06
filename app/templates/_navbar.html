@@ -12,10 +12,10 @@
 			</div>
 			<div class="collapse navbar-collapse">
 			  <ul class="nav navbar-nav">
-				<li class="active"><a href="/">Home</a></li>
+				<li{% if active_page == "glossary" %} class="active"{% endif %}><a href="{{ url_for('main.glossary') }}">Terms</a></li>
+				<li ><a href="{{ url_for('main.glossary_rules') }}">Rules</a></li>
 				<li ><a href="{{ url_for('main.processes') }}">Processes</a></li>
 				<li ><a href="{{ url_for('main.abbreviations') }}">Abbreviations</a></li>
-				<li ><a href="{{ url_for('main.glossary_rules') }}">Rules</a></li>
 				{% block menu %}
 				{% endblock %}
 			  </ul>

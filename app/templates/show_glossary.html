@@ -30,8 +30,9 @@ $(document).ready(function() {
 			<tr>
 				<th class="col-md-2">Term</th>
 				<th class="col-md-7">Term Description</th>
-				<th class="col-md-2">Business Owner</th>
+				<th class="col-md-1">Business Owner</th>
 				<th class="col-md-1">Category</th>
+				<th class="col-md-1"></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -45,6 +46,7 @@ $(document).ready(function() {
 						<h5><span class="label label-default">{{ c.name.lower() }}</span></h5>
 					{% endfor %}
 				</td>
+				<td>{% if term.rules|length > 0 %}<a href="{{ url_for('main.show_rules', selected_term=term.id) }}">R</a>{% endif %}</td>
 			</tr>
 			{% endfor %}
 		</tbody>

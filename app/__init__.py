@@ -22,7 +22,7 @@ app.config.from_envvar('BG_SETTINGS', silent=True)
 db = SQLAlchemy(app)
 moment = Moment(app)
 mail = Mail(app)
-md = Markdown(app, extensions=['fenced_code', 'tables'])
+md = Markdown(app, extensions=['fenced_code', 'tables', 'abbr'])
 
 print
 print "BG_SETTINGS=%s" % os.getenv('BG_SETTINGS')

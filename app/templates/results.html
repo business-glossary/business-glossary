@@ -28,6 +28,30 @@
 <p>No terms found</p>
 {% endif %}
 
+<h2>Rules</h2>
+
+{% if rules|length > 0 %}
+<table class="table list-group-item-text">
+    <thead>
+        <tr>
+            <th>Identifier</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for rule in rules %}
+        <tr>
+            
+            <td><a href="{{ url_for('main.show_rule', selected_rule=rule.id) }}">{{ rule.identifier }}</a></td>
+            <td>{{ rule.name }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No rules found</p>
+{% endif %}
+
 <h2>Columns</h2>
 
 {% if columns|length > 0 %}

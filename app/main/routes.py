@@ -225,10 +225,13 @@ def search():
                                       Term.description.ilike('%' + str(search) + '%'),
                                       Term.abbreviation.ilike('%' + str(search) + '%'))).all()
         columns = Column.query.filter(Column.name.ilike('%' + str(search) + '%')).all()
-
+        rules = Rule.query.filter(or_(Rule.identifier.ilike('%' + str(search) + '%'),
+                                      Rule.name.ilike('%' + str(search) + '%'),
+                                      Rule.description.ilike('%' + str(search) + '%'),
+                                      Rule.notes.ilike('%' + str(search) + '%'))).all()
         #print "terms=", terms.term
 
-        return render_template("results.html", terms=terms, columns=columns)
+        return render_template("results.html", terms=terms, columns=columns, rules=rules)
     return render_template('search.html')
 
 

@@ -16,7 +16,6 @@ LOGGER = logging.getLogger("business-glossary.load_data")
 #file_path = join(dirname(BASE_DIR), 'bg_interface')
 #file_name = os.path.join(file_path, "rules.yaml")
 
-
 def remove_key(source_dict, *keys):
     '''Remove element(s) from a dictionary'''
     new_dict = dict(source_dict)
@@ -34,23 +33,25 @@ def add_rule(rule):
 
     #notes = rule['notes'].replace('\\n', '\n').replace('\\r', '\r')
 
-    rule_to_load = remove_key(rule, 'term')
+    rule_to_load = remove_key(rule, 'terms')
     record = Rule(**rule_to_load)
     db.session.add(record)
-    LOGGER.info("Loaded %s", rule['name'])
+    LOGGER.info("Loaded rule %s", rule['name'])
 
     # Get the rule again
     r = Rule.query.filter_by(identifier=rule['identifier']).first()
 
-    # Find the term to associate the rule with
-    term = Term.query.filter_by(term=rule['term']).first()
+    for term_to_associate in rule['terms']:
+        
+        # Find the term to associate the rule with
+        term = Term.query.filter_by(term=term_to_associate).first()
 
-    # If the term is found associate with the rule
-    if term:
-        term.rules.append(r)
-        LOGGER.info("Added rule %s to term %s", r.name, rule['term'])
-    else:
-        LOGGER.warn("Could not find the term %s to associate with rule %s", rule['term'], rule['name'])
+        # If the term is found associate with the rule
+        if term:
+            term.rules.append(r)
+            LOGGER.info("Added rule %s to term %s", r.name, term_to_associate)
+        else:
+            LOGGER.warn("Could not find the term %s to associate with rule %s", term_to_associate, rule['name'])
 
     db.session.commit()
 
@@ -62,21 +63,36 @@ def add_term(term):
         LOGGER.warn("Term %s already exists", term['term'])
         return
 
-    term_to_load = remove_key(term, 'owner', 'steward', 'status')
+    term_to_load = remove_key(term, 'owner', 'steward', 'status', 'categories')
 
     # Get the objects to associate
-    steward = TermStatus.query.filter_by(status=term['status']).first()
+    status = TermStatus.query.filter_by(status=term['status']).first()
     owner = Person.query.filter_by(name=term['owner']).first()
-    status = Person.query.filter_by(name=term['steward']).first()
+    steward = Person.query.filter_by(name=term['steward']).first()
+
     term_to_load['steward'] = steward
     term_to_load['owner'] = owner
     term_to_load['status'] = status
 
     record = Term(**term_to_load)
+    LOGGER.info("Loaded term %s", term['term'])
+
+    for category_to_associate in term['categories']:
+
+        # Find the term to associate the rule with
+        category = Category.query.filter_by(name=category_to_associate).first()
+
+        # If the term is found associate with the rule
+        if category:
+            record.categories.append(category)
+            LOGGER.info("Added category %s to term %s", record.term, category_to_associate)
+        else:
+            LOGGER.warn("Added non-existent category %s to associate with term %s", category_to_associate, term['term'])
+            category = Category(name=category_to_associate)
+            db.session.add(category)
 
     db.session.add(record)
     db.session.commit()
-    LOGGER.info("Loaded %s", term['term'])
 
 
 def add_person(person):

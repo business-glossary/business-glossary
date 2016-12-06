@@ -179,8 +179,8 @@ class Rule(db.Model):
 
 	id = db.Column(db.Integer, primary_key = True)
 	identifier = db.Column(db.String(20), nullable=False)
-	name = db.Column(db.String(100))
-	description = db.Column(db.String(100))
+	name = db.Column(db.String(100), unique=True)
+	description = db.Column(db.Text)
 	notes = db.Column(db.Text)
 	created_on = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 	updated_on = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)

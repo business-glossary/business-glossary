@@ -30,9 +30,9 @@ $(document).ready(function() {
 			<tr>
 				<th class="col-md-2">Term</th>
 				<th class="col-md-7">Term Description</th>
-				<th class="col-md-1">Business Owner</th>
-				<th class="col-md-1">Category</th>
-				<th class="col-md-1"></th>
+				<th>Business Owner</th>
+				<th>Category</th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -43,10 +43,12 @@ $(document).ready(function() {
 				<td>{{ term.owner }}</td>
 				<td>
 					{% for c in term.categories %}
-						<h5><span class="label label-default">{{ c.name.lower() }}</span></h5>
+					<span class="label label-default">{{ c.name.lower() }}</span>
 					{% endfor %}
 				</td>
-				<td>{% if term.rules|length > 0 %}<a href="{{ url_for('main.show_rules', selected_term=term.id) }}">R</a>{% endif %}</td>
+				<td>{% if term.columns|length > 0 %}<a href="{{ url_for('main.show_assets', selected_term=term.id) }}" data-toggle="tooltip" title="{{ term.columns|length }} assets linked">A</a>{% endif %}
+					{% if term.columns|length > 0 and term.rules|length > 0 %}<br/>{% endif %}
+					{% if term.rules|length > 0 %}<a href="{{ url_for('main.show_rules', selected_term=term.id) }}" data-toggle="tooltip" title="{{ term.rules|length }} rules linked">R</a>{% endif %}</td>
 			</tr>
 			{% endfor %}
 		</tbody>

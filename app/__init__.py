@@ -4,6 +4,7 @@
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_flatpages import FlatPages
 from flaskext.markdown import Markdown
 from flask_moment import Moment
 from flask_mail import Mail
@@ -23,6 +24,7 @@ db = SQLAlchemy(app)
 moment = Moment(app)
 mail = Mail(app)
 md = Markdown(app, extensions=['fenced_code', 'tables', 'abbr'])
+pages = FlatPages(app)
 
 print
 print "BG_SETTINGS=%s" % os.getenv('BG_SETTINGS')

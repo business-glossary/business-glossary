@@ -1,5 +1,5 @@
 from flask import render_template, request, flash, session, url_for, redirect, jsonify, send_from_directory
-from app import app, db
+from app import app, db, pages
 from . import main
 from ..models import Document, DocumentType, Term, Category, Person, Link, Location, Table, Column, Rule
 
@@ -89,6 +89,8 @@ with warnings.catch_warnings():
     warnings.filterwarnings('ignore', 'Fields missing from ruleset', UserWarning)
     admin.add_view(TermView(Term, db.session))
 
+pgs = pages
+
 ###########################
 #### define the routes ####
 ###########################
@@ -111,6 +113,20 @@ def glossary_rules():
     rules = Rule.query.order_by(Rule.identifier).all()
 
     return render_template('show_glossary_rules.html', rules=rules)
+
+
+@app.route('/<path:path>/')
+def page(path):
+    '''Serve up markdown pages using Flask-FlatPages'''
+    page = pages.get_or_404(path)
+    return render_template('flatpages/page.html', page=page)
+
+
+@app.route('/tag/<string:tag>/')
+def tag(tag):
+    '''Handle FlatPages tags'''
+    tagged = [p for p in pages if tag in p.meta.get('tags', [])]
+    return render_template('flatpages/tag.html', pages=tagged, tag=tag)
 
 
 @main.route('/abbreviations/')

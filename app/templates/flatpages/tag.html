@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="page-header">
+    <h1>{{ tag.title() }}</h1>
+  </div>
+  {% with pages=pages  %}
+      {% include "flatpages/_list.html" %}
+  {% endwith %}
+{% endblock content %}

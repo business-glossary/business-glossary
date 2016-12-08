@@ -30,6 +30,11 @@ class Config(object):
     SECURITY_RESET_SALT = "$2a$12$GrrU0tYteKw45b5VfON5p."
     SECURITY_REMEMBER_SALT = "$2a$12$unlKF.sL4gnm4icbk0tvVe"
 
+    # FlatPages configuration
+    FLATPAGES_AUTO_RELOAD = True
+    FLATPAGES_EXTENSION = '.md'
+    FLATPAGES_MARKDOWN_EXTENSIONS = ['codehilite', 'tables', 'fenced_code']
+
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \

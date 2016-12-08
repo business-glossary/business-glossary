@@ -37,6 +37,10 @@ h2 { font-size: 22px; }
 
 .label { font-weight: 500; }
 
+.label a, .badge a {
+    color: white;
+}
+
 .navbar-inverse {
     background-color: #2196f3;
     border-color: transparent

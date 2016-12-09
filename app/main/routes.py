@@ -1,28 +1,32 @@
-from flask import render_template, request, flash, session, url_for, redirect, jsonify, send_from_directory
-from app import app, db, pages
-from . import main
-from ..models import Document, DocumentType, Term, Category, Person, Link, Location, Table, Column, Rule
-
-from config import BASE_DIR
-from flask_security import login_required, current_user
-from sqlalchemy import func
+'''Routes for the Business Glossary'''
 
 import os
 import os.path as op
 
+from flask import render_template, request, send_from_directory
+from app import app, db, pages
+
+from flask_flatpages import pygments_style_defs
+from config import BASE_DIR
+from flask_security import current_user
+from sqlalchemy import func
 from flask_admin import Admin, form
 from flask_admin.contrib.sqla import ModelView
-from flask_admin.form import rules
+
+from . import main
+from ..models import Document, DocumentType, Term, Category, Person, Link, Location, Table, \
+    Column, Rule
+
 
 # WTForms helpers
 from ..utils import wtf
 wtf.add_helpers(app)
 
 # Create directory for file fields to use
-file_path = op.join(BASE_DIR, 'app', 'static', 'files')
+FILE_PATH = op.join(BASE_DIR, 'app', 'static', 'files')
 
 try:
-    os.mkdir(file_path)
+    os.mkdir(FILE_PATH)
 except OSError:
     pass
 
@@ -31,45 +35,49 @@ except OSError:
 #####################
 
 class ProtectedModelView(ModelView):
-
+    '''Check user has logged in for each admin view'''
     def is_accessible(self):
         return current_user.has_role('admin')
 
 class FileView(ProtectedModelView):
-	# Override form field to use Flask-Admin FileUploadField
-	form_overrides = {
-		'path': form.FileUploadField
-	}
+    '''Override form field to use Flask-Admin FileUploadField'''
+    form_overrides = {
+        'path': form.FileUploadField
+    }
 
 	# Pass additional parameters to 'path' to FileUploadField constructor
-	form_args = {
-		'path': {
-			'label': 'File',
-			'base_path': file_path,
-			'allow_overwrite': False
-		}
-	}
+    form_args = {
+        'path': {
+            'label': 'File',
+            'base_path': FILE_PATH,
+            'allow_overwrite': False
+        }
+    }
 
 class RuleView(ProtectedModelView):
+    '''Set the view options with displaying a Rule in the admin view'''
     form_excluded_columns = ('created_on', 'updated_on')
 
 class TermView(ProtectedModelView):
-	form_create_rules = ('term', 'description', 'abbreviation', 'owner',
-        'steward', 'status', 'categories', 'links', 'rules', 'documents')
-	form_edit_rules = ('term', 'description', 'abbreviation', 'owner',
-        'steward', 'status', 'categories', 'links', 'rules', 'related_terms',
-        'documents', 'columns')
-	column_list = ['term', 'description', 'abbreviation', 'status']
-	form_excluded_columns = ('created_on', 'updated_on')
-	column_searchable_list = ['term']
+    '''Set the view options with displaying a Term in the admin view'''
+    form_create_rules = ('term', 'description', 'abbreviation', 'owner',
+                         'steward', 'status', 'categories', 'links', 'rules', 'documents')
+    form_edit_rules = ('term', 'description', 'abbreviation', 'owner',
+                       'steward', 'status', 'categories', 'links', 'rules', 'related_terms',
+                       'documents', 'columns')
+    column_list = ['term', 'description', 'abbreviation', 'status']
+    form_excluded_columns = ('created_on', 'updated_on')
+    column_searchable_list = ['term']
 
 class TableView(ProtectedModelView):
-	column_default_sort = 'name'
-	column_filters = ['location']
-	form_excluded_columns = ('columns')
+    '''Set the view options with displaying a Table in the admin view'''
+    column_default_sort = 'name'
+    column_filters = ['location']
+    form_excluded_columns = ('columns')
 
 class ColumnView(ProtectedModelView):
-	column_filters = ['table', 'name']
+    '''Set the view options with displaying a Column in the admin view'''
+    column_filters = ['table', 'name']
 
 admin = Admin(app, name='BUSINESS GLOSSARY', template_mode='bootstrap3', base_template='/admin/new_master.html')
 
@@ -89,11 +97,19 @@ with warnings.catch_warnings():
     warnings.filterwarnings('ignore', 'Fields missing from ruleset', UserWarning)
     admin.add_view(TermView(Term, db.session))
 
-pgs = pages
+
+@app.context_processor
+def inject_user():
+    '''Inject pages to make it available on all pages'''
+    tagged = [p for p in pages]
+
+    return dict(tagged=tagged)
+
 
 ###########################
 #### define the routes ####
 ###########################
+
 
 @main.route('/about')
 def about():

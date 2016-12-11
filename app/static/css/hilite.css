@@ -4,6 +4,12 @@ pre {
     border-radius: 0px;
     border: none;
     margin: 0px;
+    line-height: 1.2;
+}
+
+p {
+    margin: 10px 0 10px 0;
+
 }
 
 .codehilite .hll { background-color: #49483e }

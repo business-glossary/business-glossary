@@ -43,6 +43,13 @@ def load_data(filename):
     load_yaml.load(filename)
 
 @manager.command
+def dump(filename):
+    '''Load data into application'''
+    from app.loader import dump_yaml
+
+    dump_yaml.dump(filename)
+
+@manager.command
 def test(coverage=False):
     """Run the unit tests."""
     if coverage and not os.environ.get('FLASK_COVERAGE'):

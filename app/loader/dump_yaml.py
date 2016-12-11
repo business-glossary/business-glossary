@@ -2,15 +2,11 @@
 
 import logging
 
-import yaml, os
-
-from os.path import dirname, join, isfile
+import yaml
 
 from app import app, db, models
 from app.models import Category, Term, Person, TermStatus, Link, Location, Table, \
     Column, DocumentType, Rule
-
-from os.path import dirname, join
 
 from config import BASE_DIR
 
@@ -51,12 +47,22 @@ yaml.add_representer(literal, literal_presenter)
 
 
 def return_categories(term):
+    '''Return category names as a list when dumping terms'''
     cats = []
-    for c in term.categories:
-        cats.append(c.name)
+    for cat in term.categories:
+        cats.append(cat.name)
     return cats
 
+def return_terms(rule):
+    '''Return the terms a rule belongs to as a list'''
+    terms = []
+    for term in rule.terms:
+        terms.append(term.term)
+    return terms
+
 def prep_terms():
+    '''Return terms as a dictionary'''
+    LOGGER.info("Dumping Term")
     terms = Term.query.all()
 
     my_terms = []
@@ -70,13 +76,15 @@ def prep_terms():
             "categories": return_categories(term),
             "owner": term.owner.name,
             "steward": term.steward.name,
-            "created_at": term.created_on,
+            "created_on": term.created_on,
             "updated_on": term.updated_on
         }
         my_terms.append(my_term)
     return my_terms
 
 def prep_rules():
+    '''Return rules as a dictionary'''
+    LOGGER.info("Dumping Rule")
     rules = Rule.query.all()
 
     my_rules = []
@@ -87,46 +95,76 @@ def prep_rules():
             "name": rule.name,
             "description": rule.description,
             "notes": rule.notes,
-            "created_at": rule.created_on,
-            "updated_on": rule.updated_on
+            "created_on": rule.created_on,
+            "updated_on": rule.updated_on,
+            "terms": return_terms(rule)
         }
         my_rules.append(my_rule)
     return my_rules
 
-def prep_people():
+def prep_person():
+    '''Return people as a dictionary'''
+    LOGGER.info("Dumping Person")
     people = Person.query.all()
     my_people = []
     for person in people:
-        my_person = {
+        this_person = {
             "name": person.name,
         }
-        my_people.append(my_person)
+        my_people.append(this_person)
     return my_people
 
-def prep_document_types():
+def prep_category():
+    '''Return category as a dictionary'''
+    LOGGER.info("Dumping Category")
+    categories = Category.query.all()
+    my_category = []
+    for category in categories:
+        this_category = {
+            "name": category.name,
+            "description": category.description
+        }
+        my_category.append(this_category)
+    return my_category
+
+def prep_term_status():
+    '''Return term status as a dictionary'''
+    LOGGER.info("Dumping TermStatus")
+    status = TermStatus.query.all()
+    my_status = []
+    for stat in status:
+        this_status = {
+            "status": stat.status,
+        }
+        my_status.append(this_status)
+    return my_status
+
+def prep_location():
+    '''Return location as a dictionary'''
+    LOGGER.info("Dumping Location")
+    locations = Location.query.all()
+    my_locations = []
+    for location in locations:
+        this_location = {
+            "name": location.name,
+            "host": location.host,
+            "description": location.description,
+            "path": location.path,
+            "notes": location.notes,
+        }
+        my_locations.append(this_location)
+    return my_locations
+
+def prep_document_type():
+    '''Return document types as a dictionary'''
+    LOGGER.info("Dumping DocumentType")
     types = DocumentType.query.all()
-    print "-->", type(types)
-    print types
     my_types = []
-    for t in types:
+    for typ in types:
         my_type = {
-            "type": t.type,
+            "type": typ.type,
         }
         my_types.append(my_type)
-    print my_types
-
-    result = DocumentType.query.all()
-    print ">",dict(zip(['type'],result))
-
-#    result_dict = [u.__dict__ for u in DocumentType.query.all()]
-
-#    print "r",result_dict
-
- #   print "b4"
-  ##  for t in db.session.query(DocumentType.id):
-    #    print t.__dict__
-    #print "after"
-
     return my_types
 
 def dump(file_name):
@@ -138,16 +176,16 @@ def dump(file_name):
 
     app.config['SQLALCHEMY_ECHO'] = False
 
-    #file_contents = [
-    #    "terms": prep_terms(),
-    #    "rules:"
-    #]
-    file_contents = {"person": prep_people(),
-        "document_type": prep_document_types() 
+    file_contents = {
+        "person": prep_person(),
+        "category": prep_category(),
+        "document_type": prep_document_type(),
+        "term_status": prep_term_status(),
+        "location": prep_location(),
+        "term": prep_terms(),
+        "rule": prep_rules()
     }
-    
-    print type(file_contents)
-
+    print file_contents
     with open(file_name, 'w') as outfile:
         yaml.safe_dump(file_contents, outfile, default_flow_style=False)
 

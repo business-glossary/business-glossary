@@ -36,6 +36,12 @@ def add_admin(email, password):
     print "Created admin user: %s" % (user, )
 
 @manager.command
+def clear_db():
+    '''Clear the database'''
+    db.drop_all()
+    db.create_all()
+
+@manager.command
 def load_data(filename):
     '''Load data into application'''
     from app.loader import load_yaml

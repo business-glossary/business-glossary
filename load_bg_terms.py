@@ -7,6 +7,8 @@ from os.path import dirname, join
 
 from config import BASE_DIR
 
+app.config['SQLALCHEMY_ECHO'] = False
+
 ###############################################################################
 #
 # Define the path where the interface files are

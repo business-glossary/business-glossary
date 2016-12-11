@@ -27,8 +27,8 @@
               <!--
               <li><a href="{{ url_for("tag", tag='standards') }}">Standards</a></li>
               -->
-              {% for page in pgs %}
-              <li><a href="#">{{ page.title }}</a></li> 
+              {% for page in tagged %}
+              <li><a href="{{ url_for('page', path=page.path) }}">{{ page.title }}</a></li> 
               {% endfor %}
               <!--
               <li role="separator" class="divider"></li>

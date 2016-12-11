@@ -42,7 +42,7 @@ def add_rule(rule):
     r = Rule.query.filter_by(identifier=rule['identifier']).first()
 
     for term_to_associate in rule['terms']:
-        
+
         # Find the term to associate the rule with
         term = Term.query.filter_by(term=term_to_associate).first()
 
@@ -182,18 +182,8 @@ def load(file_name):
                     LOGGER.error("Please check the file format, it appears to be incorrect.")
                     return
 
-                for x in objects:
-                    LOGGER.info("Found %s objects in file", x)
-
-                if 'rules' in objects:
-                    LOGGER.info("Loading rules from file %s", file_name)
-                    for obj in objects['rules']:
-                        add_rule(obj)
-
-                if 'terms' in objects:
-                    LOGGER.info("Loading terms from file %s", file_name)
-                    for obj in objects['terms']:
-                        add_term(obj)
+                for obj in objects:
+                    LOGGER.info("Found %s objects in file", obj)
 
                 if 'person' in objects:
                     LOGGER.info("Loading people from file %s", file_name)
@@ -219,6 +209,16 @@ def load(file_name):
                     LOGGER.info("Loading categories from file %s", file_name)
                     for obj in objects['category']:
                         add_category(obj)
+
+                if 'term' in objects:
+                    LOGGER.info("Loading terms from file %s", file_name)
+                    for obj in objects['term']:
+                        add_term(obj)
+
+                if 'rule' in objects:
+                    LOGGER.info("Loading rules from file %s", file_name)
+                    for obj in objects['rule']:
+                        add_rule(obj)
 
 
             except yaml.YAMLError as ex:

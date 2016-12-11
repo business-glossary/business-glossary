@@ -3,6 +3,7 @@ pre {
     color: white;
     border-radius: 0px;
     border: none;
+    margin: 0px;
 }
 
 .codehilite .hll { background-color: #49483e }

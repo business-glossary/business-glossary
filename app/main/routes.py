@@ -276,11 +276,6 @@ def search():
     return render_template('search.html')
 
 
-@main.route('/processes')
-def processes():
-	return render_template('show_processes.html')
-
-
 @main.route('/source_code')
 def source_code():
     """This is a proof-of-concept for return a position in source code to the browser"""

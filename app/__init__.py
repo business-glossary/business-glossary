@@ -35,6 +35,17 @@ print "SQLALCHEMY_DATABASE_URI=" + app.config['SQLALCHEMY_DATABASE_URI']
 print "SQLALCHEMY_TRACK_MODIFICATIONS=%s" % app.config['SQLALCHEMY_TRACK_MODIFICATIONS']
 print
 
+ADMINS = ['alan.tindale@boq.com.au']
+
+if not app.debug:
+    import logging
+    from logging.handlers import SMTPHandler
+    mail_handler = SMTPHandler(mailhost=app.config['MAIL_SERVER'],
+                            fromaddr=app.config['ADMINS_FROM_EMAIL'],
+                            toaddrs=app.config['ADMINS_EMAIL'],
+                            subject='Application Error Occurred')
+    mail_handler.setLevel(logging.ERROR)
+    app.logger.addHandler(mail_handler)
 
 # Send templated emails
 def send_mail(destination, subject, template, **template_kwargs):

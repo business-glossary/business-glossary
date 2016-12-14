@@ -57,6 +57,8 @@ class FileView(ProtectedModelView):
 class RuleView(ProtectedModelView):
     '''Set the view options with displaying a Rule in the admin view'''
     form_excluded_columns = ('created_on', 'updated_on')
+    column_searchable_list = ['identifier', 'name', 'description']
+    column_default_sort = 'identifier'
 
 class TermView(ProtectedModelView):
     '''Set the view options with displaying a Term in the admin view'''

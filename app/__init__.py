@@ -35,8 +35,6 @@ print "SQLALCHEMY_DATABASE_URI=" + app.config['SQLALCHEMY_DATABASE_URI']
 print "SQLALCHEMY_TRACK_MODIFICATIONS=%s" % app.config['SQLALCHEMY_TRACK_MODIFICATIONS']
 print
 
-ADMINS = ['alan.tindale@boq.com.au']
-
 if not app.debug:
     import logging
     from logging.handlers import SMTPHandler

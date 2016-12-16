@@ -54,7 +54,7 @@
                         {% if current_user.has_role("admin") %}
                         <li{% if 'admin' == request.endpoint %} class="active"{% endif %}>
                             <a href="{{ url_for('admin.index') }}"><i class="fa fa-pencil fa-fw"></i> Administration</a>
-							              <a href="{{ url_for('main.backup_restore') }}"><i class="fa fa-archive fa-fw"></i> Backup & Restore</a>
+                            <a href="{{ url_for('main.backup_restore') }}"><i class="fa fa-archive fa-fw"></i> Backup & Restore</a>
                         </li>
                         {% endif %}
                         <li><a href="{{ url_for('main.about') }}"><i class="fa fa-info fa-fw"></i> About</a></li>

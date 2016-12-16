@@ -28,7 +28,7 @@
               <li><a href="{{ url_for("tag", tag='standards') }}">Standards</a></li>
               -->
               {% for page in tagged %}
-              <li><a href="{{ url_for('page', path=page.path) }}">{{ page.title }}</a></li> 
+              <li><a href="{{ url_for('page', path=page.path) }}">{{ page.title }}</a></li>
               {% endfor %}
               <!--
               <li role="separator" class="divider"></li>
@@ -55,6 +55,7 @@
                         {% if current_user.has_role("admin") %}
                         <li{% if 'admin' == request.endpoint %} class="active"{% endif %}>
                             <a href="{{ url_for('admin.index') }}"><i class="fa fa-pencil fa-fw"></i> Administration</a>
+							<a href="{{ url_for('main.backup_restore') }}"><i class="fa fa-archive fa-fw"></i> Backup & Restore</a>
                         </li>
                         {% endif %}
                         <li><a href="{{ url_for('main.about') }}"><i class="fa fa-info fa-fw"></i> About</a></li>
@@ -63,12 +64,12 @@
                         <li><a href={{ url_for_security('logout') }}><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
                         {% else %}
                         <li><a href={{ url_for_security('login') }}><i class="fa fa-sign-in fa-fw"></i> Login</a></li>
-                        {% endif %}                
+                        {% endif %}
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->
                 </li>
-                <!-- /.dropdown -->                
+                <!-- /.dropdown -->
 			  </ul>
 			</div><!-- /.nav-collapse -->
 		</div>

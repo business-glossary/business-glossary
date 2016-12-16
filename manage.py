@@ -50,7 +50,7 @@ def load_data(filename):
 
 @manager.command
 def dump(filename):
-    '''Load data into application'''
+    '''Dump data from application'''
     from app.loader import dump_yaml
 
     dump_yaml.dump(filename)

@@ -57,6 +57,8 @@ class FileView(ProtectedModelView):
 class RuleView(ProtectedModelView):
     '''Set the view options with displaying a Rule in the admin view'''
     form_excluded_columns = ('created_on', 'updated_on')
+    column_searchable_list = ['identifier', 'name', 'description']
+    column_default_sort = 'identifier'
 
 class TermView(ProtectedModelView):
     '''Set the view options with displaying a Term in the admin view'''
@@ -287,11 +289,6 @@ def search():
 
         return render_template("results.html", terms=terms, columns=columns, rules=rules)
     return render_template('search.html')
-
-
-@main.route('/processes')
-def processes():
-	return render_template('show_processes.html')
 
 
 @main.route('/source_code')

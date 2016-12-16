@@ -14,6 +14,8 @@ class Config(object):
     MAIL_USERNAME = ''
     MAIL_PASSWORD = ''
 
+    ADMINS_EMAIL = ['admin@example.com']
+
     APPLICATION_NAME = 'Business Glossary'
 
     # Flask-Security flags

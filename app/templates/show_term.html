@@ -1,7 +1,17 @@
 {% extends "layout.html" %}
-
+{% block head %}
+<script type="text/javascript">
+$(document).ready(function() {
+		$('[id^=mdtable_]').each(function() {
+			var innerElements = document.getElementById(this.id).getElementsByTagName("table");
+			for (var j = 0; j < innerElements.length; j++) {
+					innerElements[j].className = "table table-bordered";
+			}
+		});
+});
+</script>
+{% endblock %}
 {% block content %}
-
 <div class="page-header">
     <h1>{{ term.term }}</h1>
 </div>
@@ -30,8 +40,10 @@
         <div class="col-md-12">
           <div class="list-group">
             <div class="list-group-item">
-              <h4 class="list-group-item-heading">Description</h4>
-              <p class="list-group-item-text">{{ term.description|markdown }}</p>
+              <div id="mdtable_1">
+                <h4 class="list-group-item-heading">Description</h4>
+                <p class="list-group-item-text">{{ term.description|markdown }}</p>
+              </div>
             </div>
           </div>
         </div>

@@ -14,17 +14,6 @@ app.config['SQLALCHEMY_ECHO'] = False
 
 LOGGER = logging.getLogger("business-glossary.dump_data")
 
-# multi-line
-
-class MultiLineStr(str):
-    """ Marker for multiline strings"""
-
-
-def MultiLineStr_presenter(dumper, data):
-    return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
-
-yaml.add_representer(MultiLineStr, MultiLineStr_presenter)
-
 class str_presenter(unicode): pass
 
 def str_presenter(dumper, data):
@@ -39,37 +28,7 @@ def str_presenter(dumper, data):
 
 yaml.add_representer(str, str_presenter)
 
-# Others
-
-class folded_unicode(unicode):
-    pass
-class literal_unicode(unicode):
-    pass
-
-def folded_unicode_representer(dumper, data):
-    return dumper.represent_scalar(u'tag:yaml.org,2002:str', data, style='>')
-def literal_unicode_representer(dumper, data):
-    return dumper.represent_scalar(u'tag:yaml.org,2002:str', data, style='|')
-
-yaml.add_representer(folded_unicode, folded_unicode_representer)
-yaml.add_representer(literal_unicode, literal_unicode_representer)
-
-class quoted(str): pass
-
-def quoted_presenter(dumper, data):
-    return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='"')
-
-class literal(str): pass
-
-def literal_presenter(dumper, data):
-    return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
-
-yaml.add_representer(quoted, quoted_presenter)
-yaml.add_representer(literal, literal_presenter)
-
-#def ordered_dict_presenter(dumper, data):
-#    return dumper.represent_dict(data.items())
-#yaml.add_representer(OrderedDict, ordered_dict_presenter)
+yaml.add_representer(unicode, lambda dumper, value: dumper.represent_scalar(u'tag:yaml.org,2002:str', value))
 
 
 def return_categories(term):
@@ -96,7 +55,7 @@ def prep_terms():
     for term in terms:
         my_term = {
             "term": term.term,
-            "description": term.description,
+            "description": str(term.description),
             "abbreviation": term.abbreviation,
             "status": term.status.status,
             "categories": return_categories(term),
@@ -116,14 +75,14 @@ def prep_rules():
     my_rules = []
 
     for rule in rules:
-        print ">%s<" % MultiLineStr(rule.notes)
+        #print ">%s<" % MultiLineStr(rule.notes)
         lit = {
             "note":  str(rule.notes)
         }
         print yaml.dump(lit)
         my_rule = {
-            "identifier": literal_unicode(rule.identifier),
-            "name": literal_unicode(rule.name),
+            "identifier": rule.identifier,
+            "name": rule.name,
             "description": str(rule.description),
             "notes": str(rule.notes),
             "created_on": rule.created_on,
@@ -217,6 +176,7 @@ def dump(file_name):
         "rule": prep_rules()
     }
     with open(file_name, 'w') as outfile:
-        yaml.dump(file_contents, outfile, default_flow_style=False)
+        yaml.dump(file_contents, outfile, default_flow_style=False, explicit_start=True,
+                  allow_unicode=True)
 
     LOGGER.info("Dump process ended")

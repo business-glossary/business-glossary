@@ -14,6 +14,32 @@ app.config['SQLALCHEMY_ECHO'] = False
 
 LOGGER = logging.getLogger("business-glossary.dump_data")
 
+# multi-line
+
+class MultiLineStr(str):
+    """ Marker for multiline strings"""
+
+
+def MultiLineStr_presenter(dumper, data):
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
+
+yaml.add_representer(MultiLineStr, MultiLineStr_presenter)
+
+class str_presenter(unicode): pass
+
+def str_presenter(dumper, data):
+    if len(data.splitlines()) > 1:  # check for multiline string
+        # The dumper will not respect "style='|'" if it detects trailing
+        # whitespace on any line within the data. For scripts the trailing
+        # whitespace is not important.
+        lines = [l.strip() for l in data.splitlines()]
+        data = '\n'.join(lines)
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data)
+
+yaml.add_representer(str, str_presenter)
+
+# Others
 
 class folded_unicode(unicode):
     pass
@@ -90,11 +116,16 @@ def prep_rules():
     my_rules = []
 
     for rule in rules:
+        print ">%s<" % MultiLineStr(rule.notes)
+        lit = {
+            "note":  str(rule.notes)
+        }
+        print yaml.dump(lit)
         my_rule = {
-            "identifier": rule.identifier,
-            "name": rule.name,
-            "description": rule.description,
-            "notes": rule.notes,
+            "identifier": literal_unicode(rule.identifier),
+            "name": literal_unicode(rule.name),
+            "description": str(rule.description),
+            "notes": str(rule.notes),
             "created_on": rule.created_on,
             "updated_on": rule.updated_on,
             "terms": return_terms(rule)
@@ -185,8 +216,7 @@ def dump(file_name):
         "term": prep_terms(),
         "rule": prep_rules()
     }
-    print file_contents
     with open(file_name, 'w') as outfile:
-        yaml.safe_dump(file_contents, outfile, default_flow_style=False)
+        yaml.dump(file_contents, outfile, default_flow_style=False)
 
     LOGGER.info("Dump process ended")

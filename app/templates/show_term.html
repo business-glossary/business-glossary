@@ -10,6 +10,10 @@ $(document).ready(function() {
 		});
 });
 </script>
+{% if current_user.is_active %}
+<link href="{{ url_for('static', filename='css/bootstrap-editable.css') }}" rel="stylesheet"/>
+</script>
+{% endif %}
 {% endblock %}
 {% block content %}
 <div class="page-header">
@@ -20,7 +24,10 @@ $(document).ready(function() {
 {% include "_term_tabs.html" %}
 
 <p class="lead"/>
+<br/>
+<button id="enable" class="btn btn-default">enable / disable</button>
 
+<div id="term">
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title"><strong>Term Details</strong></h3>
@@ -31,7 +38,13 @@ $(document).ready(function() {
           <div class="list-group">
             <div class="list-group-item">
               <h4 class="list-group-item-heading">Term</h4>
-              <p class="list-group-item-text">{{ term.term }}</p>
+              <p class="list-group-item-text">
+              {% if current_user.is_active %}
+                <a href="#" id="termname" data-type="text" data-url="/term_edit_name" data-pk="{{ term.id }}"  data-title="Change the term name">{{ term.term }}</a>
+              {% else %}
+                {{ term.term }}
+              {% endif %}
+              </p>
             </div>
           </div>
         </div>
@@ -42,7 +55,12 @@ $(document).ready(function() {
             <div class="list-group-item">
               <div id="mdtable_1">
                 <h4 class="list-group-item-heading">Description</h4>
-                <p class="list-group-item-text">{{ term.description|markdown }}</p>
+                {% if current_user.is_active %}
+                  <a href="#" id="termdescription" data-type="textarea" data-url="/term_edit_description" data-pk="{{ term.id }}"  data-title="Change the term description"> {{ term.description|markdown }}</a>
+                {% else %}
+                  {{ term.description|markdown }}
+                {% endif %}
+                </p>
               </div>
             </div>
           </div>
@@ -155,4 +173,28 @@ $(document).ready(function() {
       </div><!-- row -->
     </div><!-- panel body -->
 </div><!-- panel -->
+</div>
+{% endblock %}
+{% block footer %}
+{% if current_user.is_active %}
+<script src="{{ url_for('static', filename='js/bootstrap-editable.min.js') }}"></script>
+<script>
+$.fn.editable.defaults.mode = 'inline';
+$(function(){
+  $('#enable').click(function() {
+    $('#term .editable').editable('toggleDisabled');
+  });
+});
+
+$('#termname').editable({
+    //placement: "right",
+    tpl: "<input type='text' style='width: 400px'>",
+    error: function (errors) {
+    }
+});
+$('#termdescription').editable({
+    showbuttons: 'bottom'
+});
+</script>
+{% endif %}
 {% endblock %}

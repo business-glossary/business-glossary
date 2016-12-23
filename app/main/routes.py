@@ -2,6 +2,7 @@
 
 import os
 import os.path as op
+import json
 
 from flask import render_template, request, send_from_directory
 from app import app, db, pages
@@ -272,6 +273,7 @@ def show_table_columns(selected_table):
 
 @main.route('/search', methods=['GET', 'POST'])
 def search():
+    '''Search terms, columns and rules'''
     if request.method == "POST":
         search = request.form['search']
 
@@ -303,3 +305,33 @@ def source_code():
 @app.route('/graph2')
 def graph2():
 	return render_template('graph2.html')
+
+# Edit routes
+
+@main.route('/term_edit_name', methods=['GET', 'POST'])
+def term_edit_name():
+    '''Edit the term name'''
+    term_id = request.form["pk"]
+    print term_id
+    term = Term.query.get(term_id)
+    print term.term
+    print request.form["value"]
+    term.term = request.form["value"]
+
+    result = {}
+    db.session.commit()
+    return json.dumps(result) #or, as it is an empty json, you can simply use return "{}"
+
+@main.route('/term_edit_description', methods=['GET', 'POST'])
+def term_edit_description():
+    '''Edit the term description'''
+    term_id = request.form["pk"]
+    print term_id
+    term = Term.query.get(term_id)
+    print term.term
+    print request.form["value"]
+    term.description = request.form["value"]
+
+    result = {}
+    db.session.commit()
+    return json.dumps(result) #or, as it is an empty json, you can simply use return "{}"

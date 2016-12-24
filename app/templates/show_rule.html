@@ -24,6 +24,7 @@ $(document).ready(function() {
 <p class="lead"/>
 
 <div class="panel panel-default">
+<<<<<<< HEAD
     <div class="panel-heading">
         <h3 class="panel-title">Rule Details</h3>
     </div>
@@ -81,5 +82,63 @@ $(document).ready(function() {
             </div>
         </div><!-- row -->
     </div><!-- panel body -->
+=======
+	<div class="panel-heading">Rule Details</div>
+	<div class="panel-body">
+	  <div class="row">
+		<div class="col-md-12">
+		  <div class="list-group">
+			<div class="list-group-item">
+			  <h4 class="list-group-item-heading">Rule Identifier</h4>
+			  <p class="list-group-item-text">{{ rule.identifier }}</p>
+			</div>
+		  </div>
+		</div>
+	  </div><!-- row -->
+	  <div class="row">
+		<div class="col-md-12">
+		  <div class="list-group">
+			<div class="list-group-item">
+				<div id="mdtable_1">
+					<h4 class="list-group-item-heading">Description</h4>
+					<p class="list-group-item-text">{{ rule.description|markdown }}</p>
+				</div>
+			</div>
+		  </div>
+		</div>
+	  </div><!-- row -->
+	  <div class="row">
+		<div class="col-md-12">
+		  <div class="list-group">
+			<div class="list-group-item">
+				<div id="mdtable_2">
+					<h4 class="list-group-item-heading">Notes</h4>
+					<p class="list-group-item-text">{{ rule.notes|markdown }}</p>
+				</div>
+			</div>
+		  </div>
+		</div>
+	  </div><!-- row -->
+	  <div class="row">
+		<div class="col-md-6">
+		  <div class="list-group">
+			<div class="list-group-item">
+			  <h4 class="list-group-item-heading">Created On</h4>
+			  <p class="list-group-item-text">{{ moment(rule.created_on).calendar() }}</p>
+			</div>
+		  </div>
+		</div>
+		<div class="col-md-6">
+		  <div class="list-group">
+			<div class="list-group-item">
+			  <h4 class="list-group-item-heading">Last Updated</h4>
+			  <p class="list-group-item-text">{{ moment(rule.created_on).calendar() }}</p>
+			</div>
+		  </div>
+		</div>
+	  </div><!-- row -->
+
+	</div><!-- panel body -->
+>>>>>>> Initial edit term code
 </div><!-- panel -->
 {% endblock %}

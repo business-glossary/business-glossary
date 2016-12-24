@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {% if add_term %}
+        Add Term
+    {% else %}
+        Edit Term
+    {% endif %}
+{% endblock %}
+{% block content %}
+<div class="page-header">
+    {% if add_term %}
+        <h1>Add Term</h1>
+    {% else %}
+        <h1>Edit: {{ term.term }}</h1>
+    {% endif %}
+</div>
+
+<p class="lead"/>
+
+
+<div class="content-section">
+ <div class="outer">
+    <div class="middle">
+      <div class="inner">
+        <div class="center">
+            <br/>
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+<div class="panel panel-default">
+	<div class="panel-heading">Term Details</div>
+    <form method="post" role="form">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_errors(form, hiddens="only") }}
+        <div class="panel-body">
+            {{ wtf.form_field(form.term) }}
+            {{ wtf.form_field(form.description, rows=10) }}
+            {{ wtf.form_field(form.abbreviation) }}
+            {{ wtf.form_field(form.owner) }}
+            {{ wtf.form_field(form.steward) }}
+            {{ wtf.form_field(form.status) }}
+            {{ wtf.form_field(form.categories) }}
+        </div>
+        <div class="panel-footer">
+            <div class="text-right">        
+                <button type="button" class="btn btn-danger btn-sm">Cancel</button>
+                {{ wtf.form_field(form.save, button_map={'save':'success btn-sm'}) }}
+            </div>
+        </div>
+    </form>
+</div>            
+
+{% endblock %}
+

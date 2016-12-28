@@ -18,8 +18,8 @@
     {% for term in terms %}
     <tbody>
         <tr>
-            <td class="col-md-2"><a href="{{ url_for('main.show_term', selected_term=term.id) }}">{{ term.term }}</a></td>
-            <td class="col-md-10">{{ term.description }}</td>
+            <td class="col-md-2"><a href="{{ url_for('main.show_term', selected_term=term.id) }}">{{ term.name }}</a></td>
+            <td class="col-md-10">{{ term.short_description }}</td>
         </tr>
     {% endfor %}
     </tbody>

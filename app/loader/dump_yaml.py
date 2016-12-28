@@ -42,7 +42,7 @@ def return_terms(rule):
     '''Return the terms a rule belongs to as a list'''
     terms = []
     for term in rule.terms:
-        terms.append(term.term)
+        terms.append(term.name)
     return terms
 
 def prep_terms():
@@ -54,8 +54,9 @@ def prep_terms():
 
     for term in terms:
         my_term = {
-            "term": term.term,
-            "description": str(term.description),
+            "term": term.name,
+            "short_description": term.short_description,
+            "long_description": str(term.long_description),
             "abbreviation": term.abbreviation,
             "status": term.status.status,
             "categories": return_categories(term),

@@ -90,8 +90,9 @@ term_to_term_relationship = db.Table('term_to_term_relationship',
 
 class Term(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    term = db.Column(db.String(100))
-    description = db.Column(db.Text)
+    name = db.Column(db.String(100))
+    short_description = db.Column(db.String(100))
+    long_description = db.Column(db.Text)
     abbreviation = db.Column(db.String(10))
 
     categories = db.relationship('Category', secondary=term_category_relationship, backref='terms')

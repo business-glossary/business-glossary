@@ -13,7 +13,7 @@ $(document).ready(function() {
 {% endblock %}
 {% block content %}
 <div class="page-header">
-    <h1>{{ term.term }}</h1>
+    <h1>{{ term.name }}</h1>
 </div>
 
 {% set active_page = "term" %}
@@ -31,7 +31,17 @@ $(document).ready(function() {
           <div class="list-group">
             <div class="list-group-item">
               <h4 class="list-group-item-heading">Term</h4>
-              <p class="list-group-item-text">{{ term.term }}</p>
+              <p class="list-group-item-text">{{ term.name }}</p>
+            </div>
+          </div>
+        </div>
+      </div><!-- row -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="list-group">
+            <div class="list-group-item">
+            <h4 class="list-group-item-heading">Short Description</h4>
+            <p class="list-group-item-text">{{ term.short_description }}</p>
             </div>
           </div>
         </div>
@@ -41,8 +51,8 @@ $(document).ready(function() {
           <div class="list-group">
             <div class="list-group-item">
               <div id="mdtable_1">
-                <h4 class="list-group-item-heading">Description</h4>
-                <p class="list-group-item-text">{{ term.description|markdown }}</p>
+                <h4 class="list-group-item-heading">Long Description</h4>
+                <p class="list-group-item-text">{{ term.long_description|markdown }}</p>
               </div>
             </div>
           </div>

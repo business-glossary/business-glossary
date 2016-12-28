@@ -38,8 +38,8 @@ $(document).ready(function() {
         <tbody>
             {% for term in glossary %}
             <tr>
-                <td><a href="{{ url_for('main.show_term', selected_term=term.id) }}">{{ term.term }}</a></td>
-                <td>{{ term.description }}</td>
+                <td><a href="{{ url_for('main.show_term', selected_term=term.id) }}">{{ term.name }}</a></td>
+                <td>{{ term.short_description }}</td>
                 <td>{{ term.owner }}</td>
                 <td>
                     {% for c in term.categories %}

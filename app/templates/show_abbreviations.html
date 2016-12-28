@@ -68,7 +68,7 @@ $(document).ready(function() {
             {% for term in glossary %}
             <tr>
                 <td>{{ term.abbreviation }}</td>
-                <td><a href="{{ url_for('main.show_term', selected_term=term.id) }}">{{ term.term }}</a></td>
+                <td><a href="{{ url_for('main.show_term', selected_term=term.id) }}">{{ term.name }}</a></td>
                 <td>
                     {% for c in term.categories %}
                         <span class="label label-default">{{ c.name.lower() }}</span>

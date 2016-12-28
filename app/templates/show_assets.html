@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="page-header">
-	<h1>{{ term.term }}</h1>
+    <h1>{{ term.term }}</h1>
 </div>
 
 {% set active_page = "assets" %}
@@ -11,38 +11,23 @@
 
 <p class="lead"/>
 
-<!--
-<div class="col-md-6">
-	<div class="panel panel-default">
-		<div class="panel-heading"><h3 class="panel-title">Columns</h3></div>
-		<div class="panel-body">
-			<p>Table columns associated with this term.</p>
-		</div>
--->
-
-		<table class="table list-group-item-text">
-			<thead>
-				<tr>
-					<th>Location</th>
-					<th>Table</th>
-					<th>Column</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for a in assets %}
-				<tr>
-					<td><a href="{{ url_for('main.show_location_details', selected_location=a.table.location.id) }}">{{ a.table.location.name }}</a></td>
-					<td><a href="{{ url_for('main.show_table_details', selected_table=a.table.id) }}">{{ a.table.name }}</a></td>
-					<td><a href="{{ url_for('main.show_table_columns', selected_table=a.table.id) }}">{{ a.name }}</a></td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-<!--
-	</div>
-</div>
-</div>
--->
-<!-- row -->
+<table class="table list-group-item-text">
+    <thead>
+        <tr>
+            <th>Location</th>
+            <th>Table</th>
+            <th>Column</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in assets %}
+        <tr>
+            <td><a href="{{ url_for('main.show_location_details', selected_location=a.table.location.id) }}">{{ a.table.location.name }}</a></td>
+            <td><a href="{{ url_for('main.show_table_details', selected_table=a.table.id) }}">{{ a.table.name }}</a></td>
+            <td><a href="{{ url_for('main.show_table_columns', selected_table=a.table.id) }}">{{ a.name }}</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 {% endblock %}

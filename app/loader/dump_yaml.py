@@ -75,11 +75,10 @@ def prep_rules():
     my_rules = []
 
     for rule in rules:
-        #print ">%s<" % MultiLineStr(rule.notes)
         lit = {
             "note":  str(rule.notes)
         }
-        print yaml.dump(lit)
+        print(yaml.dump(lit))
         my_rule = {
             "identifier": rule.identifier,
             "name": rule.name,

@@ -27,12 +27,12 @@ md = Markdown(app, extensions=['fenced_code', 'tables', 'abbr'])
 pages = FlatPages(app)
 
 print
-print "BG_SETTINGS=%s" % os.getenv('BG_SETTINGS')
-print "MAIL_SERVER=%s" % app.config['MAIL_SERVER']
-print "BG_CONFIG=%s" % os.getenv('BG_CONFIG')
-print "TERMS_PER_PAGE=%s" % app.config['TERMS_PER_PAGE']
-print "SQLALCHEMY_DATABASE_URI=" + app.config['SQLALCHEMY_DATABASE_URI']
-print "SQLALCHEMY_TRACK_MODIFICATIONS=%s" % app.config['SQLALCHEMY_TRACK_MODIFICATIONS']
+print("BG_SETTINGS=%s" % os.getenv('BG_SETTINGS'))
+print("MAIL_SERVER=%s" % app.config['MAIL_SERVER'])
+print("BG_CONFIG=%s" % os.getenv('BG_CONFIG'))
+print("TERMS_PER_PAGE=%s" % app.config['TERMS_PER_PAGE'])
+print("SQLALCHEMY_DATABASE_URI=" + app.config['SQLALCHEMY_DATABASE_URI'])
+print("SQLALCHEMY_TRACK_MODIFICATIONS=%s" % app.config['SQLALCHEMY_TRACK_MODIFICATIONS'])
 print
 
 if not app.debug:

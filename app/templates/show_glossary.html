@@ -10,49 +10,49 @@ $(document).ready(function() {
         "scrollY":        "600px",
         "scrollCollapse": true,
         "paging":         false,    
-		"columnDefs": [
-			{ "searchable": false, "targets": [ 2 ] },
-			{ "orderable": false, "targets": [ 2, 3 ] },
-		]
-	});
+        "columnDefs": [
+            { "searchable": false, "targets": [ 2 ] },
+            { "orderable": false, "targets": [ 2, 3 ] },
+        ]
+    });
 });
 </script>
 {% endblock %}
 
 {% block content %}
 <div class="page-header">
-	<h1>Terms</h1>
+    <h1>Terms</h1>
 </div>
 
 <div id="example_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-	<table id="example" class="table table-striped">
-		<thead>
-			<tr>
-				<th class="col-md-2">Term</th>
-				<th class="col-md-7">Term Description</th>
-				<th>Business Owner</th>
-				<th>Category</th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for term in glossary %}
-			<tr>
-				<td><a href="{{ url_for('main.show_term', selected_term=term.id) }}">{{ term.term }}</a></td>
-				<td>{{ term.description }}</td>
-				<td>{{ term.owner }}</td>
-				<td>
-					{% for c in term.categories %}
-					<span class="label label-default">{{ c.name.lower() }}</span>
-					{% endfor %}
-				</td>
-				<td>{% if term.columns|length > 0 %}<a href="{{ url_for('main.show_assets', selected_term=term.id) }}" data-toggle="tooltip" title="{{ term.columns|length }} assets linked">A</a>{% endif %}
-					{% if term.columns|length > 0 and term.rules|length > 0 %}<br/>{% endif %}
-					{% if term.rules|length > 0 %}<a href="{{ url_for('main.show_rules', selected_term=term.id) }}" data-toggle="tooltip" title="{{ term.rules|length }} rules linked">R</a>{% endif %}</td>
-			</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+    <table id="example" class="table table-striped">
+        <thead>
+            <tr>
+                <th class="col-md-2">Term</th>
+                <th class="col-md-7">Term Description</th>
+                <th>Business Owner</th>
+                <th>Category</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for term in glossary %}
+            <tr>
+                <td><a href="{{ url_for('main.show_term', selected_term=term.id) }}">{{ term.term }}</a></td>
+                <td>{{ term.description }}</td>
+                <td>{{ term.owner }}</td>
+                <td>
+                    {% for c in term.categories %}
+                    <span class="label label-default">{{ c.name.lower() }}</span>
+                    {% endfor %}
+                </td>
+                <td>{% if term.columns|length > 0 %}<a href="{{ url_for('main.show_assets', selected_term=term.id) }}" data-toggle="tooltip" title="{{ term.columns|length }} assets linked">A</a>{% endif %}
+                    {% if term.columns|length > 0 and term.rules|length > 0 %}<br/>{% endif %}
+                    {% if term.rules|length > 0 %}<a href="{{ url_for('main.show_rules', selected_term=term.id) }}" data-toggle="tooltip" title="{{ term.rules|length }} rules linked">R</a>{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 {% endblock %}

@@ -3,6 +3,8 @@
 import os
 import os.path as op
 
+import warnings
+
 from flask import render_template, request, send_from_directory
 from app import app, db, pages
 
@@ -45,7 +47,7 @@ class FileView(ProtectedModelView):
         'path': form.FileUploadField
     }
 
-	# Pass additional parameters to 'path' to FileUploadField constructor
+    # Pass additional parameters to 'path' to FileUploadField constructor
     form_args = {
         'path': {
             'label': 'File',
@@ -92,8 +94,6 @@ admin.add_view(ColumnView(Column, db.session))
 admin.add_view(FileView(Document, db.session))
 admin.add_view(ProtectedModelView(DocumentType, db.session))
 admin.add_view(RuleView(Rule, db.session))
-
-import warnings
 
 with warnings.catch_warnings():
     warnings.filterwarnings('ignore', 'Fields missing from ruleset', UserWarning)
@@ -149,7 +149,7 @@ def tag(tag):
 
 @main.route('/abbreviations/')
 def abbreviations():
-    glossary = Term.query.filter(Term.abbreviation!="").order_by(Term.abbreviation).all()
+    glossary = Term.query.filter(Term.abbreviation != "").order_by(Term.abbreviation).all()
     return render_template('show_abbreviations.html', glossary=glossary)
 
 
@@ -177,8 +177,8 @@ def profile():
 @main.route('/term/<int:selected_term>')
 @main.route('/term/<string:selected_term_name>')
 def show_term(selected_term=None, selected_term_name=None):
-    print ">>>>>", selected_term
-    print ">>>>>", selected_term_name
+    print(">>>>>", selected_term)
+    print(">>>>>", selected_term_name)
 
     if selected_term is None:
         term = Term.query.filter(func.lower(Term.term) == func.lower(selected_term_name)).first()
@@ -191,37 +191,37 @@ def show_term(selected_term=None, selected_term_name=None):
 
 @main.route('/documents/<int:selected_term>')
 def show_documents(selected_term):
-	documents = Document.query.order_by(Document.name).all()
-	term = Term.query.filter_by(id=selected_term).first()
-	documents = term.documents
+    documents = Document.query.order_by(Document.name).all()
+    term = Term.query.filter_by(id=selected_term).first()
+    documents = term.documents
 
-	return render_template('show_documents.html', term=term, documents=documents)
+    return render_template('show_documents.html', term=term, documents=documents)
 
 
 @main.route('/assets/<int:selected_term>')
 def show_assets(selected_term):
 
-	term = Term.query.filter_by(id=selected_term).first()
-	assets = term.columns
+    term = Term.query.filter_by(id=selected_term).first()
+    assets = term.columns
 
-	return render_template('show_assets.html', term=term, assets=assets)
+    return render_template('show_assets.html', term=term, assets=assets)
 
 
 @main.route('/rules/<int:selected_term>')
 def show_rules(selected_term):
 
-	term = Term.query.filter_by(id=selected_term).first()
-	rules = term.rules
+    term = Term.query.filter_by(id=selected_term).first()
+    rules = term.rules
 
-	return render_template('show_rules.html', term=term, rules=rules)
+    return render_template('show_rules.html', term=term, rules=rules)
 
 
 @main.route('/rule/<int:selected_rule>')
 def show_rule(selected_rule):
 
-	rule = Rule.query.filter_by(id=selected_rule).first()
+    rule = Rule.query.filter_by(id=selected_rule).first()
 
-	return render_template('show_rule.html', rule=rule)
+    return render_template('show_rule.html', rule=rule)
 
 
 @main.route('/rule/documents/<int:selected_rule>')
@@ -237,37 +237,37 @@ def show_rule_documents(selected_rule):
 @main.route('/location/<selected_location>/details')
 def show_location_details(selected_location):
 
-	location = Location.query.filter_by(id=selected_location).first()
+    location = Location.query.filter_by(id=selected_location).first()
 
-	return render_template('show_location_details.html', location=location)
+    return render_template('show_location_details.html', location=location)
 
 
 @main.route('/location/<selected_location>/tables')
 def show_location_tables(selected_location):
 
-	location = Location.query.filter_by(id=selected_location).first()
-	tables = location.tables
+    location = Location.query.filter_by(id=selected_location).first()
+    tables = location.tables
 
-	return render_template('show_location_tables.html', location=location, tables=tables)
+    return render_template('show_location_tables.html', location=location, tables=tables)
 
 
 @main.route('/table/<selected_table>')
 @main.route('/table/<selected_table>/details')
 def show_table_details(selected_table):
 
-	table = Table.query.filter_by(id=selected_table).first()
-	columns = table.columns
+    table = Table.query.filter_by(id=selected_table).first()
+    columns = table.columns
 
-	return render_template('show_table_details.html', table=table, columns=columns)
+    return render_template('show_table_details.html', table=table, columns=columns)
 
 
 @main.route('/table/<selected_table>/columns')
 def show_table_columns(selected_table):
 
-	table = Table.query.filter_by(id=selected_table).first()
-	columns = table.columns
+    table = Table.query.filter_by(id=selected_table).first()
+    columns = table.columns
 
-	return render_template('show_table_columns.html', table=table, columns=columns)
+    return render_template('show_table_columns.html', table=table, columns=columns)
 
 
 @main.route('/search', methods=['GET', 'POST'])
@@ -285,7 +285,6 @@ def search():
                                       Rule.name.ilike('%' + str(search) + '%'),
                                       Rule.description.ilike('%' + str(search) + '%'),
                                       Rule.notes.ilike('%' + str(search) + '%'))).all()
-        #print "terms=", terms.term
 
         return render_template("results.html", terms=terms, columns=columns, rules=rules)
     return render_template('search.html')
@@ -296,10 +295,13 @@ def source_code():
     """This is a proof-of-concept for return a position in source code to the browser"""
     filename = '05_ACCT HIST.sas'
     root_dir = os.path.dirname(os.getcwd())
-    print root_dir
-    return send_from_directory(os.path.join('.', 'static', 'source_code'), filename, as_attachment=False, mimetype='text/html')
+    print(root_dir)
+    return send_from_directory(os.path.join('.', 'static', 'source_code'),
+                               filename,
+                               as_attachment=False,
+                               mimetype='text/html')
 
 
 @app.route('/graph2')
 def graph2():
-	return render_template('graph2.html')
+    return render_template('graph2.html')

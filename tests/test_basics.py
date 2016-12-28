@@ -46,10 +46,6 @@ class BasicTestCase(unittest.TestCase):
     def test_app_exists(self):
         self.assertFalse(self.client is None)
 
-#    def test_app_is_testing(self):
-#        print self.app.config
-#        self.assertTrue(self.app.config['TESTING'])
-
     def test_home_status_code(self):
 
         # send HTTP GET request to the application on specified path

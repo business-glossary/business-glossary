@@ -33,7 +33,7 @@ def add_admin(email, password):
     user.confirmed_at = datetime.datetime.utcnow()
 
     db.session.commit()
-    print "Created admin user: %s" % (user, )
+    print("Created admin user: %s" % (user, ))
 
 @manager.command
 def clear_db():

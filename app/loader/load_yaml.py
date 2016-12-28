@@ -222,4 +222,4 @@ def load(file_name):
 
 
             except yaml.YAMLError as ex:
-                print ex
+                print(ex)

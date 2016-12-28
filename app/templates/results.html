@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="page-header">
-	<h1>Search Results</h1>
+    <h1>Search Results</h1>
 </div>
 
 <h2>Terms</h2>
@@ -15,7 +15,7 @@
             <th>Description</th>
         </tr>
     </thead>
-	{% for term in terms %}
+    {% for term in terms %}
     <tbody>
         <tr>
             <td class="col-md-2"><a href="{{ url_for('main.show_term', selected_term=term.id) }}">{{ term.term }}</a></td>

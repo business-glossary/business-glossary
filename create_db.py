@@ -31,16 +31,16 @@ db.session.add(p2)
 # Create a link
 
 l1 = Link(text='Australian and New Zealand Standard Industrial Classification',
-	address='http://www.abs.gov.au/AUSSTATS/abs@.nsf/Lookup/1292.0Main+Features12006%20(Revision%202.0)?OpenDocument')
+          address='http://www.abs.gov.au/AUSSTATS/abs@.nsf/Lookup/1292.0Main+Features12006%20(Revision%202.0)?OpenDocument')
 
 l2 = Link(text='Financial System Inquiry',
-	address='http://fsi.gov.au/publications/final-report/chapter-3/credit-reporting/')
+          address='http://fsi.gov.au/publications/final-report/chapter-3/credit-reporting/')
 
 l3 = Link(text='Credit Reporting - Office of the Australian Information Commissioner',
-	address='https://www.oaic.gov.au/privacy-law/privacy-act/credit-reporting')
+          address='https://www.oaic.gov.au/privacy-law/privacy-act/credit-reporting')
 
 l4 = Link(text='Privacy (Credit Reporting) Code 2014 (Version 1.2)',
-	address='https://www.oaic.gov.au/privacy-law/privacy-registers/privacy-codes/privacy-credit-reporting-code-2014-version-1-2')
+          address='https://www.oaic.gov.au/privacy-law/privacy-registers/privacy-codes/privacy-credit-reporting-code-2014-version-1-2')
 
 # Create terms
 
@@ -50,7 +50,7 @@ desc1 = """Comprehensive credit reporting commenced on 12 March 2014 under chang
 desc2 = """A standard jointly developed by the Australian Bureau of Statistics and Statistics New Zealand in order to make it easier to compare industry statistics between the two countries.
 """
 
-print l3
+print(l3)
 
 t1 = Term(term='Comprehensive Credit Reporting', abbreviation='CCR', description=desc1, owner=p1, steward=p2, status=s1)
 t2 = Term(term='Australian and New Zealand Standard Industrial Classification', abbreviation='ANZSIC', description=desc2, owner=p1, steward=p2, status=s2)
@@ -68,13 +68,13 @@ db.session.add(l4)
 db.session.add(t1)
 db.session.add(t2)
 
-print "%s contains %s links" % (t1.term, t1.links.count())
+print("%s contains %s links" % (t1.term, t1.links.count()))
 
 t1.links.append(l1)
 
 t1.links.append(l3)
 
-print "%s contains %s links" % (t1.term, t1.links.count())
+print("%s contains %s links" % (t1.term, t1.links.count()))
 
 t2.links.append(l1)
 
@@ -82,12 +82,12 @@ db.session.commit()
 
 t = Term.query.filter_by(id=1).first()
 
-print "%s contains %s links" % (t.term, t.links.count())
+print("%s contains %s links" % (t.term, t.links.count()))
 
-print "%s contains %s links" % (t.term, t.links.count())
+print("%s contains %s links" % (t.term, t.links.count()))
 
 l1 = Link.query.filter_by(id=2).first()
-print l1.text
+print(l1.text)
 t.links.append(l1)
 
 l2 = Link.query.filter_by(id=4).first()
@@ -119,6 +119,6 @@ r = Rule(identifier='BR_001', name='New Customer Rule', description='This is a n
 t.rules.append(r)
 db.session.add(r)
 
-print "Rule", r.identifier, "created"
+print("Rule", r.identifier, "created")
 
 db.session.commit()

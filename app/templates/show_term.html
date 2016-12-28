@@ -2,12 +2,12 @@
 {% block head %}
 <script type="text/javascript">
 $(document).ready(function() {
-		$('[id^=mdtable_]').each(function() {
-			var innerElements = document.getElementById(this.id).getElementsByTagName("table");
-			for (var j = 0; j < innerElements.length; j++) {
-					innerElements[j].className = "table table-bordered";
-			}
-		});
+    $('[id^=mdtable_]').each(function() {
+        var innerElements = document.getElementById(this.id).getElementsByTagName("table");
+        for (var j = 0; j < innerElements.length; j++) {
+            innerElements[j].className = "table table-bordered";
+        }
+    });
 });
 </script>
 {% endblock %}

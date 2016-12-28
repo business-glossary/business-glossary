@@ -127,7 +127,7 @@ class BasicTestCase(unittest.TestCase):
 
     def test_term(self):
         t = self._add_term()
-        self.assertTrue(Term.query.filter_by(id=1).first().term == 'Comprehensive Credit Reporting')
+        self.assertTrue(Term.query.filter_by(id=1).first().name == 'Comprehensive Credit Reporting')
 
     def test_term_page(self):
         t = self._add_term()

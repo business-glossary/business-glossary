@@ -2,14 +2,14 @@
 #### imports ####
 #################
 
+import os
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_flatpages import FlatPages
 from flaskext.markdown import Markdown
 from flask_moment import Moment
 from flask_mail import Mail
-
-import os
 
 ################
 #### config ####
@@ -39,9 +39,9 @@ if not app.debug:
     import logging
     from logging.handlers import SMTPHandler
     mail_handler = SMTPHandler(mailhost=app.config['MAIL_SERVER'],
-                            fromaddr=app.config['ADMINS_FROM_EMAIL'],
-                            toaddrs=app.config['ADMINS_EMAIL'],
-                            subject='Application Error Occurred')
+                               fromaddr=app.config['ADMINS_FROM_EMAIL'],
+                               toaddrs=app.config['ADMINS_EMAIL'],
+                               subject='Application Error Occurred')
     mail_handler.setLevel(logging.ERROR)
     app.logger.addHandler(mail_handler)
 
@@ -49,17 +49,13 @@ if not app.debug:
 def send_mail(destination, subject, template, **template_kwargs):
     text = flask.render_template("{0}.txt".format(template), **template_kwargs)
 
-    logging.info("Sending email to {0}. Body is: {1}".format(
-        destination, repr(text)[:50]))
+    logging.info("Sending email to %s. Body is: %s", destination, repr(text)[:50])
 
-    msg = Message(
-        subject,
-        recipients=[destination]
-    )
+    msg = Message(subject, recipients=[destination])
 
     msg.body = text
     msg.html = flask.render_template("{0}.html".format(template),
-            **template_kwargs)
+                                     **template_kwargs)
 
     mail.send(msg)
 
@@ -76,18 +72,18 @@ app.jinja_env.filters['alert_class'] = alert_class_filter
 
 
 # WTForms helpers
-from utils import wtf
+from .utils import wtf
 wtf.add_helpers(app)
 
 
 # Import the security/user models
-from users import models
+from .users import models
 
 
 # Import custom error templates
-from errors import views
+from .errors import views
 
 
 # Register blueprints
-from main import main as main_blueprint
+from .main import main as main_blueprint
 app.register_blueprint(main_blueprint)

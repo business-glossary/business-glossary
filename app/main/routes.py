@@ -64,14 +64,14 @@ class RuleView(ProtectedModelView):
 
 class TermView(ProtectedModelView):
     '''Set the view options with displaying a Term in the admin view'''
-    form_create_rules = ('term', 'description', 'abbreviation', 'owner',
+    form_create_rules = ('name', 'short_description', 'abbreviation', 'owner',
                          'steward', 'status', 'categories', 'links', 'rules', 'documents')
-    form_edit_rules = ('term', 'description', 'abbreviation', 'owner',
+    form_edit_rules = ('name', 'short_description', 'abbreviation', 'owner',
                        'steward', 'status', 'categories', 'links', 'rules', 'related_terms',
                        'documents', 'columns')
-    column_list = ['term', 'description', 'abbreviation', 'status']
+    column_list = ['name', 'short_description', 'abbreviation', 'status']
     form_excluded_columns = ('created_on', 'updated_on')
-    column_searchable_list = ['term']
+    column_searchable_list = ['name']
 
 class TableView(ProtectedModelView):
     '''Set the view options with displaying a Table in the admin view'''
@@ -122,7 +122,7 @@ def about():
 @main.route('/')
 @main.route('/glossary/')
 def glossary():
-    glossary = Term.query.order_by(Term.term).all()
+    glossary = Term.query.order_by(Term.name).all()
     return render_template('show_glossary.html', glossary=glossary)
 
 
@@ -181,11 +181,11 @@ def show_term(selected_term=None, selected_term_name=None):
     print(">>>>>", selected_term_name)
 
     if selected_term is None:
-        term = Term.query.filter(func.lower(Term.term) == func.lower(selected_term_name)).first()
+        term = Term.query.filter(func.lower(Term.name) == func.lower(selected_term_name)).first()
         if not term:
             return render_template('errors/404.html')
         else:
-            return render_template('show_term.html', term=Term.query.filter(func.lower(Term.term) == func.lower(selected_term_name)).first())
+            return render_template('show_term.html', term=Term.query.filter(func.lower(Term.name) == func.lower(selected_term_name)).first())
     else:
         return render_template('show_term.html', term=Term.query.filter_by(id=selected_term).first())
 
@@ -277,8 +277,9 @@ def search():
 
         from sqlalchemy import or_
 
-        terms = Term.query.filter(or_(Term.term.ilike('%' + str(search) + '%'),
-                                      Term.description.ilike('%' + str(search) + '%'),
+        terms = Term.query.filter(or_(Term.name.ilike('%' + str(search) + '%'),
+                                      Term.short_description.ilike('%' + str(search) + '%'),
+                                      Term.long_description.ilike('%' + str(search) + '%'),
                                       Term.abbreviation.ilike('%' + str(search) + '%'))).all()
         columns = Column.query.filter(Column.name.ilike('%' + str(search) + '%')).all()
         rules = Rule.query.filter(or_(Rule.identifier.ilike('%' + str(search) + '%'),

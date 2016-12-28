@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import csv
 import os
 
@@ -50,15 +52,15 @@ with open(file_name, 'rb') as csvfile:
             c1 = Column.query.filter_by(id=c.id).first()
 
             # Now find the term
-            t = Term.query.filter_by(term=row['term']).first()
+            t = Term.query.filter_by(name=row['term']).first()
 
             if t:
                 # If the term exists the add the column to term relationship
                 t.columns.append(c1)
-                print("Added relationship between column", c.name, "and term", t.term)
+                print("Added relationship between column %s and term %s" % (c.name, t.name))
                 db.session.commit()
             else:
                 # Else do nothing
-                print("Could not find the term", row['term'])
+                print("Could not find the term %s" % row['term'])
         else:
             print("Could not find column %s in table %s" % (row['table'], row['name']))

@@ -143,8 +143,9 @@ with open(file_name, 'rb') as csvfile:
         st = Person.query.filter_by(name=row['steward']).first()
 
         record = Term(**{
-            'term' : row['term'],
-            'description' : row['description'],
+            'name' : row['name'],
+            'short_description' : row['short_description'],
+            'long_description' : row['long_description'],
             'abbreviation' : row['abbreviation'],
             'status' : s,
             'owner' : o,
@@ -169,7 +170,7 @@ with open(file_name, 'rb') as csvfile:
     for row in reader:
         print(row)
 
-        t = Term.query.filter_by(term=row['term']).first()
+        t = Term.query.filter_by(name=row['term']).first()
         c = Category.query.filter_by(name=row['category']).first()
 
         t.categories.append(c)
@@ -197,7 +198,7 @@ with open(file_name, 'rb') as csvfile:
             })
         db.session.add(record)
 
-        t = Term.query.filter_by(term=row['term']).first()
+        t = Term.query.filter_by(name=row['term']).first()
         l = Link.query.filter_by(text=row['text']).first()
 
         t.links.append(l)
@@ -233,7 +234,7 @@ with open(file_name, 'rb') as csvfile:
         r = Rule.query.filter_by(identifier=row['identifier']).first()
 
         # Find the term to associate with
-        t = Term.query.filter_by(term=row['term']).first()
+        t = Term.query.filter_by(name=row['term']).first()
 
         # If the term is found associate with the rule
         if t:

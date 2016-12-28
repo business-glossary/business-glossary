@@ -44,7 +44,7 @@ def add_rule(rule):
     for term_to_associate in rule['terms']:
 
         # Find the term to associate the rule with
-        term = Term.query.filter_by(term=term_to_associate).first()
+        term = Term.query.filter_by(name=term_to_associate).first()
 
         # If the term is found associate with the rule
         if term:

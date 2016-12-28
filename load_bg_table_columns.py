@@ -55,7 +55,7 @@ with open(file_name, 'rb') as csvfile:
         print(row)
 
         if db.session.query(Location.id).filter_by(name=row['name']).scalar():
-            print("Location", row['name'], "already exists")
+            print("Location %s already exists" % row['name'])
         else:
             record = Location(**{
                 'name' : row['name'],
@@ -82,11 +82,11 @@ print("\nLoading table metadata...\n")
 with open(file_name, 'rb') as csvfile:
     reader = csv.DictReader(csvfile, delimiter=',')
     for row in reader:
-        print("Loading", row['location'] + "." + row['table'])
+        print("Loading %s.%s" % (row['location'], row['table']))
 
         # TODO: Need to test against table and location
         if db.session.query(Table.id).filter_by(name=row['table']).scalar():
-            print("Table", row['location'] + "." + row['table'], "already exists")
+            print("Table %s.%s already exists" % (row['location'], row['table']))
         else:
             l = Location.query.filter_by(name=row['location']).first()
 
@@ -122,7 +122,7 @@ with open(file_name, 'rb') as csvfile:
     reader = csv.DictReader(csvfile, delimiter=',')
     for row in reader:
 
-        print("Loading table", row['table'], "column", row['name'])
+        print("Loading table %s column %s" % (row['table'], row['name']))
 
         t = Table.query.filter_by(name=row['table']).first()
 

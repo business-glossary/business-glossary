@@ -28,7 +28,7 @@ def add_rule(rule):
     '''Add a rule from a dict'''
 
     if db.session.query(Rule.id).filter_by(name=rule['name']).scalar():
-        LOGGER.warn("Rule %s already exists", rule['name'])
+        LOGGER.warning("Rule %s already exists", rule['name'])
         return
 
     #notes = rule['notes'].replace('\\n', '\n').replace('\\r', '\r')
@@ -51,7 +51,7 @@ def add_rule(rule):
             term.rules.append(r)
             LOGGER.info("Added rule %s to term %s", r.name, term_to_associate)
         else:
-            LOGGER.warn("Could not find the term %s to associate with rule %s", term_to_associate, rule['name'])
+            LOGGER.warning("Could not find the term %s to associate with rule %s", term_to_associate, rule['name'])
 
     db.session.commit()
 
@@ -60,7 +60,7 @@ def add_term(term):
     '''Add a term from a dict'''
 
     if db.session.query(Term.id).filter_by(term=term['term']).scalar():
-        LOGGER.warn("Term %s already exists", term['term'])
+        LOGGER.warning("Term %s already exists", term['term'])
         return
 
     term_to_load = remove_key(term, 'owner', 'steward', 'status', 'categories')
@@ -87,7 +87,7 @@ def add_term(term):
             record.categories.append(category)
             LOGGER.info("Added category %s to term %s", record.term, category_to_associate)
         else:
-            LOGGER.warn("Added non-existent category %s to associate with term %s", category_to_associate, term['term'])
+            LOGGER.warning("Added non-existent category %s to associate with term %s", category_to_associate, term['term'])
             category = Category(name=category_to_associate)
             db.session.add(category)
 
@@ -99,7 +99,7 @@ def add_person(person):
     '''Add a person from a dict'''
 
     if db.session.query(Person.id).filter_by(name=person['name']).scalar():
-        LOGGER.warn("Person %s already exists", person['name'])
+        LOGGER.warning("Person %s already exists", person['name'])
         return
 
     record = Person(**person)
@@ -112,7 +112,7 @@ def add_term_status(term_status):
     '''Add a term status from a dict'''
 
     if db.session.query(TermStatus.id).filter_by(status=term_status['status']).scalar():
-        LOGGER.warn("Term status %s already exists", term_status['status'])
+        LOGGER.warning("Term status %s already exists", term_status['status'])
         return
 
     record = TermStatus(**term_status)
@@ -125,7 +125,7 @@ def add_document_type(document_type):
     '''Add a term status from a dict'''
 
     if db.session.query(DocumentType.id).filter_by(type=document_type['type']).scalar():
-        LOGGER.warn("Document type %s already exists", document_type['type'])
+        LOGGER.warning("Document type %s already exists", document_type['type'])
         return
 
     record = DocumentType(**document_type)
@@ -138,7 +138,7 @@ def add_location(location):
     '''Add a location from a dict'''
 
     if db.session.query(Location.id).filter_by(name=location['name']).scalar():
-        LOGGER.warn("Location %s already exists", location['name'])
+        LOGGER.warning("Location %s already exists", location['name'])
         return
 
     record = Location(**location)
@@ -151,7 +151,7 @@ def add_category(category):
     '''Add a category from a dict'''
 
     if db.session.query(Category.id).filter_by(name=category['name']).scalar():
-        LOGGER.warn("Category %s already exists", category['name'])
+        LOGGER.warning("Category %s already exists", category['name'])
         return
 
     record = Category(**category)

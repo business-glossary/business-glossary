@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''Script to load data to the application database'''
 
 import logging
@@ -15,6 +16,11 @@ LOGGER = logging.getLogger("business-glossary.load_data")
 
 #file_path = join(dirname(BASE_DIR), 'bg_interface')
 #file_name = os.path.join(file_path, "rules.yaml")
+
+def custom_str_constructor(loader, node):
+    return loader.construct_scalar(node).encode('utf-8')
+    
+yaml.add_constructor(u'tag:yaml.org,2002:str', custom_str_constructor)
 
 def remove_key(source_dict, *keys):
     '''Remove element(s) from a dictionary'''
@@ -172,9 +178,14 @@ def load(file_name):
     if not isfile(file_name):
         LOGGER.error("The file does not exist")
     else:
+        print "b4 open"
         with open(file_name, 'r') as stream:
+            print "after open"
             try:
+                print "b4 load"
+                print stream
                 objects = yaml.load(stream)
+                print "after load"
 
                 # Should be a dict of lists of dicts
                 # If missing the record type then it just be a list of dicts

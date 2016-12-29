@@ -23,12 +23,25 @@ def str_presenter(dumper, data):
         # whitespace is not important.
         lines = [l.strip() for l in data.splitlines()]
         data = '\n'.join(lines)
-        return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
-    return dumper.represent_scalar('tag:yaml.org,2002:str', data)
+        return dumper.represent_scalar(u'tag:yaml.org,2002:str', data, style='|')
+    return dumper.represent_scalar(u'tag:yaml.org,2002:str', data)
 
 yaml.add_representer(str, str_presenter)
 
-yaml.add_representer(unicode, lambda dumper, value: dumper.represent_scalar(u'tag:yaml.org,2002:str', value))
+
+def unicode_representer(dumper, uni):
+    if len(uni.splitlines()) > 1:  # check for multiline string
+        # The dumper will not respect "style='|'" if it detects trailing
+        # whitespace on any line within the data. For scripts the trailing
+        # whitespace is not important.
+        lines = [l.strip() for l in uni.splitlines()]
+        data = '\n'.join(lines)
+        return dumper.represent_scalar(u'tag:yaml.org,2002:str', uni, style='|')
+    return dumper.represent_scalar(u'tag:yaml.org,2002:str', uni)
+    
+yaml.add_representer(unicode, unicode_representer)
+
+#yaml.add_representer(unicode, lambda dumper, value: dumper.represent_scalar(u'tag:yaml.org,2002:str', value))
 
 
 def return_categories(term):
@@ -55,7 +68,7 @@ def prep_terms():
     for term in terms:
         my_term = {
             "term": term.term,
-            "description": str(term.description),
+            "description": unicode(term.description),
             "abbreviation": term.abbreviation,
             "status": term.status.status,
             "categories": return_categories(term),

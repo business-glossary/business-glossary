@@ -142,8 +142,8 @@ with open(file_name, 'rb') as csvfile:
 		st = Person.query.filter_by(name=row['steward']).first()
 
 		record = Term(**{
-			'term' : row['term'],
-			'description' : row['description'],
+			'term' : row['name'],
+			'description' : row['long_description'],
 			'abbreviation' : row['abbreviation'],
 			'status' : s,
 			'owner' : o,

@@ -10,7 +10,7 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
-	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
 
@@ -25,9 +25,9 @@
     {{ moment.include_moment(local_js='/static/js/moment-with-locales.min.js') }}
     {{ moment.lang("en-au") }}
     <script src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
-	<script type="text/javascript">
-	var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-	</script>
+    <script type="text/javascript">
+    var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
     {% block head %}
     {% endblock %}
 
@@ -53,13 +53,13 @@
     </div>
     {%- endblock body_inner %}
 
-	<div class="container">
-		{% block content %}
-		{% endblock %}
-	</div>
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
 
-	<!-- Bootstrap core Javascript -->
-	<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <!-- Bootstrap core Javascript -->
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 
 </body>
 </html>

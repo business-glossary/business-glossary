@@ -4,11 +4,9 @@ import logging
 
 import yaml
 
-from app import app, db, models
-from app.models import Category, Term, Person, TermStatus, Link, Location, Table, \
-    Column, DocumentType, Rule
-
-from config import BASE_DIR
+from app import app
+from app.models import Category, Term, Person, TermStatus, Location, \
+    DocumentType, Rule
 
 app.config['SQLALCHEMY_ECHO'] = False
 
@@ -55,7 +53,7 @@ def return_terms(rule):
     '''Return the terms a rule belongs to as a list'''
     terms = []
     for term in rule.terms:
-        terms.append(term.term)
+        terms.append(term.name)
     return terms
 
 def prep_terms():
@@ -67,8 +65,9 @@ def prep_terms():
 
     for term in terms:
         my_term = {
-            "term": term.term,
-            "description": unicode(term.description),
+            "term": term.name,
+            "short_description": term.short_description,
+            "long_description": str(term.long_description),
             "abbreviation": term.abbreviation,
             "status": term.status.status,
             "categories": return_categories(term),
@@ -88,11 +87,6 @@ def prep_rules():
     my_rules = []
 
     for rule in rules:
-        #print ">%s<" % MultiLineStr(rule.notes)
-        lit = {
-            "note":  str(rule.notes)
-        }
-        print yaml.dump(lit)
         my_rule = {
             "identifier": rule.identifier,
             "name": rule.name,
@@ -191,5 +185,6 @@ def dump(file_name):
     with open(file_name, 'w') as outfile:
         yaml.dump(file_contents, outfile, default_flow_style=False, explicit_start=True,
                   allow_unicode=True)
-
+                  
+    LOGGER.info("File %s created", file_name)
     LOGGER.info("Dump process ended")

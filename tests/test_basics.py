@@ -46,10 +46,6 @@ class BasicTestCase(unittest.TestCase):
     def test_app_exists(self):
         self.assertFalse(self.client is None)
 
-#    def test_app_is_testing(self):
-#        print self.app.config
-#        self.assertTrue(self.app.config['TESTING'])
-
     def test_home_status_code(self):
 
         # send HTTP GET request to the application on specified path
@@ -131,7 +127,7 @@ class BasicTestCase(unittest.TestCase):
 
     def test_term(self):
         t = self._add_term()
-        self.assertTrue(Term.query.filter_by(id=1).first().term == 'Comprehensive Credit Reporting')
+        self.assertTrue(Term.query.filter_by(id=1).first().name == 'Comprehensive Credit Reporting')
 
     def test_term_page(self):
         t = self._add_term()

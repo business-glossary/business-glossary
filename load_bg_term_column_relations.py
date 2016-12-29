@@ -1,9 +1,12 @@
-from app import app, db, models
-from app.models import Category, Term, Person, TermStatus, Link, Location, Table, Column, DocumentType, Rule
+from __future__ import print_function
 
-import csv, os
+import csv
+import os
 
 from os.path import dirname, join
+
+from app import app, db
+from app.models import Term, Table, Column
 
 from config import BASE_DIR
 
@@ -15,7 +18,7 @@ app.config['SQLALCHEMY_ECHO'] = False
 #
 ###############################################################################
 #
-# Interface files are placed in a directory name bg_interface at the same level 
+# Interface files are placed in a directory name bg_interface at the same level
 # as the application directory, i.e.
 #
 #   - bg_interface
@@ -35,29 +38,29 @@ file_path = join(dirname(BASE_DIR), 'bg_interface')
 
 file_name = os.path.join(file_path, "bg_interface_columns_term.csv")
 
-print "\nLoading column to term relationships\n"
+print("\nLoading column to term relationships\n")
 
 with open(file_name, 'rb') as csvfile:
-	reader = csv.DictReader(csvfile, delimiter=',')
-	for row in reader:
+    reader = csv.DictReader(csvfile, delimiter=',')
+    for row in reader:
 
-		# Find the column (table and column)
-		c = Column.query.join(Table).filter(Column.name==row['name'], Table.name==row['table']).first()
+        # Find the column (table and column)
+        c = Column.query.join(Table).filter(Column.name == row['name'], Table.name == row['table']).first()
 
-		if c:
-			# Grab the column again
-			c1 = Column.query.filter_by(id=c.id).first()
+        if c:
+            # Grab the column again
+            c1 = Column.query.filter_by(id=c.id).first()
 
-			# Now find the term
-			t = Term.query.filter_by(term=row['term']).first()
+            # Now find the term
+            t = Term.query.filter_by(name=row['term']).first()
 
-			if t:
-				# If the term exists the add the column to term relationship
-				t.columns.append(c1)
-				print "Added relationship between column", c.name, "and term", t.term
-				db.session.commit()
-			else:
-				# Else do nothing
-				print "Could not find the term", row['term']
-		else:
-			print "Could not find column %s in table %s" % (row['table'], row['name'])
+            if t:
+                # If the term exists the add the column to term relationship
+                t.columns.append(c1)
+                print("Added relationship between column %s and term %s" % (c.name, t.name))
+                db.session.commit()
+            else:
+                # Else do nothing
+                print("Could not find the term %s" % row['term'])
+        else:
+            print("Could not find column %s in table %s" % (row['table'], row['name']))

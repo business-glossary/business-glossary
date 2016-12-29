@@ -2,17 +2,14 @@
 
 {% block content %}
 <div class="page-header">
-	<h1>Backup & Restore</h1>
+    <h1>Backup & Restore</h1>
 </div>
 
 <h2>Backup Business Glossary Data</h2>
 <form action="{{ url_for('main.do_backup') }}" method="post">
-	<p>Business Glossary data can be dumped out to a yaml file format.</p>
-	<p>This allows you to export the contents of the database to a yaml file.
-	You can import the file into earlier Confluence versions from 5.9.1 to
-	5.10.5, and into compatible later versions. When importing, please refer
-	to the compatibility information in the 'restore' section on this page.</p>
-	<button type="submit" class="btn btn-default">Backup</button>
+    <p>Business Glossary data can be dumped out to a yaml file format.</p>
+    <p>This allows you to export the contents of the database to a yaml file.</p>
+    <button type="submit" class="btn btn-default">Backup</button>
 </form>
 
 <h2>Restore</h2>

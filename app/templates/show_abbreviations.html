@@ -23,10 +23,10 @@ $(document).ready(function() {
         "scrollY":        "600px",
         "scrollCollapse": true,
         "paging":         false,        
-		"columnDefs": [
-			{ "searchable": false, "targets": [ 0 ] },
-			{ "orderable": false, "targets": [ 1, 2 ] },
-		],
+        "columnDefs": [
+            { "searchable": false, "targets": [ 0 ] },
+            { "orderable": false, "targets": [ 1, 2 ] },
+        ],
         buttons: [
             {
                 extend: 'pdf',
@@ -42,7 +42,7 @@ $(document).ready(function() {
                 }
             }
         ]
-	});
+    });
     table.buttons().container()
         .appendTo('#abbrev_wrapper');
 } );
@@ -52,32 +52,32 @@ $(document).ready(function() {
 
 {% block content %}
 <div class="page-header">
-	<h1>Abbreviations</h1>
+    <h1>Abbreviations</h1>
 </div>
 
 <div id="abbrev_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-	<table id="abbrev" class="table table-striped" width="100%">
-		<thead>
-			<tr>
-				<th class="col-md-2">Abbreviation</th>
-				<th class="col-md-7">Term</th>
-				<th class="col-md-3">Category</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for term in glossary %}
-			<tr>
-				<td>{{ term.abbreviation }}</td>
-				<td><a href="{{ url_for('main.show_term', selected_term=term.id) }}">{{ term.term }}</a></td>
-				<td>
-					{% for c in term.categories %}
-						<span class="label label-default">{{ c.name.lower() }}</span>
-					{% endfor %}
-				</td>
-			</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+    <table id="abbrev" class="table table-striped" width="100%">
+        <thead>
+            <tr>
+                <th class="col-md-2">Abbreviation</th>
+                <th class="col-md-7">Term</th>
+                <th class="col-md-3">Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for term in glossary %}
+            <tr>
+                <td>{{ term.abbreviation }}</td>
+                <td><a href="{{ url_for('main.show_term', selected_term=term.id) }}">{{ term.name }}</a></td>
+                <td>
+                    {% for c in term.categories %}
+                        <span class="label label-default">{{ c.name.lower() }}</span>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 {% endblock %}

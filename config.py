@@ -1,9 +1,10 @@
 import os
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-print "BASE_DIR=" + BASE_DIR
+print("BASE_DIR=" + BASE_DIR)
 
 class Config(object):
+    '''Define the base configuration object'''
     SECRET_KEY = 'enter your secret key here'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     TERMS_PER_PAGE = 5
@@ -38,18 +39,21 @@ class Config(object):
     FLATPAGES_MARKDOWN_EXTENSIONS = ['codehilite', 'tables', 'fenced_code']
 
 class DevelopmentConfig(Config):
+    '''Define the development configuration object'''
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
         'sqlite:///' + os.path.join(BASE_DIR, 'glossary_dev.db')
     SQLALCHEMY_ECHO = True
 
 class TestingConfig(Config):
+    '''Define the test configuration object'''
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
         'sqlite:///' + os.path.join(BASE_DIR, 'glossary_test.db')
     SQLALCHEMY_ECHO = False
 
 class ProductionConfig(Config):
+    '''Define the production configuration object'''
     SQLALCHEMY_DATABASE_URI = os.environ.get('PROD_DATABASE_URL') or \
         'sqlite:///' + os.path.join(BASE_DIR, 'glossary.db')
 

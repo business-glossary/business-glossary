@@ -89,9 +89,6 @@ from .errors import views
 # Register blueprints
 from .main import main as main_blueprint
 app.register_blueprint(main_blueprint)
-<<<<<<< HEAD
-=======
 
 from .term_bp import term_bp as term_bp_blueprint
 app.register_blueprint(term_bp_blueprint)
->>>>>>> Initial edit term code

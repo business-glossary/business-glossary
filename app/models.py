@@ -91,7 +91,7 @@ term_to_term_relationship = db.Table('term_to_term_relationship',
 class Term(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
-    short_description = db.Column(db.String(100))
+    short_description = db.Column(db.String(200))
     long_description = db.Column(db.Text)
     abbreviation = db.Column(db.String(10))
 
@@ -124,7 +124,7 @@ class Term(db.Model):
     updated_on = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
     def __repr__(self):
-        return self.term
+        return self.name
 
     def get_id(self):
         try:
@@ -132,23 +132,81 @@ class Term(db.Model):
         except NameError:
             return str(self.id)  # python 3
 
+    @property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'name': self.name,
+            'short_description': self.short_description,
+            'long_description': self.long_description,
+            'status': self.status.status,
+            'category': self.serialize_categories,
+            'links': self.serialize_links,
+            'columns': self.serialize_columns,
+            'owner': self.owner.name,
+            'steward': self.owner.name,
+            'created_on': dump_datetime(self.created_on),
+            'updated_on': dump_datetime(self.updated_on),
+            'rules': self.serialize_rules
+        }
+
+    @property
+    def serialize_rules(self):
+        """
+        Return object's relations in easily serializeable format.
+        NB! Calls many2many's serialize property.
+        """
+        return [item.serialize for item in self.rules]
+
+    @property
+    def serialize_categories(self):
+        """
+        Return object's relations in easily serializeable format.
+        NB! Calls many2many's serialize property.
+        """
+        return [item.serialize for item in self.categories]
+
+    @property
+    def serialize_links(self):
+        """
+        Return object's relations in easily serializeable format.
+        NB! Calls many2many's serialize property.
+        """
+        return [item.serialize for item in self.links]
+
+    @property
+    def serialize_columns(self):
+        """
+        Return object's relations in easily serializeable format.
+        NB! Calls many2many's serialize property.
+        """
+        return [item.serialize for item in self.columns]
+
 class TermStatus(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.String(20), unique=True, nullable=False)
 
     def __repr__(self):
         return self.status
 
 class Category(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
     description = db.Column(db.String(50))
 
     def __repr__(self):
         return self.name
 
+    @property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'name': self.name,
+            'description': self.description
+        }
+
 class Link(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(100), unique=True, nullable=False)
     address = db.Column(db.String(200), unique=True, nullable=False)
     term_id = db.Column(db.Integer, db.ForeignKey('term.id'))
@@ -156,16 +214,24 @@ class Link(db.Model):
     def __repr__(self):
         return self.text
 
+    @property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'text': self.text,
+            'address': self.address
+        }
+
 class Person(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
 
     def __repr__(self):
         return self.name
 
-class Location (db.Model):
+class Location(db.Model):
 
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
     host = db.Column(db.String(50))
     description = db.Column(db.String(100))
@@ -177,7 +243,7 @@ class Location (db.Model):
 
 class Table(db.Model):
 
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
     description = db.Column(db.String(length=100))
     location_id = db.Column(db.Integer, db.ForeignKey('location.id'))
@@ -186,9 +252,18 @@ class Table(db.Model):
     def __repr__(self):
         return self.name
 
+    @property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'name': self.name,
+            'description': self.description,
+            'location': self.location.name
+        }
+
 class Column(db.Model):
 
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(100))
     type = db.Column(db.String(50))
@@ -201,9 +276,30 @@ class Column(db.Model):
     def __repr__(self):
         return self.name
 
+    @property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'name': self.name,
+            'description': self.description,
+            'type': self.type,
+            'length': self.type,
+            'format': self.format,
+            'table': self.table.name,
+            'location': self.table.location.name
+        }
+
+    @property
+    def serialize_table(self):
+        """
+        Return object's relations in easily serializeable format.
+        NB! Calls the tables serialize property.
+        """
+        return [item.serialize for item in self.table]
+
 class Rule(db.Model):
 
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     identifier = db.Column(db.String(20), nullable=False)
     name = db.Column(db.String(100), unique=True)
     description = db.Column(db.Text)
@@ -216,9 +312,20 @@ class Rule(db.Model):
     def __repr__(self):
         return self.name
 
+    @property
+    def serialize(self):
+        """Return the Rule object in serializable form"""
+        return {
+            'identifier': self.identifier,
+            'name': self.name,
+            'description': self.description,
+            'created_on': dump_datetime(self.created_on),
+            'updated_on': dump_datetime(self.updated_on)
+        }
+
 class Document(db.Model):
 
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     path = db.Column(db.String(100))
     description = db.Column(db.String(200))
@@ -249,3 +356,9 @@ def del_file(mapper, connection, target):
         except OSError:
             # Don't care if was not deleted because it does not exist
             pass
+
+def dump_datetime(value):
+    """Deserialize datetime object into string form for JSON processing."""
+    if value is None:
+        return None
+    return value.isoformat()

@@ -4,11 +4,9 @@ import logging
 
 import yaml
 
-from app import app, db, models
-from app.models import Category, Term, Person, TermStatus, Link, Location, Table, \
-    Column, DocumentType, Rule
-
-from config import BASE_DIR
+from app import app
+from app.models import Category, Term, Person, TermStatus, Location, \
+    DocumentType, Rule
 
 app.config['SQLALCHEMY_ECHO'] = False
 
@@ -76,10 +74,6 @@ def prep_rules():
     my_rules = []
 
     for rule in rules:
-        lit = {
-            "note":  str(rule.notes)
-        }
-        print(yaml.dump(lit))
         my_rule = {
             "identifier": rule.identifier,
             "name": rule.name,
@@ -178,5 +172,6 @@ def dump(file_name):
     with open(file_name, 'w') as outfile:
         yaml.dump(file_contents, outfile, default_flow_style=False, explicit_start=True,
                   allow_unicode=True)
-
+                  
+    LOGGER.info("File %s created", file_name)
     LOGGER.info("Dump process ended")

@@ -1,5 +1,8 @@
 import os
+
 import datetime
+
+from os.path import dirname, join
 
 COV = None
 
@@ -48,12 +51,24 @@ def load_data(filename):
 
     load_yaml.load(filename)
 
-@manager.command
-def dump(filename):
+@manager.option('-y', '--yaml', help='Dump to yaml format', dest='yaml', default=False, action="store_true")
+@manager.option('-j', '--json', help='Dump to json format', dest='json', default=False, action="store_true")
+def dump(yaml, json):
     '''Dump data from application'''
-    from app.loader import dump_yaml
 
-    dump_yaml.dump(filename)
+    import time
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+
+    file_path = join(dirname(BASE_DIR), 'bg_interface')
+    file_name = join(file_path, "bg_export_" + timestr)
+
+    if yaml:
+        from app.loader import dump_yaml
+        dump_yaml.dump(file_name + ".yaml")
+
+    if json:
+        from app.loader import dump_json
+        dump_json.dump(file_name + ".json")
 
 @manager.command
 def test(coverage=False):

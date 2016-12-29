@@ -64,9 +64,9 @@ class RuleView(ProtectedModelView):
 
 class TermView(ProtectedModelView):
     '''Set the view options with displaying a Term in the admin view'''
-    form_create_rules = ('name', 'short_description', 'abbreviation', 'owner',
+    form_create_rules = ('name', 'short_description', 'long_description', 'abbreviation', 'owner',
                          'steward', 'status', 'categories', 'links', 'rules', 'documents')
-    form_edit_rules = ('name', 'short_description', 'abbreviation', 'owner',
+    form_edit_rules = ('name', 'short_description', 'long_description', 'abbreviation', 'owner',
                        'steward', 'status', 'categories', 'links', 'rules', 'related_terms',
                        'documents', 'columns')
     column_list = ['name', 'short_description', 'abbreviation', 'status']
@@ -122,6 +122,7 @@ def about():
 @main.route('/')
 @main.route('/glossary/')
 def glossary():
+    '''Display the glossary main list of terms'''
     glossary = Term.query.order_by(Term.name).all()
     return render_template('show_glossary.html', glossary=glossary)
 

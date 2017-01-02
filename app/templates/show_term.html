@@ -24,154 +24,96 @@ $(document).ready(function() {
 <div class="panel panel-default">
     <div class="panel-heading">Term Details</div>
     <div class="panel-body">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="list-group">
-            <div class="list-group-item">
-              <h4 class="list-group-item-heading">Term</h4>
-              <p class="list-group-item-text">{{ term.name }}</p>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <h4 class="list-group-item-heading">Name</h4>
+                        <p class="list-group-item-text">{{ term.name }}</p>
+                    </div>
+                </div>
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <h4 class="list-group-item-heading">Short Description</h4>
+                        <p class="list-group-item-text">{{ term.short_description }}</p>
+                    </div>
+                </div>
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <div id="mdtable_1">
+                            <h4 class="list-group-item-heading">Long Description</h4>
+                            <p class="list-group-item-text">{{ term.long_description|markdown }}</p>
+                        </div>
+                    </div>                    
+                </div>
             </div>
-          </div>
-        </div>
-      </div><!-- row -->
-      <div class="row">
-        <div class="col-md-12">
-          <div class="list-group">
-            <div class="list-group-item">
-            <h4 class="list-group-item-heading">Short Description</h4>
-            <p class="list-group-item-text">{{ term.short_description }}</p>
+        </div><!-- row -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="list-group">
+                    {% if term.related_terms %}
+                    <div class="list-group-item">
+                        <h4 class="list-group-item-heading">Related Terms</h4>
+                        <p class="list-group-item-text">
+                            {% for rt in term.related_terms %}
+                            <a href="{{ url_for('main.show_term', selected_term=rt.id) }}">{{ rt.name }}</a>{% if not loop.last %},{% endif %}
+                            {% endfor %}
+                        </p>
+                    </div>
+                    {% endif %}
+                    {% if term.links %}
+                    <div class="list-group-item">
+                        <h4 class="list-group-item-heading">Links</h4>
+                        {% for c in term.links.all() %}
+                        <p class="list-group-item-text"><a href="{{ c.address }}">{{ c.text }}</a></p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if term.abbreviation %}
+                    <div class="list-group-item">
+                        <h4 class="list-group-item-heading">Abbreviation</h4>
+                        <p class="list-group-item-text">{{ term.abbreviation }}</p>
+                    </div>
+                    {% endif %}
+                    <div class="list-group-item">
+                        <h4 class="list-group-item-heading">Categories</h4>
+                        <p class="list-group-item-text">
+                            {% for c in term.categories %}
+                            <span class="label label-default">{{ c.name }}</span>
+                            {% endfor %}
+                        </p>
+                    </div>
+                    <div class="list-group-item">
+                        <h4 class="list-group-item-heading">Status</h4>
+                        {% if term.status.status == 'Approved' %}
+                        <p class="list-group-item-text"><span class="label label-success">{{ term.status.status }}</span></p>
+                        {% elif term.status.status == 'Draft' %}
+                        <p class="list-group-item-text"><span class="label label-warning">{{ term.status.status }}</span></p>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div><!-- row -->
-      <div class="row">
-        <div class="col-md-12">
-          <div class="list-group">
-            <div class="list-group-item">
-              <div id="mdtable_1">
-                <h4 class="list-group-item-heading">Long Description</h4>
-                <p class="list-group-item-text">{{ term.long_description|markdown }}</p>
-              </div>
+            <div class="col-md-6">              
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <h4 class="list-group-item-heading">Owner</h4>
+                        <p class="list-group-item-text">{{ term.steward.name }}</p>
+                    </div>
+                    <div class="list-group-item">
+                        <h4 class="list-group-item-heading">Steward</h4>
+                        <p class="list-group-item-text">{{ term.steward.name }}</p>
+                    </div>
+                    <div class="list-group-item">
+                        <h4 class="list-group-item-heading">Created On</h4>
+                        <p class="list-group-item-text">{{ moment(term.created_on).calendar() }}</p>
+                    </div>
+                    <div class="list-group-item">
+                        <h4 class="list-group-item-heading">Last Updated</h4>
+                        <p class="list-group-item-text">{{ moment(term.updated_on).calendar() }}</p>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div><!-- row -->
-      {% if term.abbreviation %}
-      <div class="row">
-        <div class="col-md-12">
-          <div class="list-group">
-            <div class="list-group-item">
-              <h4 class="list-group-item-heading">Abbreviation</h4>
-              <p class="list-group-item-text">{{ term.abbreviation }}</p>
-            </div>
-          </div>
-        </div>
-      </div><!-- row -->
-      {% endif %}
-      {% if term.related_terms %}
-      <div class="row">
-        <div class="col-md-12">
-          <div class="list-group">
-            <div class="list-group-item">
-              <h4 class="list-group-item-heading">Related Terms</h4>
-              {% for rt in term.related_terms %}
-              <p class="list-group-item-text">
-                  <a href="{{ url_for('main.show_term', selected_term=rt.id) }}">{{ rt.term }}</a>
-              </p>
-              {% endfor %}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div><!-- row -->
-      {% endif %}
-      {% if term.links.count() > 0 %}
-      <div class="row">
-        <div class="col-md-12">
-          <div class="list-group">
-            <div class="list-group-item">
-              <h4 class="list-group-item-heading">Links</h4>
-              {% for c in term.links.all() %}
-              <p class="list-group-item-text"><a href="{{ c.address }}">{{ c.text }}</a></p>
-              {% endfor %}
-            </div>
-          </div>
-        </div>
-      </div><!-- row -->
-      {% endif %}
-      <div class="row">
-        <div class="col-md-6">
-          <div class="list-group">
-            <div class="list-group-item">
-              <h4 class="list-group-item-heading">Owner</h4>
-              <p class="list-group-item-text">{{ term.owner.name }}</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="list-group">
-            <div class="list-group-item">
-              <h4 class="list-group-item-heading">Steward</h4>
-              <p class="list-group-item-text">{{ term.steward.name }}</p>
-            </div>
-          </div>
-        </div>
-      </div><!-- row -->
-      <div class="row">
-        <div class="col-md-6">
-          <div class="list-group">
-            <div class="list-group-item">
-              <h4 class="list-group-item-heading">Status</h4>
-              {% if term.status.status == 'Approved' %}
-                <p class="list-group-item-text"><span class="label label-success">{{ term.status.status }}</span></p>
-              {% elif term.status.status == 'Draft' %}
-                <p class="list-group-item-text"><span class="label label-warning">{{ term.status.status }}</span></p>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="list-group">
-            <div class="list-group-item">
-              <h4 class="list-group-item-heading">Categories</h4>
-              <p class="list-group-item-text">
-              {% for c in term.categories %}
-                <span class="label label-default">{{ c.name }}</span>
-              {% endfor %}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div><!-- row -->
-      <div class="row">
-        <div class="col-md-6">
-          <div class="list-group">
-            <div class="list-group-item">
-              <h4 class="list-group-item-heading">Created On</h4>
-              <p class="list-group-item-text">{{ moment(term.created_on).calendar() }}</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="list-group">
-            <div class="list-group-item">
-              <h4 class="list-group-item-heading">Last Updated</h4>
-              <p class="list-group-item-text">{{ moment(term.updated_on).calendar() }}</p>
-            </div>
-          </div>
-        </div>
-      </div><!-- row -->
+        </div><!-- row -->
     </div><!-- panel body -->
-    <div class="panel-footer">
-        <div class="text-right">
-            <a href="{{ url_for('term_bp.add_term') }}" class="btn btn-primary btn-xs">
-                <i class="fa fa-plus"></i> Add Term</a>
-            <a href="{{ url_for('term_bp.edit_term', id=term.id) }}" class="btn btn-success btn-xs"><i class="fa fa-pencil"></i> Edit</a>
-            <a href="{{ url_for('term_bp.delete_term', id=term.id) }}" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i> Delete</a>
-
-
-
-        </div>
-    </div>    
 </div><!-- panel -->
 {% endblock %}

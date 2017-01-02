@@ -27,7 +27,7 @@ def add_term():
     add_term = True
 
     form = TermForm()
-    print "^^^^", form
+
     if form.validate_on_submit():
         term = Term(term=form.term.data,
                     description=form.description.data,
@@ -60,37 +60,49 @@ def edit_term(id):
 
     add_term = False
 
-    print ">>", id
-
     term = Term.query.get_or_404(id)
-    print ">>", term.term
-    print ">>", term.description
     form = TermForm(obj=term)
+
+    print "\n"
+    print "************", form.save.data
+    print "************", form.cancel.data
+    print "\n"
+
     if form.validate_on_submit():
-        term.term = form.term.data
-        term.description = form.description.data
-        term.abbreviation = form.abbreviation.data
-        term.status = form.status.data
-        term.owner = form.owner.data
-        term.steward = form.steward.data
-        term.categories = form.categories.data
 
-        db.session.commit()
-        flash('You have successfully edited the term.')
+        # if cancel was selected
+        if form.cancel.data:
+                return redirect(url_for('main.show_term', selected_term=term.id))
+        else: 
+            term.name = form.name.data
+            term.short_description = form.short_description.data
+            term.long_description = form.long_description.data
+            term.abbreviation = form.abbreviation.data
+            term.status = form.status.data
+            term.owner = form.owner.data
+            term.steward = form.steward.data
+            term.categories = form.categories.data
 
-        # redirect to the terms page
-        return redirect(url_for('main.show_term', selected_term=term.id))
+            db.session.commit()
+            flash('You have successfully edited the term.')
 
-    form.description.data = term.description
-    form.term.data = term.term
+            # redirect to the terms page
+            return redirect(url_for('main.show_term', selected_term=term.id))
+
+    form.short_description.data = term.short_description
+    form.long_description.data = term.long_description
+    form.name.data = term.name
     form.abbreviation.data = term.abbreviation
     form.status.data = term.status
     form.owner.data = term.owner
     form.steward.data = term.steward
     form.categories.data = list(term.categories)
-    return render_template('admin/terms/term.html', action="Edit",
-                           add_term=add_term, form=form,
-                           term=term, title="Edit Term")
+    return render_template('admin/terms/term.html',
+                           action="Edit",
+                           add_term=add_term,
+                           form=form,
+                           term=term,
+                           title="Edit Term")
 
 
 @term_bp.route('/term/delete/<int:id>', methods=['GET', 'POST'])
@@ -110,5 +122,3 @@ def delete_term(id):
     return redirect(url_for('main.glossary'))
 
     return render_template(title="Delete Term")
-
-

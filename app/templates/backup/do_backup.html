@@ -7,6 +7,6 @@
 
 <h2>Backup Successful</h2>
 <p>The backup was successfully created at <strong>{{ filename }}</strong>.</p>
-
+<a href="{{ url_for('main.download', selected_filename=filename) }}" class="btn btn-default">Download</a>
 
 {% endblock %}

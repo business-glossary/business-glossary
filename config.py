@@ -16,6 +16,7 @@ class Config(object):
     MAIL_PASSWORD = ''
 
     ADMINS_EMAIL = ['admin@example.com']
+    ADMINS_FROM_EMAIL = ['admin@example.com']
 
     APPLICATION_NAME = 'Business Glossary'
 
@@ -36,14 +37,14 @@ class Config(object):
     # FlatPages configuration
     FLATPAGES_AUTO_RELOAD = True
     FLATPAGES_EXTENSION = '.md'
-    FLATPAGES_MARKDOWN_EXTENSIONS = ['codehilite', 'tables', 'fenced_code']
+    FLATPAGES_MARKDOWN_EXTENSIONS = ['codehilite', 'tables', 'fenced_code', 'wikilinks']
 
 class DevelopmentConfig(Config):
     '''Define the development configuration object'''
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
         'sqlite:///' + os.path.join(BASE_DIR, 'glossary_dev.db')
-    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = False
 
 class TestingConfig(Config):
     '''Define the test configuration object'''

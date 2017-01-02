@@ -10,8 +10,9 @@ class TermForm(FlaskForm):
     '''
     Form for admin to add or edit a Term
     '''
-    term = StringField('Term', validators=[DataRequired()])
-    description = TextAreaField('Description', validators=[DataRequired()])
+    name = StringField('Name', validators=[DataRequired()])
+    short_description = TextAreaField('Short Description', validators=[DataRequired()])
+    long_description = TextAreaField('Long Description', validators=[DataRequired()])
     abbreviation = StringField('Abbrevation', validators=[DataRequired()])
     status = QuerySelectField(query_factory=lambda: TermStatus.query.all(),
                               get_label="status")
@@ -20,6 +21,7 @@ class TermForm(FlaskForm):
     steward = QuerySelectField(query_factory=lambda: Person.query.all(),
                                get_label="name")
     categories = QuerySelectMultipleField(query_factory=lambda: Category.query.all(),
-                                  get_label="name")
+                                          get_label="name")
     save = SubmitField('Save')
+    cancel = SubmitField('Cancel')
 

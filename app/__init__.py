@@ -10,6 +10,7 @@ from flask_flatpages import FlatPages
 from flaskext.markdown import Markdown
 from flask_moment import Moment
 from flask_mail import Mail
+from flask_bootstrap import Bootstrap
 
 ################
 #### config ####
@@ -20,6 +21,7 @@ app = Flask(__name__)
 app.config.from_object(os.getenv('BG_CONFIG') or 'config.DevelopmentConfig')
 app.config.from_envvar('BG_SETTINGS', silent=True)
 
+Bootstrap(app)
 db = SQLAlchemy(app)
 moment = Moment(app)
 mail = Mail(app)
@@ -33,6 +35,7 @@ print("BG_CONFIG=%s" % os.getenv('BG_CONFIG'))
 print("TERMS_PER_PAGE=%s" % app.config['TERMS_PER_PAGE'])
 print("SQLALCHEMY_DATABASE_URI=" + app.config['SQLALCHEMY_DATABASE_URI'])
 print("SQLALCHEMY_TRACK_MODIFICATIONS=%s" % app.config['SQLALCHEMY_TRACK_MODIFICATIONS'])
+print("SQLALCHEMY_ECHO=" + str(app.config['SQLALCHEMY_ECHO']))
 print
 
 if not app.debug:
@@ -87,3 +90,6 @@ from .errors import views
 # Register blueprints
 from .main import main as main_blueprint
 app.register_blueprint(main_blueprint)
+
+from .term_bp import term_bp as term_bp_blueprint
+app.register_blueprint(term_bp_blueprint)

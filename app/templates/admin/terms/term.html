@@ -1,0 +1,121 @@
+{% extends "layout.html" %}
+{% block head %}
+  <link href="/admin/static/vendor/select2/select2.css?v=3.5.2" rel="stylesheet">
+  <link href="/admin/static/vendor/select2/select2-bootstrap3.css?v=1.4.6" rel="stylesheet">
+  <link href="/admin/static/vendor/bootstrap-daterangepicker/daterangepicker-bs3.css?v=1.3.22" rel="stylesheet">
+{% endblock head %}  
+{% block title %}
+    {% if add_term %}
+        Add Term
+    {% else %}
+        Edit Term
+    {% endif %}
+{% endblock %}
+{% block content %}
+<div class="page-header">
+    {% if add_term %}
+        <h1>Add Term</h1>
+    {% else %}
+        <h1>{{ term.name }}</h1>
+    {% endif %}
+</div>
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+<ul class="nav nav-tabs">
+    <li class="active">
+        <a href="{{ url_for('main.show_term', selected_term=term.id) }}">Edit Term</a>
+    </li>
+    <li class="pull-right">
+        <a href="{{ url_for('main.show_term', selected_term=term.id) }}"><span class="glyphicon glyphicon-remove"></span></a>
+    </li>
+    <li class="pull-right">
+        <a href="javascript:{}" onclick="document.getElementById('term_form').submit(); return false;"><span class="glyphicon glyphicon-ok"></span></a>
+    </li>
+</ul>
+
+<p class="lead"/>
+
+<div class="panel panel-default">
+	<div class="panel-heading">Term Details</div>
+    <form method="post" role="form" id="term_form">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_errors(form, hiddens="only") }}
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <h4 class="list-group-item-heading">Name</h4>
+                            {{ form.name(class_="form-control") }}
+                        </div>
+                    </div>
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <h4 class="list-group-item-heading">Short Description</h4>
+                            {{ form.short_description(class_="form-control", rows=3) }}
+                        </div>
+                    </div>
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <h4 class="list-group-item-heading">Long Description</h4>
+                            {{ form.long_description(class_="form-control", rows=10) }}
+                        </div>
+                    </div>
+                </div>
+            </div><!-- row -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <div class="form-group required">
+                                <h4 class="list-group-item-heading">Abbreviation</h4>
+                                <div class="list-group-item-text">
+                                    {{ form.abbreviation(class_="form-control") }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="form-group required">
+                                <h4 class="list-group-item-heading">Categories</h4>
+                                <div class="list-group-item-text">
+                                    {{ form.categories(class_="form-control", id="categories", **{'data-role': "select2"}) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="form-group required">
+                                <h4 class="list-group-item-heading">Status</h4>
+                                {{ form.status(class_="form-control", **{'data-role': "select2"}) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <div class="form-group required">
+                                <h4 class="list-group-item-heading">Owner</h4>
+                                {{ form.owner(class_="form-control", **{'data-role': "select2"}) }}
+                            </div>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="form-group required">
+                                <h4 class="list-group-item-heading">Steward</h4>
+                                {{ form.steward(class_="form-control", **{'data-role': "select2"}) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- row -->
+        </div><!-- panel-body -->
+    </form>
+</div>            
+
+{% endblock %}
+
+{% block footer %}
+<script src="/admin/static/vendor/select2/select2.min.js?v=3.5.2" type="text/javascript"></script>
+<script src="/admin/static/admin/js/form.js?v=1.0.1"></script>
+{% endblock footer %}

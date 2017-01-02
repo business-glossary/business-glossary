@@ -17,4 +17,12 @@
             Related Rules{% if term.rules|length > 0 %} <span class="badge">{{ term.rules|length }}</span>{% endif %}
         </a>
     </li>
+    {% if current_user.is_active %}
+    <li class="pull-right">
+        <a href="{{ url_for('term_bp.delete_term', id=term.id) }}"><span class="glyphicon glyphicon-trash"></span></a>
+    </li>
+    <li class="pull-right">
+        <a href="{{ url_for('term_bp.edit_term', id=term.id) }}"><span class="glyphicon glyphicon-pencil"></span></a>
+    </li>
+    {% endif %}
 </ul>

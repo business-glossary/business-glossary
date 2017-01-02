@@ -1,34 +1,34 @@
 '''Routes for the Business Glossary'''
 
-import os
-import os.path as op
+# import os
+from os import mkdir
+from os.path import dirname, join
 
 import warnings
 
-from flask import render_template, request, send_from_directory
+from flask import render_template, request, send_from_directory, send_file
 from app import app, db, pages
 
 from flask_flatpages import pygments_style_defs
 from config import BASE_DIR
 from flask_security import current_user
 from sqlalchemy import func
-from flask_admin import Admin, form
+from flask_admin import Admin, form, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
 
 from . import main
-from ..models import Document, DocumentType, Term, Category, Person, Link, Location, Table, \
+from ..models import Document, DocumentType, Term, TermStatus, Category, Person, Link, Location, Table, \
     Column, Rule
-
 
 # WTForms helpers
 from ..utils import wtf
 wtf.add_helpers(app)
 
 # Create directory for file fields to use
-FILE_PATH = op.join(BASE_DIR, 'app', 'static', 'files')
+FILE_PATH = join(BASE_DIR, 'app', 'static', 'files')
 
 try:
-    os.mkdir(FILE_PATH)
+    mkdir(FILE_PATH)
 except OSError:
     pass
 
@@ -83,21 +83,31 @@ class ColumnView(ProtectedModelView):
     '''Set the view options with displaying a Column in the admin view'''
     column_filters = ['table', 'name']
 
-admin = Admin(app, name='BUSINESS GLOSSARY', template_mode='bootstrap3', base_template='/admin/new_master.html')
+class BackupView(BaseView):
+    '''Add backup option to admin menu'''
+    @expose('/')
+    def index(self):
+        return self.render('backup/backup_restore.html')
 
-admin.add_view(ProtectedModelView(Category, db.session))
-admin.add_view(ProtectedModelView(Person, db.session))
-admin.add_view(ProtectedModelView(Link, db.session))
-admin.add_view(ProtectedModelView(Location, db.session))
-admin.add_view(TableView(Table, db.session))
-admin.add_view(ColumnView(Column, db.session))
-admin.add_view(FileView(Document, db.session))
-admin.add_view(ProtectedModelView(DocumentType, db.session))
-admin.add_view(RuleView(Rule, db.session))
+admin = Admin(app,
+              name='BUSINESS GLOSSARY',
+              template_mode='bootstrap3',
+              base_template='/admin/new_master.html')
 
 with warnings.catch_warnings():
     warnings.filterwarnings('ignore', 'Fields missing from ruleset', UserWarning)
     admin.add_view(TermView(Term, db.session))
+admin.add_view(RuleView(Rule, db.session))
+admin.add_view(ProtectedModelView(Link, db.session))
+admin.add_view(FileView(Document, db.session))
+admin.add_view(ProtectedModelView(Location, db.session, category="Assets"))
+admin.add_view(TableView(Table, db.session, category="Assets"))
+admin.add_view(ColumnView(Column, db.session, category="Assets"))
+admin.add_view(ProtectedModelView(DocumentType, db.session, category="Lookups"))
+admin.add_view(ProtectedModelView(TermStatus, db.session, category="Lookups"))
+admin.add_view(ProtectedModelView(Category, db.session, category="Lookups"))
+admin.add_view(ProtectedModelView(Person, db.session, category="Lookups"))
+admin.add_view(BackupView(name='Backup', endpoint='backup', category='Backup & Restore'))
 
 
 @app.context_processor
@@ -111,7 +121,6 @@ def inject_user():
 ###########################
 #### define the routes ####
 ###########################
-
 
 @main.route('/about')
 def about():
@@ -165,9 +174,17 @@ def do_backup():
     import time
     timestr = time.strftime("%Y%m%d-%H%M%S")
     filename = "bg_export_" + timestr + ".yml"
-    dump_yaml.dump(filename)
+    dump_yaml.dump(join(dirname(BASE_DIR), 'bg_interface', filename))
     return render_template('backup/do_backup.html', filename=filename)
 
+@main.route('/download/<string:selected_filename>/')
+def download(selected_filename):
+    try:
+        return send_file(join(dirname(BASE_DIR), 'bg_interface', selected_filename),
+                         as_attachment=True,
+                         attachment_filename=selected_filename)
+    except Exception as e:
+        return str(e)
 
 @main.route('/profile/')
 def profile():

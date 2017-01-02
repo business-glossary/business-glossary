@@ -1,11 +1,12 @@
+bcrypt==3.1.1
 Flask==0.11
 Flask-Admin==1.4.2
-Flask-SQLAlchemy==2.1
-SQLAlchemy==1.1.0b3
-Flask-Migrate==2.0.0
+Flask-Bootstrap==3.3.7.0
+Flask-FlatPages==0.6
 Flask-Markdown==0.3
+Flask-Migrate==2.0.0
 Flask-Moment==0.5.1
 Flask-Security==1.7.5
+Flask-SQLAlchemy==2.1
 pytz==2016.7
-bcrypt==3.1.1
-Flask-FlatPages==0.6
+SQLAlchemy==1.1.0b3

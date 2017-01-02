@@ -1,246 +1,244 @@
+import logging
+
 import csv
-import os
 
 from os.path import dirname, join
 
-from app import app, db, models
-from app.models import Category, Term, Person, TermStatus, Link, Location, Table, Column, DocumentType, Rule
+from app import app, db
+from app.models import Category, Term, Person, TermStatus, Link, DocumentType, Rule
 
 from config import BASE_DIR
 
 app.config['SQLALCHEMY_ECHO'] = False
 
-###############################################################################
-#
-# Define the path where the interface files are
-#
-###############################################################################
-#
-# Interface files are placed in a directory name bg_interface at the same level
-# as the application directory, i.e.
-#
-#   - bg_interface
-#   - business_glossary
-#
-# Call os.path.dirname twice to walk up to the parent directory
-#
-###############################################################################
+LOGGER = logging.getLogger("business-glossary.load_data")
 
-file_path = join(dirname(BASE_DIR), 'bg_interface')
+def load_term_status(file_name):
+    '''
+    Load term status from CSV file
 
-###############################################################################
-#
-# Drop and recreate all tables
-#
-###############################################################################
+    :param file_Name: The name of the CSV file to load from
+    '''
+    LOGGER.info("Loading term status")
 
-db.drop_all()
-db.create_all()
+    with open(file_name, 'rb') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=',')
+        for row in reader:
+            LOGGER.info("Loaded %s", row['status'])
 
-################################################################################
-#
-# Load TermStatus
-#
-################################################################################
-
-file_name = os.path.join(file_path, "bg_interface_status.csv")
-
-print("\nLoading status\n")
-
-with open(file_name, 'rb') as csvfile:
-    reader = csv.DictReader(csvfile, delimiter=',')
-    for row in reader:
-        print(row['status'])
-
-        record = TermStatus(**{
-            'status' : row['status']
-            })
-        db.session.add(record)
-        db.session.commit()
-
-################################################################################
-#
-# Load Category
-#
-################################################################################
-
-file_name = os.path.join(file_path, "bg_interface_category.csv")
-
-print("\nLoading categories\n")
-
-with open(file_name, 'rb') as csvfile:
-    reader = csv.DictReader(csvfile, delimiter=',')
-    for row in reader:
-        print(row['category'])
-
-        record = Category(**{
-            'name' : row['category'],
-            'description' : row['description']
-            })
-        db.session.add(record)
-        db.session.commit()
-
-################################################################################
-#
-# Load DocumentType
-#
-################################################################################
-
-file_name = os.path.join(file_path, "bg_interface_document_type.csv")
-
-print("\nLoading types\n")
-
-with open(file_name, 'rb') as csvfile:
-    reader = csv.DictReader(csvfile, delimiter=',')
-    for row in reader:
-        print(row['document_type'])
-
-        record = DocumentType(**{
-            'type' : row['document_type']
-            })
-        db.session.add(record)
-        db.session.commit()
-
-################################################################################
-#
-# Load Person
-#
-################################################################################
-
-file_name = os.path.join(file_path, "bg_interface_person.csv")
-
-print("\nLoading people\n")
-
-with open(file_name, 'rb') as csvfile:
-    reader = csv.DictReader(csvfile, delimiter=',')
-    for row in reader:
-        print(row['person'])
-
-        record = Person(**{
-            'name' : row['person']
-            })
-        db.session.add(record)
-        db.session.commit()
+            record = TermStatus(**{
+                'status' : row['status']
+                })
+            db.session.add(record)
+            db.session.commit()
 
 
-################################################################################
-#
-# Load Terms
-#
-################################################################################
+def load_categories(file_name):
+    '''
+    Load categories from CSV file
 
-file_name = os.path.join(file_path, "bg_interface_terms.csv")
+    :param file_Name: The name of the CSV file to load from
+    '''
+    LOGGER.info("Loading categories")
 
-print("\nLoading terms\n")
+    with open(file_name, 'rb') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=',')
+        for row in reader:
+            LOGGER.info("Loaded %s", row['category'])
 
-with open(file_name, 'rb') as csvfile:
-    reader = csv.DictReader(csvfile, delimiter=',')
-    for row in reader:
-        print(row)
+            record = Category(**{
+                'name' : row['category'],
+                'description' : row['description']
+                })
+            db.session.add(record)
+            db.session.commit()
 
-        s = TermStatus.query.filter_by(status=row['status']).first()
-        o = Person.query.filter_by(name=row['owner']).first()
-        st = Person.query.filter_by(name=row['steward']).first()
 
-        record = Term(**{
-            'name' : row['name'],
-            'short_description' : row['short_description'],
-            'long_description' : row['long_description'],
-            'abbreviation' : row['abbreviation'],
-            'status' : s,
-            'owner' : o,
-            'steward' : st
-            })
-        db.session.add(record)
 
-        db.session.commit()
+def load_document_types(file_name):
+    '''
+    Load document types from CSV file
 
-################################################################################
-#
-# Load Term Categories
-#
-################################################################################
+    :param file_Name: The name of the CSV file to load from
+    '''
+    LOGGER.info("Loading document types")
 
-file_name = os.path.join(file_path, "bg_interface_categories.csv")
+    with open(file_name, 'rb') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=',')
+        for row in reader:
+            LOGGER.info("Loaded %s", row['document_type'])
 
-print("\nLoading categories\n")
+            record = DocumentType(**{
+                'type' : row['document_type']
+                })
+            db.session.add(record)
+            db.session.commit()
 
-with open(file_name, 'rb') as csvfile:
-    reader = csv.DictReader(csvfile, delimiter=',')
-    for row in reader:
-        print(row)
 
-        t = Term.query.filter_by(name=row['term']).first()
-        c = Category.query.filter_by(name=row['category']).first()
 
-        t.categories.append(c)
+def load_persons(file_name):
+    '''
+    Load people from CSV file
 
-        db.session.commit()
+    :param file_Name: The name of the CSV file to load from
+    '''
+    LOGGER.info("Loading people")
 
-################################################################################
-#
-# Load Links
-#
-################################################################################
+    with open(file_name, 'rb') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=',')
+        for row in reader:
+            LOGGER.info("Loaded %s", row['person'])
 
-file_name = os.path.join(file_path, "bg_interface_links.csv")
+            record = Person(**{
+                'name' : row['person']
+                })
+            db.session.add(record)
+            db.session.commit()
 
-print("\nLoading links\n")
 
-with open(file_name, 'rb') as csvfile:
-    reader = csv.DictReader(csvfile, delimiter=',')
-    for row in reader:
-        print(row)
+def load_terms(file_name):
+    '''
+    Load terms from CSV file
 
-        record = Link(**{
-            'text' : row['text'],
-            'address' : row['address']
-            })
-        db.session.add(record)
+    :param file_Name: The name of the CSV file to load from
+    '''
+    LOGGER.info("Loading terms")
 
-        t = Term.query.filter_by(name=row['term']).first()
-        l = Link.query.filter_by(text=row['text']).first()
+    with open(file_name, 'rb') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=',')
+        for row in reader:
+            LOGGER.info("Loaded %s", row['name'])
 
-        t.links.append(l)
+            s = TermStatus.query.filter_by(status=row['status']).first()
+            o = Person.query.filter_by(name=row['owner']).first()
+            st = Person.query.filter_by(name=row['steward']).first()
 
-        db.session.commit()
+            record = Term(**{
+                'name' : row['name'],
+                'short_description' : row['short_description'],
+                'long_description' : row['long_description'],
+                'abbreviation' : row['abbreviation'],
+                'status' : s,
+                'owner' : o,
+                'steward' : st
+                })
+            db.session.add(record)
 
-################################################################################
-#
-# Load Rules
-#
-################################################################################
+            db.session.commit()
 
-file_name = os.path.join(file_path, "bg_interface_rules.csv")
 
-print("\nLoading rules\n")
+def load_term_categories(file_name):
+    '''
+    Load term category relationships from CSV file
 
-with open(file_name, 'rb') as csvfile:
-    reader = csv.DictReader(csvfile, delimiter=',')
-    for row in reader:
+    :param file_Name: The name of the CSV file to load from
+    '''
+    LOGGER.info("Loading term to category associations")
 
-        notes = row['notes'].replace('\\n', '\n').replace('\\r','\r')
+    with open(file_name, 'rb') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=',')
+        for row in reader:
+            LOGGER.info("Associated %s with the %s category", row['term'], row['category'])
 
-        # Add the rule
-        record = Rule(**{
-            'identifier' : row['identifier'],
-            'name' : row['name'],
-            'description' : row['description'],
-            'notes' : notes
-            })
-        db.session.add(record)
+            t = Term.query.filter_by(name=row['term']).first()
+            c = Category.query.filter_by(name=row['category']).first()
 
-        # Get the rule again
-        r = Rule.query.filter_by(identifier=row['identifier']).first()
+            t.categories.append(c)
 
-        # Find the term to associate with
-        t = Term.query.filter_by(name=row['term']).first()
+            db.session.commit()
 
-        # If the term is found associate with the rule
-        if t:
-            t.rules.append(r)
-            print("Rule %s loaded" % r.name)
-        else:
-            print("Associated term %s not found for rule %s" % (row['term'], row['name']))
 
-        db.session.commit()
+def load_links(file_name):
+    '''
+    Load links from CSV file
+
+    :param file_Name: The name of the CSV file to load from
+    '''
+    LOGGER.info("Loading links")
+
+    with open(file_name, 'rb') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=',')
+        for row in reader:
+            LOGGER.info("Loaded %s", row['text'])
+
+            record = Link(**{
+                'text' : row['text'],
+                'address' : row['address']
+                })
+            db.session.add(record)
+
+            t = Term.query.filter_by(name=row['term']).first()
+            l = Link.query.filter_by(text=row['text']).first()
+
+            t.links.append(l)
+
+            db.session.commit()
+
+
+def load_rules(file_name):
+    '''
+    Load rules from CSV file
+
+    :param file_Name: The name of the CSV file to load from
+    '''
+    LOGGER.info("Loading rules")
+
+    with open(file_name, 'rb') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=',')
+        for row in reader:
+
+            notes = row['notes'].replace('\\n', '\n').replace('\\r', '\r')
+
+            # Add the rule
+            record = Rule(**{
+                'identifier' : row['identifier'],
+                'name' : row['name'],
+                'description' : row['description'],
+                'notes' : notes
+                })
+            db.session.add(record)
+
+            # Get the rule again
+            r = Rule.query.filter_by(identifier=row['identifier']).first()
+
+            # Find the term to associate with
+            t = Term.query.filter_by(name=row['term']).first()
+
+            # If the term is found associate with the rule
+            if t:
+                t.rules.append(r)
+                LOGGER.info("Rule %s loaded", r.name)
+            else:
+                LOGGER.warning("Associated term %s not found for rule %s", row['term'], row['name'])
+
+            db.session.commit()
+
+if __name__ == "__main__":
+    LOG_FORMAT = "%(asctime)-15s [%(levelname)s] %(message)s"
+    logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
+
+    LOGGER.info("Load process started")
+
+    # Interface files are placed in a directory name bg_interface at the same level
+    # as the application directory, i.e.
+    #
+    #   - bg_interface
+    #   - business_glossary
+    #
+    # Call os.path.dirname twice to walk up to the parent directory
+
+    FILE_PATH = join(dirname(BASE_DIR), 'bg_interface')
+
+    db.drop_all()
+    db.create_all()
+
+    load_term_status(join(FILE_PATH, "bg_interface_status.csv"))
+    load_categories(join(FILE_PATH, "bg_interface_category.csv"))
+    load_document_types(join(FILE_PATH, "bg_interface_document_type.csv"))
+    load_persons(join(FILE_PATH, "bg_interface_person.csv"))
+    load_terms(join(FILE_PATH, "bg_interface_terms.csv"))
+    load_term_categories(join(FILE_PATH, "bg_interface_categories.csv"))
+    load_links(join(FILE_PATH, "bg_interface_links.csv"))
+    load_rules(join(FILE_PATH, "bg_interface_rules.csv"))
+
+    LOGGER.info("Load process ended")

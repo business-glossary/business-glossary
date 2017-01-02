@@ -178,14 +178,14 @@ def load(file_name):
     if not isfile(file_name):
         LOGGER.error("The file does not exist")
     else:
-        print "b4 open"
+        print("b4 open")
         with open(file_name, 'r') as stream:
-            print "after open"
+            print("after open")
             try:
-                print "b4 load"
-                print stream
+                print("b4 load")
+                print(stream)
                 objects = yaml.load(stream)
-                print "after load"
+                print("after load")
 
                 # Should be a dict of lists of dicts
                 # If missing the record type then it just be a list of dicts

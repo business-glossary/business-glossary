@@ -1,108 +1,78 @@
 #!/usr/bin/python
 # -*- encoding: utf-8-*-
 
+import logging
+
 import csv
-import os
 
 from os.path import dirname, join
 
-from app import app, db, models
+from app import app, db
 from app.models import Location, Table, Column
 
 from config import BASE_DIR
 
+LOGGER = logging.getLogger("business-glossary.load_data")
+
 app.config['SQLALCHEMY_ECHO'] = False
 
-###############################################################################
-#
-# Define the path where the interface files are
-#
-###############################################################################
+def load_locations(file_name):
+    '''
+    Load locations from CSV file
 
-# Interface files are placed in a directory name bg_interface at the same level
-# as the application directory, i.e.
-#
-#   - bg_interface
-#   - business_glossary
-#
-# Call os.path.dirname twice to walk up to the parent directory
+    :param file_Name: The name of the CSV file to load locations from
+    '''
 
-file_path = join(dirname(BASE_DIR), 'bg_interface')
+    LOGGER.info("Loading locations...")
 
-###############################################################################
-#
-# Delete all Columns
-#
-###############################################################################
+    with open(file_name, 'rb') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=',')
+        for row in reader:
+            if db.session.query(Location.id).filter_by(name=row['name']).scalar():
+                LOGGER.info("Location %s already exists", row['name'])
+            else:
+                record = Location(**{
+                    'name' : row['name'],
+                    'host' : row['host'],
+                    'description' : row['description'],
+                    'path' : row['path'],
+                    'notes' : row['notes']
+                    })
+                db.session.add(record)
+                db.session.commit()
+                LOGGER.info("Location %s added", row['name'])
 
-x = Column.query.delete()
 
-print(x, "columns deleted")
+def load_tables(file_name):
+    '''
+    Load table metadata from CSV file
 
-###############################################################################
-#
-# Load Locations
-#
-###############################################################################
+    :param file_Name: The name of the CSV file to load table metadata from
 
-file_name = os.path.join(file_path, "bg_interface_locations.csv")
+    .. todo:: Need to test against table and location
+    '''
 
-print("\nLoading Locations\n")
+    LOGGER.info("Loading table metadata...")
 
-with open(file_name, 'rb') as csvfile:
-    reader = csv.DictReader(csvfile, delimiter=',')
-    for row in reader:
-        print(row)
+    with open(file_name, 'rb') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=',')
+        for row in reader:
+            LOGGER.info("Loading %s.%s", row['location'], row['table'])
 
-        if db.session.query(Location.id).filter_by(name=row['name']).scalar():
-            print("Location %s already exists" % row['name'])
-        else:
-            record = Location(**{
-                'name' : row['name'],
-                'host' : row['host'],
-                'description' : row['description'],
-                'path' : row['path'],
-                'notes' : row['notes']
-                })
+            # TODO: Need to test against table and location
+            if db.session.query(Table.id).filter_by(name=row['table']).scalar():
+                LOGGER.info("Table %s.%s already exists", row['location'], row['table'])
+            else:
+                l = Location.query.filter_by(name=row['location']).first()
 
-            db.session.add(record)
-            db.session.commit()
+                record = Table(**{
+                    'name' : row['table'],
+                    'description' : row['description'],
 
-################################################################################
-#
-# Load Table Metadata
-#
-################################################################################
-
-file_name = os.path.join(file_path, "bg_interface_table.csv")
-
-print("\nLoading table metadata...\n")
-
-#try:
-with open(file_name, 'rb') as csvfile:
-    reader = csv.DictReader(csvfile, delimiter=',')
-    for row in reader:
-        print("Loading %s.%s" % (row['location'], row['table']))
-
-        # TODO: Need to test against table and location
-        if db.session.query(Table.id).filter_by(name=row['table']).scalar():
-            print("Table %s.%s already exists" % (row['location'], row['table']))
-        else:
-            l = Location.query.filter_by(name=row['location']).first()
-
-            record = Table(**{
-                'name' : row['table'],
-                'description' : row['description'],
-
-                'location' : l
-                })
-            db.session.add(record)
-            db.session.commit()
-
-#except:
-#    db.session.rollback()
-#finally:
-#    db.session.close()
+                    'location' : l
+                    })
+                db.session.add(record)
+                db.session.commit()
 
 ################################################################################
 #
@@ -110,37 +80,57 @@ with open(file_name, 'rb') as csvfile:
 #
 ################################################################################
 
-file_name = os.path.join(file_path, "bg_interface_column.csv")
+def load_columns(file_name):
+    '''
+    Load columns from CSV file
 
-# We had a failure here so need to work on the exception handling
+    :param file_Name: The name of the CSV file to load column metadata from
+    '''
+    LOGGER.info("Loading column metadata...")
 
-#try:
+    with open(file_name, 'rb') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=',')
+        for row in reader:
 
-print("\nLoading column metadata...\n")
+            LOGGER.info("Loading table %s column %s", row['table'], row['name'])
 
-with open(file_name, 'rb') as csvfile:
-    reader = csv.DictReader(csvfile, delimiter=',')
-    for row in reader:
+            t = Table.query.filter_by(name=row['table']).first()
 
-        print("Loading table %s column %s" % (row['table'], row['name']))
+            record = Column(**{
+                'name' : row['name'],
+                'description' : row['description'],
+                'type' : row['type'],
+                'length' : row['length'],
+                'format' : row['format'],
+                'table' : t
+                })
+            db.session.add(record)
+            db.session.commit()
 
-        t = Table.query.filter_by(name=row['table']).first()
+if __name__ == "__main__":
+    LOG_FORMAT = "%(asctime)-15s [%(levelname)s] %(message)s"
+    logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
 
-        record = Column(**{
-            'name' : row['name'],
-            'description' : row['description'],
-            'type' : row['type'],
-            'length' : row['length'],
-            'format' : row['format'],
-            'table' : t
-            })
-        db.session.add(record)
+    LOGGER.info("Load process started")
 
-        db.session.commit()
+    # Interface files are placed in a directory name bg_interface at the same level
+    # as the application directory, i.e.
+    #
+    #   - bg_interface
+    #   - business_glossary
+    #
+    # Call os.path.dirname twice to walk up to the parent directory
 
-#except:
-    #db.session.rollback() # Rollback the changes on error
-#finally:
-    #db.session.close() # Close the connection
+    FILE_PATH = join(dirname(BASE_DIR), 'bg_interface')
 
-print("Done")
+    # Delete all Columns
+
+    cols_deleted = Column.query.delete()
+
+    LOGGER.info("%s columns deleted", cols_deleted)
+
+    load_locations(join(FILE_PATH, "bg_interface_locations.csv"))
+    load_tables(join(FILE_PATH, "bg_interface_table.csv"))
+    load_columns(join(FILE_PATH, "bg_interface_column.csv"))
+
+    LOGGER.info("Load process ended")

@@ -22,7 +22,7 @@ def load_column_term(file_name):
     '''
     LOGGER.info("Loading column to term relationships")
 
-    with open(file_name, 'rb') as csvfile:
+    with open(file_name, 'rt') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
         for row in reader:
 

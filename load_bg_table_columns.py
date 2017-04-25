@@ -25,7 +25,7 @@ def load_locations(file_name):
 
     LOGGER.info("Loading locations...")
 
-    with open(file_name, 'rb') as csvfile:
+    with open(file_name, 'rt') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
         for row in reader:
             if db.session.query(Location.id).filter_by(name=row['name']).scalar():
@@ -54,7 +54,7 @@ def load_tables(file_name):
 
     LOGGER.info("Loading table metadata...")
 
-    with open(file_name, 'rb') as csvfile:
+    with open(file_name, 'rt') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
         for row in reader:
             LOGGER.info("Loading %s.%s", row['location'], row['table'])
@@ -88,7 +88,7 @@ def load_columns(file_name):
     '''
     LOGGER.info("Loading column metadata...")
 
-    with open(file_name, 'rb') as csvfile:
+    with open(file_name, 'rt') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
         for row in reader:
 

@@ -63,17 +63,17 @@ def edit_term(id):
     term = Term.query.get_or_404(id)
     form = TermForm(obj=term)
 
-    print "\n"
-    print "************", form.save.data
-    print "************", form.cancel.data
-    print "\n"
+    print("\n")
+    print("************", form.save.data)
+    print("************", form.cancel.data)
+    print("\n")
 
     if form.validate_on_submit():
 
         # if cancel was selected
         if form.cancel.data:
-                return redirect(url_for('main.show_term', selected_term=term.id))
-        else: 
+            return redirect(url_for('main.show_term', selected_term=term.id))
+        else:
             term.name = form.name.data
             term.short_description = form.short_description.data
             term.long_description = form.long_description.data

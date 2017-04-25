@@ -18,7 +18,7 @@ from flask_admin.contrib.sqla import ModelView
 
 from . import main
 from ..models import Document, DocumentType, Term, TermStatus, Category, Person, Link, Location, Table, \
-    Column, Rule
+    Column, Rule, Note
 
 # WTForms helpers
 from ..utils import wtf
@@ -97,7 +97,9 @@ admin = Admin(app,
 with warnings.catch_warnings():
     warnings.filterwarnings('ignore', 'Fields missing from ruleset', UserWarning)
     admin.add_view(TermView(Term, db.session))
+
 admin.add_view(RuleView(Rule, db.session))
+admin.add_view(ProtectedModelView(Note, db.session))
 admin.add_view(ProtectedModelView(Link, db.session))
 admin.add_view(FileView(Document, db.session))
 admin.add_view(ProtectedModelView(Location, db.session, category="Assets"))
@@ -260,7 +262,8 @@ def show_rules(selected_term):
 def show_rule(selected_rule):
 
     rule = Rule.query.filter_by(id=selected_rule).first()
-
+    print(rule.documents)
+    print(rule.comments)
     return render_template('show_rule.html', rule=rule)
 
 

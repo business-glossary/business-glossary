@@ -120,8 +120,11 @@ class Term(db.Model):
                                     secondaryjoin=id == term_to_term_relationship.c.related_term_id,
                                     backref="related_to")
 
-    created_on = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    updated_on = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    created_on = db.Column(db.DateTime,
+                           default=datetime.datetime.utcnow)
+    updated_on = db.Column(db.DateTime,
+                           default=datetime.datetime.utcnow,
+                           onupdate=datetime.datetime.utcnow)
 
     def __repr__(self):
         return self.name
@@ -304,11 +307,12 @@ class Rule(db.Model):
     name = db.Column(db.String(100), unique=True)
     description = db.Column(db.Text)
     notes = db.Column(db.Text)
-    created_on = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    updated_on = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
-
+    comments = db.relationship('Note', backref='rules', cascade="all, delete-orphan", lazy='dynamic')
     documents = db.relationship('Document', secondary=rule_document_relationship, backref='rules')
-
+    created_on = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    updated_on = db.Column(db.DateTime,
+                           default=datetime.datetime.utcnow,
+                           onupdate=datetime.datetime.utcnow)
     def __repr__(self):
         return self.name
 
@@ -322,6 +326,19 @@ class Rule(db.Model):
             'created_on': dump_datetime(self.created_on),
             'updated_on': dump_datetime(self.updated_on)
         }
+
+
+class Note(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    note_type = db.column(db.String(10))
+    note = db.Column(db.Text)
+    rule_id = db.Column(db.Integer, db.ForeignKey('rule.id'))
+    created_on = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    updated_on = db.Column(db.DateTime,
+                           default=datetime.datetime.utcnow,
+                           onupdate=datetime.datetime.utcnow)
+    def __repr__(self):
+        return self.note
 
 class Document(db.Model):
 

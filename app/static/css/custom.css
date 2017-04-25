@@ -31,6 +31,10 @@ body {
     font-size: 11px;
 }
 
+.term-description {
+    line-height: 1.5;
+}
+
 h1 { font-size: 24px; font-weight: normal}
 
 h2 { font-size: 22px; }
@@ -213,4 +217,13 @@ body {
 
 .container .text-muted {
   margin: 20px 0;
+}
+
+.lead {
+    margin-top: 20px;
+}
+
+.abbreviation {
+    font-size: 14pt;
+    font-family: "Roboto Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }

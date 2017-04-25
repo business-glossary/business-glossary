@@ -20,7 +20,8 @@ $(document).ready(function() {
         </div>
     {% endif %}
     <h1>{{ term.name }}</h1>
-    <h5 class="term-description">{{ term.short_description }}</h5>
+    <p class="lead">{{ term.short_description }}</p>
+    <!--h5 class="term-description">{{ term.short_description }}</h5-->
     {% for c in term.categories %}
         <span class="label label-default">{{ c.name }}</span>
     {% endfor %}    
@@ -28,31 +29,14 @@ $(document).ready(function() {
         <span class="label label-success">{{ term.status.status }}</span>
     {% elif term.status.status == 'Draft' %}
         <span class="label label-warning">{{ term.status.status }}</span>
-    {% endif %}    
+    {% endif %}
+    <!--span class="pull-right">{{ term.abbreviation }}</span-->
+    <span class="pull-right abbreviation">{{ term.abbreviation }}</span>
 </div>
 
 {% set active_page = "term" %}
 
-<p class="lead"/>
-
 {{ term.long_description|markdown }}
-<div class="well well-sm">Abbreviation: {{ term.abbreviation }}</div>
-
-<!--
-<div class="panel-group">
-    <div class="panel panel-default">
-        <div class="panel-body">{{ term.long_description|markdown }}</div>
-    </div>
-    {% if term.abbreviation %}
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <div class="col-md-2"><strong>Abbreviation</strong></div>
-                <div class="col-md-10">{{ term.abbreviation }}</div>
-            </div>
-        </div>
-    {% endif %}    
-</div>
--->
 
 <div class="panel-group" id="accordion">
 
@@ -60,8 +44,9 @@ $(document).ready(function() {
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
+                <span class="glyphicon glyphicon-link"></span> 
                 <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseRT">
-                <span class="glyphicon glyphicon-link"></span> Related Terms <small>{{ term.related_terms|length}}</small></a>
+                Related Terms <small>{{ term.related_terms|length}}</small></a>
             </h4>
         </div>
         <div id="collapseRT" class="panel-collapse collapse">
@@ -77,8 +62,9 @@ $(document).ready(function() {
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
+                <span class="glyphicon glyphicon-link"></span>
                 <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseLinks">
-                    <span class="glyphicon glyphicon-link"></span> Links <small>{{ term.links.all()|length}}</small>
+                    Links <small>{{ term.links.all()|length}}</small>
                 </a>
             </h4>
         </div>
@@ -94,8 +80,9 @@ $(document).ready(function() {
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
+                <span class="glyphicon glyphicon-file"></span>
                 <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseDocuments">
-                    <span class="glyphicon glyphicon-file"></span> Documents <small>{{ term.documents|length }}</small>
+                    Documents <small>{{ term.documents|length }}</small>
                 </a>
             </h4>
         </div>
@@ -132,8 +119,9 @@ $(document).ready(function() {
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
+                <span class="glyphicon glyphicon-cog"></span>
                 <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseBR{{ rule.id }}">
-                    <span class="glyphicon glyphicon-cog"></span> Rule: {{ rule.name }} <small>{{ rule.identifier }}</small>
+                    Rule: {{ rule.name }} <small>{{ rule.identifier }}</small>
                 </a>
             </h4>
         </div>
@@ -143,7 +131,12 @@ $(document).ready(function() {
                 <p class="list-group-item-text">{{ rule.description|markdown }}</p>
                 <h4>Notes</h4>
                 <p class="list-group-item-text">{{ rule.notes|markdown }}</p>
-                <small>Created On: {{ moment(rule.created_on).calendar() }}, Last Updated: {{ moment(rule.updated_on).calendar() }}</small>
+                {% for note in rule.comments %}
+                    <p>{{ note.note|markdown }}</p>
+                    <small>Created: {{ moment(note.created_on).calendar() }}, Updated: {{ moment(note.updated_on).calendar() }}</small>
+                    <hr/>
+                {% endfor %}
+                <small>Created: {{ moment(rule.created_on).calendar() }}, Updated: {{ moment(rule.updated_on).calendar() }}</small>
             </div>
         </div>
     </div>
@@ -152,8 +145,9 @@ $(document).ready(function() {
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
+                <span class="glyphicon glyphicon-king"></span>
                 <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
-                    <span class="glyphicon glyphicon-king"></span> Assets <small>{{ term.columns|length }}</small>
+                    Assets <small>{{ term.columns|length }}</small>
                 </a>
             </h4>
         </div>

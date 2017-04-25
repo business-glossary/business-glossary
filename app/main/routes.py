@@ -203,9 +203,31 @@ def show_term(selected_term=None, selected_term_name=None):
         if not term:
             return render_template('errors/404.html')
         else:
-            return render_template('show_term.html', term=Term.query.filter(func.lower(Term.name) == func.lower(selected_term_name)).first())
+            return render_template('show_term.html',
+                                   term=Term.query.filter(func.lower(Term.name) == \
+                                                          func.lower(selected_term_name)).first())
     else:
-        return render_template('show_term.html', term=Term.query.filter_by(id=selected_term).first())
+        return render_template('show_term.html',
+                               term=Term.query.filter_by(id=selected_term).first())
+
+
+@main.route('/new_term/<int:selected_term>')
+@main.route('/new_term/<string:selected_term_name>')
+def show_new_term(selected_term=None, selected_term_name=None):
+    '''Present the new term view'''
+
+    if selected_term is None:
+        term = Term.query.filter(func.lower(Term.name) == func.lower(selected_term_name)).first()
+        if not term:
+            return render_template('errors/404.html')
+        else:
+            return render_template('show_new_term.html',
+                                   term=Term.query.filter(func.lower(Term.name) == \
+                                                          func.lower(selected_term_name)).first())
+    else:
+        return render_template('show_new_term.html',
+                               term=Term.query.filter_by(id=selected_term).first())
+
 
 @main.route('/documents/<int:selected_term>')
 def show_documents(selected_term):

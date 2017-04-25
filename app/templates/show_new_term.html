@@ -1,0 +1,219 @@
+{% extends "layout.html" %}
+{% block head %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('[id^=mdtable_]').each(function() {
+        var innerElements = document.getElementById(this.id).getElementsByTagName("table");
+        for (var j = 0; j < innerElements.length; j++) {
+            innerElements[j].className = "table table-bordered";
+        }
+    });
+});
+</script>
+{% endblock %}
+{% block content %}
+<div class='page-header term-page'>
+    {% if current_user.is_active %}
+        <div class='btn-toolbar pull-right'>
+            <a href="{{ url_for('term_bp.edit_term', id=term.id) }}" class="btn btn-primary btn-circle" role="button"><i class="glyphicon glyphicon-pencil"></i></a>
+            <a href="{{ url_for('term_bp.delete_term', id=term.id) }}" class="btn btn-danger btn-circle" role="button"><i class="glyphicon glyphicon-trash"></i></a>              
+        </div>
+    {% endif %}
+    <h1>{{ term.name }}</h1>
+    <h5 class="term-description">{{ term.short_description }}</h5>
+    {% for c in term.categories %}
+        <span class="label label-default">{{ c.name }}</span>
+    {% endfor %}    
+    {% if term.status.status == 'Approved' %}
+        <span class="label label-success">{{ term.status.status }}</span>
+    {% elif term.status.status == 'Draft' %}
+        <span class="label label-warning">{{ term.status.status }}</span>
+    {% endif %}    
+</div>
+
+{% set active_page = "term" %}
+
+<p class="lead"/>
+
+{{ term.long_description|markdown }}
+<div class="well well-sm">Abbreviation: {{ term.abbreviation }}</div>
+
+<!--
+<div class="panel-group">
+    <div class="panel panel-default">
+        <div class="panel-body">{{ term.long_description|markdown }}</div>
+    </div>
+    {% if term.abbreviation %}
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="col-md-2"><strong>Abbreviation</strong></div>
+                <div class="col-md-10">{{ term.abbreviation }}</div>
+            </div>
+        </div>
+    {% endif %}    
+</div>
+-->
+
+<div class="panel-group" id="accordion">
+
+    {% if term.related_terms %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseRT">
+                <span class="glyphicon glyphicon-link"></span> Related Terms <small>{{ term.related_terms|length}}</small></a>
+            </h4>
+        </div>
+        <div id="collapseRT" class="panel-collapse collapse">
+            <div class="panel-body">
+                {% for rt in term.related_terms %}
+                    <a href="{{ url_for('main.show_term', selected_term=rt.id) }}">{{ rt.name }}</a>{% if not loop.last %},{% endif %}
+                {% endfor %}                
+            </div>
+        </div>
+    </div>    
+    {% endif %}
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseLinks">
+                    <span class="glyphicon glyphicon-link"></span> Links <small>{{ term.links.all()|length}}</small>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseLinks" class="panel-collapse collapse">
+            <div class="panel-body">
+                {% for link in term.links.all() %}
+                    <a href="{{ link.address }}">{{ link.text }}</a><br/>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseDocuments">
+                    <span class="glyphicon glyphicon-file"></span> Documents <small>{{ term.documents|length }}</small>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseDocuments" class="panel-collapse collapse">
+            <!--div class="panel-body"-->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for document in term.documents %}
+                        <tr>
+                            <td><a href="/static/files/{{ document.path }}">{{ document.name }}</a></td>
+                            <td>{{ document.description }}</td>
+                            <td>
+                                {% for t in document.types %}
+                                    <span class="label label-default">{{ t.type }}</span>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            <!--/div-->
+        </div>
+    </div>
+
+    {% for rule in term.rules %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseBR{{ rule.id }}">
+                    <span class="glyphicon glyphicon-cog"></span> Rule: {{ rule.name }} <small>{{ rule.identifier }}</small>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseBR{{ rule.id }}" class="panel-collapse collapse">
+            <div class="panel-body">
+                <h4>Description</h4>
+                <p class="list-group-item-text">{{ rule.description|markdown }}</p>
+                <h4>Notes</h4>
+                <p class="list-group-item-text">{{ rule.notes|markdown }}</p>
+                <small>Created On: {{ moment(rule.created_on).calendar() }}, Last Updated: {{ moment(rule.updated_on).calendar() }}</small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+                    <span class="glyphicon glyphicon-king"></span> Assets <small>{{ term.columns|length }}</small>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseFour" class="panel-collapse collapse">
+            <div class="panel-body">
+                <table class="table list-group-item-text">
+                    <thead>
+                        <tr>
+                            <th>Location</th>
+                            <th>Table</th>
+                            <th>Column</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in term.columns %}
+                        <tr>
+                            <td><a href="{{ url_for('main.show_location_details', selected_location=a.table.location.id) }}">{{ a.table.location.name }}</a></td>
+                            <td><a href="{{ url_for('main.show_table_details', selected_table=a.table.id) }}">{{ a.table.name }}</a></td>
+                            <td><a href="{{ url_for('main.show_table_columns', selected_table=a.table.id) }}">{{ a.name }}</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!--
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><span class="glyphicon glyphicon-calendar">
+            </span> Rules <small>{{ term.rules|length }}</small></a>
+        </h4>
+    </div>
+    <div id="collapseThree" class="panel-collapse collapse">
+        <div class="panel-body">
+            <table class="table list-group-item-text">
+                <thead>
+                    <tr>
+                        <th>Identifier</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for rule in term.rules %}
+                    <tr>            
+                        <td><a href="{{ url_for('main.show_rule', selected_rule=rule.id) }}">{{ rule.identifier }}</a></td>
+                        <td>{{ rule.name }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+-->
+
+<small>Created: {{ moment(term.created_on).calendar() }}, Updated: {{ moment(term.updated_on).calendar() }}</small>
+<br/>
+{% endblock %}

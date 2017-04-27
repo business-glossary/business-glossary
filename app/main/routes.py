@@ -197,17 +197,19 @@ def profile():
 @main.route('/term/<int:selected_term>')
 @main.route('/term/<string:selected_term_name>')
 def show_term(selected_term=None, selected_term_name=None):
-    print(">>>>>", selected_term)
-    print(">>>>>", selected_term_name)
 
     if selected_term is None:
         term = Term.query.filter(func.lower(Term.name) == func.lower(selected_term_name)).first()
         if not term:
             return render_template('errors/404.html')
         else:
-            return render_template('show_term.html', term=Term.query.filter(func.lower(Term.name) == func.lower(selected_term_name)).first())
+            return render_template('show_term.html',
+                                   term=Term.query.filter(func.lower(Term.name) == \
+                                                          func.lower(selected_term_name)).first())
     else:
-        return render_template('show_term.html', term=Term.query.filter_by(id=selected_term).first())
+        return render_template('show_term.html',
+                               term=Term.query.filter_by(id=selected_term).first())
+
 
 @main.route('/documents/<int:selected_term>')
 def show_documents(selected_term):

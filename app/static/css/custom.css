@@ -31,6 +31,10 @@ body {
     font-size: 11px;
 }
 
+.term-description {
+    line-height: 1.5;
+}
+
 h1 { font-size: 24px; font-weight: normal}
 
 h2 { font-size: 22px; }
@@ -142,4 +146,84 @@ fieldset[disabled] .navbar-inverse .btn-link:hover,
 .navbar-inverse .btn-link[disabled]:focus,
 fieldset[disabled] .navbar-inverse .btn-link:focus {
     color: #444444
+}
+
+/* Increase the spacing for the term short description */
+
+.term-description {
+    line-height: 1.5;
+}
+
+/* Circular buttons */
+
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.428571429;
+  border-radius: 15px;
+}
+.btn-circle.btn-lg {
+  width: 50px;
+  height: 50px;
+  padding: 10px 16px;
+  font-size: 18px;
+  line-height: 1.33;
+  border-radius: 25px;
+}
+.btn-circle.btn-xl {
+  width: 70px;
+  height: 70px;
+  padding: 10px 16px;
+  font-size: 24px;
+  line-height: 1.33;
+  border-radius: 35px;
+}
+
+/* Chevrons on the accordian panel title */
+
+.panel-heading .accordion-toggle:after {
+    /* Symbol for "opening" panels */
+    font-family: 'Glyphicons Halflings';  /* Essential for enabling glyphicon */
+    content: "\e114";    /* adjust as needed, taken from bootstrap.css */
+    float: right;        /* adjust as needed */
+    color: grey;       /* adjust as needed */
+}
+.panel-heading .accordion-toggle.collapsed:after {
+    /* Symbol for "collapsed" panels */
+    content: "\e080";    /* Adjust as needed, taken from bootstrap.css */
+}
+
+/* For the sticky footer */
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+.container .text-muted {
+  margin: 20px 0;
+}
+
+.lead {
+    margin-top: 20px;
+}
+
+.abbreviation {
+    font-size: 14pt;
+    font-family: "Roboto Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }

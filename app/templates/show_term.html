@@ -12,108 +12,202 @@ $(document).ready(function() {
 </script>
 {% endblock %}
 {% block content %}
-<div class="page-header">
+<div class='page-header term-page'>
+    {% if current_user.is_active %}
+        <div class='btn-toolbar pull-right'>
+            <a href="{{ url_for('term_bp.edit_term', id=term.id) }}" class="btn btn-primary btn-circle" role="button"><i class="glyphicon glyphicon-pencil"></i></a>
+            <a href="{{ url_for('term_bp.delete_term', id=term.id) }}" class="btn btn-danger btn-circle" role="button"><i class="glyphicon glyphicon-trash"></i></a>              
+        </div>
+    {% endif %}
     <h1>{{ term.name }}</h1>
+    <p class="lead">{{ term.short_description }}</p>
+    <!--h5 class="term-description">{{ term.short_description }}</h5-->
+    {% for c in term.categories %}
+        <span class="label label-default">{{ c.name }}</span>
+    {% endfor %}    
+    {% if term.status.status == 'Approved' %}
+        <span class="label label-success">{{ term.status.status }}</span>
+    {% elif term.status.status == 'Draft' %}
+        <span class="label label-warning">{{ term.status.status }}</span>
+    {% endif %}
+    <!--span class="pull-right">{{ term.abbreviation }}</span-->
+    <span class="pull-right abbreviation">{{ term.abbreviation }}</span>
 </div>
 
 {% set active_page = "term" %}
-{% include "_term_tabs.html" %}
 
-<p class="lead"/>
+{{ term.long_description|markdown }}
 
-<div class="panel panel-default">
-    <div class="panel-heading">Term Details</div>
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="list-group">
-                    <div class="list-group-item">
-                        <h4 class="list-group-item-heading">Name</h4>
-                        <p class="list-group-item-text">{{ term.name }}</p>
-                    </div>
-                </div>
-                <div class="list-group">
-                    <div class="list-group-item">
-                        <h4 class="list-group-item-heading">Short Description</h4>
-                        <p class="list-group-item-text">{{ term.short_description }}</p>
-                    </div>
-                </div>
-                <div class="list-group">
-                    <div class="list-group-item">
-                        <div id="mdtable_1">
-                            <h4 class="list-group-item-heading">Long Description</h4>
-                            <p class="list-group-item-text">{{ term.long_description|markdown }}</p>
-                        </div>
-                    </div>                    
-                </div>
+<div class="panel-group" id="accordion">
+
+    {% if term.related_terms %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <span class="glyphicon glyphicon-link"></span> 
+                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseRT">
+                Related Terms <small>{{ term.related_terms|length}}</small></a>
+            </h4>
+        </div>
+        <div id="collapseRT" class="panel-collapse collapse">
+            <div class="panel-body">
+                {% for rt in term.related_terms %}
+                    <a href="{{ url_for('main.show_term', selected_term=rt.id) }}">{{ rt.name }}</a>{% if not loop.last %},{% endif %}
+                {% endfor %}                
             </div>
-        </div><!-- row -->
-        <div class="row">
-            <div class="col-md-6">
-                <div class="list-group">
-                    {% if term.related_terms %}
-                    <div class="list-group-item">
-                        <h4 class="list-group-item-heading">Related Terms</h4>
-                        <p class="list-group-item-text">
-                            {% for rt in term.related_terms %}
-                            <a href="{{ url_for('main.show_term', selected_term=rt.id) }}">{{ rt.name }}</a>{% if not loop.last %},{% endif %}
-                            {% endfor %}
-                        </p>
-                    </div>
-                    {% endif %}
-                    {% if term.links %}
-                    <div class="list-group-item">
-                        <h4 class="list-group-item-heading">Links</h4>
-                        {% for c in term.links.all() %}
-                        <p class="list-group-item-text"><a href="{{ c.address }}">{{ c.text }}</a></p>
+        </div>
+    </div>    
+    {% endif %}
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <span class="glyphicon glyphicon-link"></span>
+                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseLinks">
+                    Links <small>{{ term.links.all()|length}}</small>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseLinks" class="panel-collapse collapse">
+            <div class="panel-body">
+                {% for link in term.links.all() %}
+                    <a href="{{ link.address }}">{{ link.text }}</a><br/>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <span class="glyphicon glyphicon-file"></span>
+                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseDocuments">
+                    Documents <small>{{ term.documents|length }}</small>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseDocuments" class="panel-collapse collapse">
+            <!--div class="panel-body"-->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for document in term.documents %}
+                        <tr>
+                            <td><a href="/static/files/{{ document.path }}">{{ document.name }}</a></td>
+                            <td>{{ document.description }}</td>
+                            <td>
+                                {% for t in document.types %}
+                                    <span class="label label-default">{{ t.type }}</span>
+                                {% endfor %}
+                            </td>
+                        </tr>
                         {% endfor %}
-                    </div>
-                    {% endif %}
-                    {% if term.abbreviation %}
-                    <div class="list-group-item">
-                        <h4 class="list-group-item-heading">Abbreviation</h4>
-                        <p class="list-group-item-text">{{ term.abbreviation }}</p>
-                    </div>
-                    {% endif %}
-                    <div class="list-group-item">
-                        <h4 class="list-group-item-heading">Categories</h4>
-                        <p class="list-group-item-text">
-                            {% for c in term.categories %}
-                            <span class="label label-default">{{ c.name }}</span>
-                            {% endfor %}
-                        </p>
-                    </div>
-                    <div class="list-group-item">
-                        <h4 class="list-group-item-heading">Status</h4>
-                        {% if term.status.status == 'Approved' %}
-                        <p class="list-group-item-text"><span class="label label-success">{{ term.status.status }}</span></p>
-                        {% elif term.status.status == 'Draft' %}
-                        <p class="list-group-item-text"><span class="label label-warning">{{ term.status.status }}</span></p>
-                        {% endif %}
-                    </div>
-                </div>
+                    </tbody>
+                </table>
+            <!--/div-->
+        </div>
+    </div>
+
+    {% for rule in term.rules %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <span class="glyphicon glyphicon-cog"></span>
+                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseBR{{ rule.id }}">
+                    Rule: {{ rule.name }} <small>{{ rule.identifier }}</small>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseBR{{ rule.id }}" class="panel-collapse collapse">
+            <div class="panel-body">
+                <h4>Description</h4>
+                <p class="list-group-item-text">{{ rule.description|markdown }}</p>
+                <h4>Notes</h4>
+                <p class="list-group-item-text">{{ rule.notes|markdown }}</p>
+                {% for note in rule.comments %}
+                    <p>{{ note.note|markdown }}</p>
+                    <small>Created: {{ moment(note.created_on).calendar() }}, Updated: {{ moment(note.updated_on).calendar() }}</small>
+                    <hr/>
+                {% endfor %}
+                <small>Created: {{ moment(rule.created_on).calendar() }}, Updated: {{ moment(rule.updated_on).calendar() }}</small>
             </div>
-            <div class="col-md-6">              
-                <div class="list-group">
-                    <div class="list-group-item">
-                        <h4 class="list-group-item-heading">Owner</h4>
-                        <p class="list-group-item-text">{{ term.steward.name }}</p>
-                    </div>
-                    <div class="list-group-item">
-                        <h4 class="list-group-item-heading">Steward</h4>
-                        <p class="list-group-item-text">{{ term.steward.name }}</p>
-                    </div>
-                    <div class="list-group-item">
-                        <h4 class="list-group-item-heading">Created On</h4>
-                        <p class="list-group-item-text">{{ moment(term.created_on).calendar() }}</p>
-                    </div>
-                    <div class="list-group-item">
-                        <h4 class="list-group-item-heading">Last Updated</h4>
-                        <p class="list-group-item-text">{{ moment(term.updated_on).calendar() }}</p>
-                    </div>
-                </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <span class="glyphicon glyphicon-king"></span>
+                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+                    Assets <small>{{ term.columns|length }}</small>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseFour" class="panel-collapse collapse">
+            <div class="panel-body">
+                <table class="table list-group-item-text">
+                    <thead>
+                        <tr>
+                            <th>Location</th>
+                            <th>Table</th>
+                            <th>Column</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in term.columns %}
+                        <tr>
+                            <td><a href="{{ url_for('main.show_location_details', selected_location=a.table.location.id) }}">{{ a.table.location.name }}</a></td>
+                            <td><a href="{{ url_for('main.show_table_details', selected_table=a.table.id) }}">{{ a.table.name }}</a></td>
+                            <td><a href="{{ url_for('main.show_table_columns', selected_table=a.table.id) }}">{{ a.name }}</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-        </div><!-- row -->
-    </div><!-- panel body -->
-</div><!-- panel -->
+        </div>
+    </div>
+
+</div>
+
+<!--
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><span class="glyphicon glyphicon-calendar">
+            </span> Rules <small>{{ term.rules|length }}</small></a>
+        </h4>
+    </div>
+    <div id="collapseThree" class="panel-collapse collapse">
+        <div class="panel-body">
+            <table class="table list-group-item-text">
+                <thead>
+                    <tr>
+                        <th>Identifier</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for rule in term.rules %}
+                    <tr>            
+                        <td><a href="{{ url_for('main.show_rule', selected_rule=rule.id) }}">{{ rule.identifier }}</a></td>
+                        <td>{{ rule.name }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+-->
+
+<small>Created: {{ moment(term.created_on).calendar() }}, Updated: {{ moment(term.updated_on).calendar() }}</small>
+<br/>
 {% endblock %}

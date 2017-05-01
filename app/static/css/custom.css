@@ -164,6 +164,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
   font-size: 12px;
   line-height: 1.428571429;
   border-radius: 15px;
+  margin: 0 auto;  
 }
 .btn-circle.btn-lg {
   width: 50px;
@@ -180,6 +181,57 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
   font-size: 24px;
   line-height: 1.33;
   border-radius: 35px;
+}
+
+.glyphicon-ring {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 4px solid white;
+  color: white;
+  display: inline-table;
+  text-align: center;
+  height:60px;
+  font-size: 20px;  
+  line-height: 20px
+}
+
+/**CSS FOR ICON WITH NO BACKGROUND COLOR**/
+
+.glyphicon-ring .glyphicon-bordered {
+  font-size: 20px;
+  vertical-align: middle;
+  margin: 0 auto;
+  display: table-cell;
+}
+
+.glyphicon-white {
+  background: white;
+  color: black;
+    margin: 0 auto;
+  border: 4px solid black;
+}
+
+.glyphicon-lg {
+    font-size: 20px;
+    color: grey;
+}
+
+.glyphicon-grey {
+    color: grey;
+}
+
+.glyphicon-large {
+    min-height: 260px;
+    line-height: 260px;
+    font-size: 35px;
+    width: 1em;
+    display: block;
+    margin: -0.5em auto 0px;
+
+}
+.glyph-Column {
+    border: 1px solid grey;
 }
 
 /* Chevrons on the accordian panel title */
@@ -226,4 +278,53 @@ body {
 .abbreviation {
     font-size: 14pt;
     font-family: "Roboto Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#browsebutton {
+    background-color: white;
+}
+
+#my-file-selector {
+    display: none;
+}
+
+.table {
+    margin-bottom: 5px;
+}
+
+.actions {
+    white-space: nowrap;
+    width: 1px;
+    color: grey;
+}
+
+.actions .fa-lg {
+    font-size:16px;
+}
+
+.actions a {
+    color: #5cb85c;
+}
+
+.actions-success a {
+    color: #5cb85c;
+}
+
+.actions-danger a {
+    color: #d9534f
+}
+
+
+.btn-circ {
+    border-radius: 50% !important
+}
+
+
+.table-borderless > tbody > tr > td,
+.table-borderless > tbody > tr > th,
+.table-borderless > tfoot > tr > td,
+.table-borderless > tfoot > tr > th,
+.table-borderless > thead > tr > td,
+.table-borderless > thead > tr > th {
+    border: none;
 }

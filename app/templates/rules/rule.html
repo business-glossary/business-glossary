@@ -1,0 +1,25 @@
+{% from 'bootstrap/wtf.html' import form_field %}
+<form id="stepForm" name="stepForm" class="form" method="post">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title">
+    {% block title %}
+    {% endblock %}
+    </h4>
+  </div>
+  <div class="modal-body">
+    {{ form.hidden_tag() }}
+    {{ form_field(form.identifier) }}
+    {{ form_field(form.name) }}
+    {{ form_field(form.description, rows='5') }}
+    {{ form_field(form.notes, rows='10') }}
+  </div>
+  <div class="modal-footer">
+    {% block footer %}
+      {{ form.submit (class_="btn btn-success") }}
+      <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+    {% endblock %}
+  </div>
+</form>

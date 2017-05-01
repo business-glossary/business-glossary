@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block head %}
+  <link href="/admin/static/vendor/select2/select2.css?v=3.5.2" rel="stylesheet">
+  <link href="/admin/static/vendor/select2/select2-bootstrap3.css?v=1.4.6" rel="stylesheet">
+  <link href="/admin/static/vendor/bootstrap-daterangepicker/daterangepicker-bs3.css?v=1.3.22" rel="stylesheet">
+{% endblock head %}  
+{% block title %}
+Related Terms
+{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class='btn-toolbar pull-right'>
+        <a href="javascript:{}" onclick="document.getElementById('related_term_form').submit(); return false;" class="btn btn-sm btn-success" role="button">
+            <i class="fa fa-check"></i>
+        </a>
+        <a href="{{ url_for('main.show_term', selected_term=term.id) }}" class="btn btn-sm btn-danger" role="button"><i class="fa fa-times"></i></a>
+    </div>
+    <h1>Related Terms</h1>
+</div>
+
+<div class="form-area">
+    <form method="post" role="form" id="related_term_form">
+        {{ form.csrf_token }}
+        <div class="form-group required">
+            <label class="control-label" for="terms">Select any terms that are related to {{ term.name }}</label>
+            {{ form.terms(class_="form-control", id="terms", **{'data-role': "select2"}) }}
+        </div>
+        <hr/>
+    </form>
+</div>
+
+
+{% endblock %}
+{% block footer %}
+<script src="/admin/static/vendor/select2/select2.min.js?v=3.5.2" type="text/javascript"></script>
+<script src="/admin/static/admin/js/form.js?v=1.0.1"></script>
+{% endblock footer %}

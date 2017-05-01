@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block head %}
+  <link href="/admin/static/vendor/select2/select2.css?v=3.5.2" rel="stylesheet">
+  <link href="/admin/static/vendor/select2/select2-bootstrap3.css?v=1.4.6" rel="stylesheet">
+  <link href="/admin/static/vendor/bootstrap-daterangepicker/daterangepicker-bs3.css?v=1.3.22" rel="stylesheet">
+{% endblock head %}  
+{% block title %}
+Upload Document
+{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class='btn-toolbar pull-right'>
+        <a href="javascript:{}" onclick="document.getElementById('document_upload').submit(); return false;" class="btn btn-sm btn-success" role="button">
+            <i class="fa fa-check"></i>
+        </a>
+        <a href="{{ url_for('main.show_term', selected_term=term_id) }}" class="btn btn-sm btn-danger" role="button"><i class="fa fa-times"></i></a>
+    </div>
+    <h1>Upload a document</h1>    
+</div>
+<div class="form-area">
+    <form method="post" id="document_upload" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        <!--
+        <div class="form-group">
+            {{ form.document_name.label }}
+            {{ form.document_name(class_="form-control") }}
+        </div>        
+        <div class="form-group">
+            {{ form.document_description.label }}
+            {{ form.document_description(class_="form-control") }}
+        </div>        
+        -->
+        {{ wtf.form_field(form.document_name) }}
+        {{ wtf.form_field(form.document_description) }}
+
+        <div class="form-group {% if form.document.errors %} has-error{% endif -%}
+                               {%- if form.document.flags.required %} required{% endif -%}
+        ">
+            <label class="control-label" for="document_type">Select a document</label>
+            <div class="input-group">
+                <label id="browsebutton" class="btn btn-default input-group-addon" for="my-file-selector">
+                    {{ form.document(id="my-file-selector") }}
+                    Browse...
+                </label>
+                <input type="text" class="form-control" readonly>
+            </div>
+            {%- if form.document.errors %}
+                {%- for error in form.document.errors %}
+                    <p class="help-block">{{ error }}</p>
+                {%- endfor %}
+            {%- elif form.document.description -%}
+                <p class="help-block">{{ form.document.description|safe }}</p>
+            {%- endif %}             
+        </div>
+
+        <div class="form-group {% if form.document_type.errors %} has-error{% endif -%}
+                               {%- if form.document_type.flags.required %} required{% endif -%}
+        ">
+            <label class="control-label" for="document_type">Type</label>
+            {{ form.document_type(class_="form-control", **{'data-role': "select2"}) }}
+            {%- if form.document_type.errors %}
+                {%- for error in form.document_type.errors %}
+                    <p class="help-block">{{ error }}</p>
+                {%- endfor %}
+            {%- elif form.document_type.description -%}
+                <p class="help-block">{{ form.document_type.description|safe }}</p>
+            {%- endif %}
+        </div>
+        <hr/>
+    </form>
+</div>
+{% endblock %}
+{% block footer %}
+<script src="/admin/static/vendor/select2/select2.min.js?v=3.5.2" type="text/javascript"></script>
+<script src="/admin/static/admin/js/form.js?v=1.0.1"></script>
+<script type="text/javascript">
+$(document).on('change', '#browsebutton :file', function() {
+    var input = $(this),
+        numFiles = input.get(0).files ? input.get(0).files.length : 1,
+        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+    input.trigger('fileselect', [numFiles, label]);
+});
+
+$(document).ready( function() {
+    $('#browsebutton :file').on('fileselect', function(event, numFiles, label) {
+        var input = $(this).parents('.input-group').find(':text'),
+            log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+        if( input.length ) {
+            input.val(log);
+        } else {
+            if( log ) alert(log);
+        }
+
+    });
+});
+</script>
+{% endblock footer %}

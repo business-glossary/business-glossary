@@ -210,8 +210,8 @@ class Category(db.Model):
 
 class Link(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(100), unique=True, nullable=False)
-    address = db.Column(db.String(200), unique=True, nullable=False)
+    text = db.Column(db.String(100), nullable=False)
+    address = db.Column(db.String(200), nullable=False)
     term_id = db.Column(db.Integer, db.ForeignKey('term.id'))
 
     def __repr__(self):
@@ -365,7 +365,7 @@ class DocumentType(db.Model):
 @listens_for(Document, 'after_delete')
 def del_file(mapper, connection, target):
     '''Delete hooks for models, delete files if models are getting deleted'''
-    print("file_path=", file_path)
+    print("file_path=%s", file_path)
 
     if target.path:
         try:

@@ -179,6 +179,7 @@ def do_backup():
     dump_yaml.dump(join(dirname(BASE_DIR), 'bg_interface', filename))
     return render_template('backup/do_backup.html', filename=filename)
 
+
 @main.route('/download/<string:selected_filename>/')
 def download(selected_filename):
     try:

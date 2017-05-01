@@ -12,6 +12,9 @@ from flask_moment import Moment
 from flask_mail import Mail
 from flask_bootstrap import Bootstrap
 
+from flask_wtf.csrf import CSRFProtect
+
+
 ################
 #### config ####
 ################
@@ -27,6 +30,7 @@ moment = Moment(app)
 mail = Mail(app)
 md = Markdown(app, extensions=['fenced_code', 'tables', 'abbr'])
 pages = FlatPages(app)
+csrf = CSRFProtect(app)
 
 print
 print("BG_SETTINGS=%s" % os.getenv('BG_SETTINGS'))

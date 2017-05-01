@@ -5,9 +5,10 @@ print("BASE_DIR=" + BASE_DIR)
 
 class Config(object):
     '''Define the base configuration object'''
-    SECRET_KEY = 'enter your secret key here'
+    SECRET_KEY = 'This is a new secret key'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     TERMS_PER_PAGE = 5
+    CSRF_ENABLED = True
 
     MAIL_SERVER = 'mail.example.com'
     MAIL_PORT = 25

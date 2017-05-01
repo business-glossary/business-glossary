@@ -185,6 +185,6 @@ def dump(file_name):
     with open(file_name, 'w') as outfile:
         yaml.dump(file_contents, outfile, default_flow_style=False, explicit_start=True,
                   allow_unicode=True)
-                  
+
     LOGGER.info("File %s created", file_name)
     LOGGER.info("Dump process ended")

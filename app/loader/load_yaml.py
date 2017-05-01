@@ -17,11 +17,6 @@ LOGGER = logging.getLogger("business-glossary.load_data")
 #file_path = join(dirname(BASE_DIR), 'bg_interface')
 #file_name = os.path.join(file_path, "rules.yaml")
 
-def custom_str_constructor(loader, node):
-    return loader.construct_scalar(node).encode('utf-8')
-    
-yaml.add_constructor(u'tag:yaml.org,2002:str', custom_str_constructor)
-
 def remove_key(source_dict, *keys):
     '''Remove element(s) from a dictionary'''
     new_dict = dict(source_dict)
@@ -57,7 +52,9 @@ def add_rule(rule):
             term.rules.append(r)
             LOGGER.info("Added rule %s to term %s", r.name, term_to_associate)
         else:
-            LOGGER.warning("Could not find the term %s to associate with rule %s", term_to_associate, rule['name'])
+            LOGGER.warning("Could not find the term %s to associate with rule %s",
+                           term_to_associate,
+                           rule['name'])
 
     db.session.commit()
 
@@ -65,8 +62,8 @@ def add_rule(rule):
 def add_term(term):
     '''Add a term from a dict'''
 
-    if db.session.query(Term.id).filter_by(term=term['term']).scalar():
-        LOGGER.warning("Term %s already exists", term['term'])
+    if db.session.query(Term.id).filter_by(name=term['name']).scalar():
+        LOGGER.warning("Term %s already exists", term['name'])
         return
 
     term_to_load = remove_key(term, 'owner', 'steward', 'status', 'categories')
@@ -81,7 +78,7 @@ def add_term(term):
     term_to_load['status'] = status
 
     record = Term(**term_to_load)
-    LOGGER.info("Loaded term %s", term['term'])
+    LOGGER.info("Loaded term %s", term['name'])
 
     for category_to_associate in term['categories']:
 
@@ -91,9 +88,11 @@ def add_term(term):
         # If the term is found associate with the rule
         if category:
             record.categories.append(category)
-            LOGGER.info("Added category %s to term %s", record.term, category_to_associate)
+            LOGGER.info("Added category %s to term %s", record.name, category_to_associate)
         else:
-            LOGGER.warning("Added non-existent category %s to associate with term %s", category_to_associate, term['term'])
+            LOGGER.warning("Added non-existent category %s to associate with term %s",
+                           category_to_associate,
+                           term['name'])
             category = Category(name=category_to_associate)
             db.session.add(category)
 

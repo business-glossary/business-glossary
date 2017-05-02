@@ -118,8 +118,7 @@ $(document).ready(function() {
                             <th>Type</th>
                             <th class="actions">
                                 {% if current_user.is_active %}
-                                <a href="{{ url_for('term_bp.upload_document', term_id=term.id) }}" ><i class="fa fa-lg fa-plus-circle" aria-hidden="true">
-                                <!--span class="glyphicon icon-success glyphicon-plus"></span--></a>
+                                <a href="{{ url_for('term_bp.upload_document', term_id=term.id) }}"><i class="fa fa-lg fa-plus-circle" aria-hidden="true"></i></a>
                                 {% endif %}
                             </th>
                         </tr>
@@ -133,7 +132,6 @@ $(document).ready(function() {
                                 {% for t in document.types %}
                                     <span class="label label-default">{{ t.type }}</span>
                                 {% endfor %}
-
                             </td>
                             <td class="actions-danger" data-th="">
                                 {% if current_user.is_active %}

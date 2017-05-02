@@ -21,7 +21,7 @@ def load_term_status(file_name):
     '''
     LOGGER.info("Loading term status")
 
-    with open(file_name, 'rb') as csvfile:
+    with open(file_name, 'rt') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
         for row in reader:
             LOGGER.info("Loaded %s", row['status'])
@@ -41,7 +41,7 @@ def load_categories(file_name):
     '''
     LOGGER.info("Loading categories")
 
-    with open(file_name, 'rb') as csvfile:
+    with open(file_name, 'rt') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
         for row in reader:
             LOGGER.info("Loaded %s", row['category'])
@@ -63,7 +63,7 @@ def load_document_types(file_name):
     '''
     LOGGER.info("Loading document types")
 
-    with open(file_name, 'rb') as csvfile:
+    with open(file_name, 'rt') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
         for row in reader:
             LOGGER.info("Loaded %s", row['document_type'])
@@ -84,7 +84,7 @@ def load_persons(file_name):
     '''
     LOGGER.info("Loading people")
 
-    with open(file_name, 'rb') as csvfile:
+    with open(file_name, 'rt') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
         for row in reader:
             LOGGER.info("Loaded %s", row['person'])
@@ -104,7 +104,7 @@ def load_terms(file_name):
     '''
     LOGGER.info("Loading terms")
 
-    with open(file_name, 'rb') as csvfile:
+    with open(file_name, 'rt') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
         for row in reader:
             LOGGER.info("Loaded %s", row['name'])
@@ -135,7 +135,7 @@ def load_term_categories(file_name):
     '''
     LOGGER.info("Loading term to category associations")
 
-    with open(file_name, 'rb') as csvfile:
+    with open(file_name, 'rt') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
         for row in reader:
             LOGGER.info("Associated %s with the %s category", row['term'], row['category'])
@@ -156,7 +156,7 @@ def load_links(file_name):
     '''
     LOGGER.info("Loading links")
 
-    with open(file_name, 'rb') as csvfile:
+    with open(file_name, 'rt') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
         for row in reader:
             LOGGER.info("Loaded %s", row['text'])
@@ -183,7 +183,7 @@ def load_rules(file_name):
     '''
     LOGGER.info("Loading rules")
 
-    with open(file_name, 'rb') as csvfile:
+    with open(file_name, 'rt') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
         for row in reader:
 

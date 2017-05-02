@@ -132,6 +132,7 @@ def delete_term(id):
 #########################################################################################
 
 @term_bp.route('/term/<int:term_id>/document/upload', methods=['GET', 'POST'])
+@login_required
 def upload_document(term_id):
     '''Upload a document to a term'''
     form = DocumentForm()
@@ -174,6 +175,7 @@ def upload_document(term_id):
 
 
 @term_bp.route('/document/delete/<int:document_id>')
+@login_required
 def delete_document(document_id):
     '''
     Delete a document from the database and on disk
@@ -203,6 +205,7 @@ def delete_document(document_id):
 #########################################################################################
 
 @term_bp.route('/term/<int:term_id>/rules/create', methods=['GET', 'POST'])
+@login_required
 def create_rule(term_id):
     term = Term.query.filter(Term.id == term_id).first_or_404()
     form = RuleForm()
@@ -223,6 +226,7 @@ def create_rule(term_id):
 
 
 @term_bp.route('/rule/edit/<int:rule_id>', methods=['GET', 'POST'])
+@login_required
 def edit_rule(rule_id):
     #term = Term.query.filter(Term.id == term_id).first_or_404()
     rule = Rule.query.filter(Rule.id == rule_id).first_or_404()

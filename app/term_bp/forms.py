@@ -16,7 +16,7 @@ class TermForm(FlaskForm):
     short_description = TextAreaField('Short Description',
                                       validators=[DataRequired('Please enter a short description.')])
     long_description = TextAreaField('Long Description', validators=[DataRequired('Please enter a long description.')])
-    abbreviation = StringField('Abbrevation', validators=[DataRequired('Please enter an abbreviation.')])
+    abbreviation = StringField('Abbrevation')
     categories = QuerySelectMultipleField(query_factory=lambda: Category.query.all(),
                                           get_label="name",
                                           widget=Select2Widget())
@@ -71,6 +71,7 @@ class RelatedTermForm(FlaskForm):
     '''
     Form for entering related links
     '''
-    terms = QuerySelectMultipleField(query_factory=lambda: Term.query.all(),
-                                     get_label="name")
+    terms = QuerySelectMultipleField(get_label="name")
+#    terms = QuerySelectMultipleField(query_factory=lambda: Term.query.order_by(Term.name).all(),
+ #                                    get_label="name")
     submit = SubmitField("Submit")

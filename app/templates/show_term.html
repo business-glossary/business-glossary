@@ -31,7 +31,9 @@ $(document).ready(function() {
     {% elif term.status.status == 'Draft' %}
         <span class="label label-warning">{{ term.status.status }}</span>
     {% endif %}
+    {% if term.abbreviation %}
     <span class="pull-right abbreviation">{{ term.abbreviation }}</span>
+    {% endif %}
 </div>
 
 {% set active_page = "term" %}

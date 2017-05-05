@@ -335,44 +335,65 @@ def add_related_term(term_id):
 
     term = Term.query.get_or_404(term_id)
     print("\n")
-    print(term.related_terms)
-    print("\n")
+    print("Existing related terms: %s" % term.related_terms)
     form = RelatedTermForm(terms=term.related_terms)
+    print("setup my query")
+    my_query = Term.query.filter(Term.id != term_id).order_by(Term.name)
+    print("add my query")
+    form.terms.query = my_query
+    print("my query done")
+
+    print("here is query")
+    print(form.terms.query)
+    print("here is query_factory")
+    print(form.terms.query_factory)
 
     if form.validate_on_submit():
 
-        print(form.terms.data)
+        print("Forms data: %s" % form.terms.data)
 
-        if form.terms.data:
-            term = Term.query.filter_by(id=term_id).first()
+        removed = list(set(term.related_terms).difference(form.terms.data))
+        added = list(set(form.terms.data).difference(term.related_terms))
 
-            term.related_terms = form.terms.data
-            # Loop through the items selected in the list
-            #for related_term in form.terms.data:
-            #    print("term_name=%s" % related_term)
-            #    term.related_terms.append(related_term)
+        print("XXX")
+        print("removed: %s" % list(set(term.related_terms).difference(form.terms.data)))
+        print("added: %s" % list(set(form.terms.data).difference(term.related_terms)))
+        print("same: %s" % set(term.related_terms).intersection(form.terms.data))
+        print("list set %s" % list(set(term.related_terms)- set(form.terms.data)))
+        print("XXX\n")
 
-            db.session.commit()
-        else:
-            print("Nothing to do, form was empty.")
+        for removed_term in removed:
+            term.unrelate(removed_term)
+            print("Unrelated %s" % removed_term)
 
-        try:
-            # db.session.add(link)
-            # db.session.commit()
-            print("Trying to add relationship")
-        except exc.IntegrityError as ex:
-            # TODO: Return messsage to an error page?
-            # return render_to_response("template.html", {"message": e.message})
-            # Constraints etc.
-            print(ex)
-        except exc.OperationalError as ex:
-            # TODO: Return messsage to an error page?
-            # Database is locked or something
-            print(ex)
-        except Exception as ex:
-            # In case link name already exists
-            print(ex)
-            flash('Error: link name already exists.')
+        for added_term in added:
+            term.relate(added_term)
+            print("Related %s" % added_term)
+
+        #term = Term.query.filter_by(id=term_id).first()
+
+        # term.related_terms = form.terms.data
+        # Loop through the items selected in the list
+        #for related_term in form.terms.data:
+        #    print("term_name=%s" % related_term)
+        #    term.related_terms.append(related_term)
+
+        print("New related terms: %s" % term.related_terms)
+
+        print("This term: %s" % term.name)
+        print("\n")
+
+        for rterm in term.related_terms:
+            print("rterm.name: %s" % rterm.name)
+            for rtermr in rterm.related_terms:
+                print("The related terms' related terms:")
+                print("  rterm.name: %s" % rterm.name)
+                print("  rtermr.name: %s" % rtermr.name)
+                if rtermr.name == term.name:
+                    print("yes it's on the list")
+
+        print("\n")
+        db.session.commit()
 
         # Redirect to term page
         return redirect(url_for('main.show_term', selected_term=term_id))

@@ -86,7 +86,10 @@ term_to_term_relationship = db.Table('term_to_term_relationship',
                                      db.Column('related_term_id',
                                                db.Integer,
                                                db.ForeignKey('term.id'),
-                                               primary_key=True))
+                                               primary_key=True),
+                                     db.UniqueConstraint('term_id',
+                                                         'related_term_id',
+                                                         name='unique_related_terms'))
 
 class Term(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -118,13 +121,24 @@ class Term(db.Model):
                                     secondary=term_to_term_relationship,
                                     primaryjoin=id == term_to_term_relationship.c.term_id,
                                     secondaryjoin=id == term_to_term_relationship.c.related_term_id,
-                                    backref="related_to")
+                                    back_populates="related_terms",
+                                    order_by="Term.name")
 
     created_on = db.Column(db.DateTime,
                            default=datetime.datetime.utcnow)
     updated_on = db.Column(db.DateTime,
                            default=datetime.datetime.utcnow,
                            onupdate=datetime.datetime.utcnow)
+
+    def relate(self, term):
+        if term not in self.related_terms:
+            self.related_terms.append(term)
+            term.related_terms.append(self)
+
+    def unrelate(self, term):
+        if term in self.related_terms:
+            self.related_terms.remove(term)
+            term.related_terms.remove(self)
 
     def __repr__(self):
         return self.name

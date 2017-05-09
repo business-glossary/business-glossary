@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block head %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" rel="stylesheet">
+{% endblock head %}  
+{% block title %}
+Related Terms
+{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class='btn-toolbar pull-right'>
+        <a href="javascript:{}" onclick="document.getElementById('asset_form').submit(); return false;" class="btn btn-sm btn-success" role="button">
+            <i class="fa fa-check"></i>
+        </a>
+        <a href="{{ url_for('main.show_term', selected_term=term.id) }}" class="btn btn-sm btn-danger" role="button"><i class="fa fa-times"></i></a>
+    </div>
+    <h1>Related Assets</h1>
+</div>
+
+<div class="form-area">
+    <form method="post" role="form" id="asset_form">
+        {{ form.csrf_token }}
+        <div class="form-group required">
+            <label class="control-label" for="columns">Select any assets that are related to {{ term.name }}</label>
+            {{ form.columns(class_="form-control") }}
+            {% for error in form.columns.errors %}
+            <span class="label label-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <hr/>
+
+        {{ form.submit(class_="btn btn-primary") }}        
+    </form>
+</div>
+
+{% endblock %}
+{% block footer %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#columns").select2({
+        theme: "bootstrap"
+    });
+    $.fn.select2.defaults.set( "theme", "bootstrap" );
+    function formatRepo (repo) {
+        if (repo.loading) return repo.text;
+        var markup = "<div class='select2-result-repository clearfix'>" +
+        "<div class='col-md-3'>" + repo.location + "." +  repo.table + "</div>" +
+        "<div class='col-md-5'>" + repo.column + "</div>";           
+        "</div>" +
+        "</div>";
+        return markup;
+    }
+    function formatRepoSelection (repo) {
+        return repo.table + "." + repo.column;            
+    }
+    $("#columns").select2({
+        ajax: {
+            url: "{{ url_for('term_bp.autocomplete') }}",
+            dataType: 'json',
+            delay: 100,
+            data: function (params) {
+                return {
+                    q: params.term, // search term
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+                // parse the results into the format expected by Select2
+                // since we are using custom formatting functions we do not need to
+                // alter the remote JSON data, except to indicate that infinite
+                // scrolling can be used
+                params.page = params.page || 1;
+                return {
+                    results: data.matching_results,
+                    pagination: {
+                        more: (params.page * 30) < data.total_count
+                    }
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+        minimumInputLength: 1,
+        templateResult: formatRepo, // omitted for brevity, see the source of this page
+        templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+    });
+});
+</script>
+{% endblock %}

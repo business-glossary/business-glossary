@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block head %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-treeview/1.2.0/bootstrap-treeview.min.css" rel="stylesheet">
+{% endblock head %}  
+{% block title %}
+Related Terms
+{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class='btn-toolbar pull-right'>
+        <a href="javascript:{}" onclick="document.getElementById('asset_form').submit(); return false;" class="btn btn-sm btn-success" role="button">
+            <i class="fa fa-check"></i>
+        </a>
+        <a href="{{ url_for('main.show_term', selected_term=term.id) }}" class="btn btn-sm btn-danger" role="button"><i class="fa fa-times"></i></a>
+    </div>
+    <h1>Related Assets</h1>
+</div>
+
+<input type="text" name="autocomplete" id="asset" class="form-control input-lg" placeholder="Enter an asset name" />
+<p id="asset-name"></p>
+
+{% endblock %}
+{% block footer %}
+<script type="text/javascript">
+$(function() {
+
+    function split( val ) {
+      return val.split( /,\s*/ );
+    }
+
+    function extractLast( term ) {
+      return split( term ).pop();
+    }
+
+    //overriding jquery-ui.autocomplete .js functions
+    $.ui.autocomplete.prototype._renderMenu = function(ul, items) {
+        var self = this;
+        //table definitions
+        ul.append('<div class="container"><div class="table-responsive"><table class="table"><thead><tr><th>Location</th><th>Table</th><th>Column</th></tr></thead><tbody></tbody></table></div></div>');
+        $.each( items, function( index, item ) {
+            self._renderItemData(ul, ul.find("table tbody"), item );
+        });
+    };
+
+    $.ui.autocomplete.prototype._renderItemData = function(ul,table, item) {
+        return this._renderItem( table, item ).data( "ui-autocomplete-item", item );
+    };
+
+    $.ui.autocomplete.prototype._renderItem = function(table, item) {
+        return $( "<tr></tr>")
+            .data("item.autocomplete", item)
+            .append("<td >" + item.location + "</td>" + "<td>" + item.table + "</td>" + "<td>" + item.column + "</td>" )
+            .appendTo(table);
+    };
+
+	$("#asset").autocomplete({
+		source: function(request, response) {
+			$.getJSON("{{ url_for('term_bp.autocomplete') }}", {
+                q: extractLast(request.term), // in flask, "q" will be the argument to look for using request.args
+            }, function(data) {
+                response(data.matching_results); // matching_results from jsonify
+            });
+		},
+		minLength: 2,
+        select: function(event, ui) {
+            var terms = split(this.value);
+            // remove the current input
+            terms.pop();
+            // add the selected item
+            terms.push(ui.item.column);
+            // add placeholder to get the comma-and-space at the end
+            terms.push("");
+            this.value = terms.join(", ");
+            return false;
+        },
+        focus: function() {
+            return false;
+        }
+        /*
+        focus: function( event, ui ) {
+            //console.log(ui.item.value);
+            $( "#asset" ).val( ui.item.column );
+            //$( "#project-id" ).val( ui.item.id );
+            $( "#asset-name" ).html( ui.item.column );
+            return false;
+        }
+        */
+	 });
+})
+</script>
+{% endblock footer %}

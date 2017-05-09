@@ -6,11 +6,10 @@ from flask import abort, flash, redirect, render_template, url_for, request, jso
 from flask_login import current_user, login_required
 
 from sqlalchemy import exc
-from app.term_bp.forms import TermForm, DocumentForm, RuleForm, LinkForm, RelatedTermForm
+from app.term_bp.forms import TermForm, DocumentForm, RuleForm, LinkForm, RelatedTermForm, AssetForm, DemoForm
 from . import term_bp
 from .. import db
-from ..models import Term, Document, Rule, Link
-
+from ..models import Term, Document, Rule, Link, Table, Column
 from config import BASE_DIR
 
 def check_admin():
@@ -407,18 +406,140 @@ def add_related_term(term_id):
 
 #########################################################################################
 ##
-##  Term
+##  Asset
 ##
 #########################################################################################
 
-@term_bp.route('/term/<int:term_id>/asset/add/', methods=['GET', 'POST'])
+@term_bp.route('/term/<int:term_id>/assets/v1/', methods=['GET', 'POST'])
 @login_required
-def add_asset(term_id):
+def add_asset_v1(term_id):
     '''
-    Add a related asset
+    Add related assets.
     '''
     check_admin()
 
-    return render_template('admin/terms/asset.html',
+    term = Term.query.get_or_404(term_id)
+    form = AssetForm(columns=term.columns)
+
+    return render_template('admin/terms/assets_v1.html',
                            form=form,
                            term=term)
+    #return render_template('admin/terms/assets1.html',
+    #                       term=term)
+
+
+@term_bp.route('/assets/list/')
+@login_required
+def list_assets():
+    '''
+    List all assets by table and column.
+    '''
+  
+    query = Table.query
+
+    tables = Table.query.limit(200)
+
+    if tables:
+
+        results = []
+
+        for table in tables:
+
+            tmp_table = {
+                'text' : table.name
+            }
+
+            tmp_table['nodes'] = []
+
+            for column in table.columns:
+
+                tmp_child = {
+                    'text': column.name
+                }
+
+                tmp_table['nodes'].append(tmp_child)
+
+            results.append(tmp_table)
+
+    print(results)
+
+    return jsonify(results)
+
+
+@term_bp.route('/term/<int:term_id>/assets/v2')
+def add_assets_v2(term_id):
+    term = Term.query.get_or_404(term_id)    
+    return render_template('admin/terms/assets_v2.html', term=term)
+
+from app import app
+app.config['SQLALCHEMY_ECHO'] = False
+
+
+@term_bp.route('/autocomplete', methods=['GET'])
+def autocomplete():
+    app.config['SQLALCHEMY_ECHO'] = False
+
+    search = request.args.get('q')
+
+    print(">> %s" % search)
+
+    query = Column.query.filter(Column.name.like('%' + str(search) + '%'))
+
+    results = [mv.name for mv in query.all()]
+
+    # New attempt
+
+    my_results = []
+
+    for column in query:
+
+        tmp_table = {
+            'id': column.id,
+            'location': column.table.location.name,
+            'table': column.table.name,
+            'column': column.name
+        }
+
+        my_results.append(tmp_table)
+
+    return jsonify(matching_results=my_results)
+
+
+@term_bp.route("/term/<int:term_id>/assets/v3", methods=["GET", "POST"])
+def add_assets_v3(term_id):
+    '''Relate assets to a term'''
+    term = Term.query.get_or_404(term_id)
+    print("\n**************")
+    print("term.columns %s" % term.columns)
+    print("**************\n")
+
+    form = DemoForm(columns=term.columns)
+
+    print("form.columns.data %s" % form.columns.data)
+
+    if form.validate_on_submit():
+        print(">> %s" % form.columns.data)
+
+    print("Not validated")        
+
+    return render_template("admin/terms/assets_v3.html", form=form, term=term)
+
+
+@term_bp.route("/term/<int:term_id>/assets/v4", methods=["GET", "POST"])
+def add_assets_v4(term_id):
+    '''Relate assets to a term'''
+    term = Term.query.get_or_404(term_id)
+    print("\n**************")
+    print("term.columns %s" % term.columns)
+    print("**************\n")
+
+    form = DemoForm(columns=term.columns)
+
+    print("form.columns.data %s" % form.columns.data)
+
+    if form.validate_on_submit():
+        print(">> %s" % form.columns.data)
+
+    print("Not validated")
+
+    return render_template("admin/terms/assets_v4.html", form=form, term=term)

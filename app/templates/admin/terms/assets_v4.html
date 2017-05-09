@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block head %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" rel="stylesheet">
+{% endblock head %}  
+{% block title %}
+Related Terms
+{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class='btn-toolbar pull-right'>
+        <a href="javascript:{}" onclick="document.getElementById('asset_form').submit(); return false;" class="btn btn-sm btn-success" role="button">
+            <i class="fa fa-check"></i>
+        </a>
+        <a href="{{ url_for('main.show_term', selected_term=term.id) }}" class="btn btn-sm btn-danger" role="button"><i class="fa fa-times"></i></a>
+    </div>
+    <h1>Related Assets</h1>
+</div>
+
+<input type="text" name="autocomplete" id="asset" class="form-control input-lg" placeholder="Enter an asset name" />
+<p/>
+<table id="table" class="table table-striped table-condensed">
+    <thead></thead>
+    <tbody></tbody>
+</table>
+
+{% endblock %}
+{% block footer %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+    $("#asset").keyup(function() {
+        // alert( "Handler for .keyup() called." + $("#asset").val());
+        setTable($("#asset").val());
+    });
+
+    function setTable(query) {
+        var url = 'http://localhost:5000/autocomplete?q=' + query;
+
+        if (query.length >= 3) {
+
+            $.ajax({
+                type: 'GET',
+                url: url,
+                async: false,
+                contentType: "application/json",
+                dataType: 'json',
+                crossDomain: true,
+                success: function(data) {
+                    drawTable(data.matching_results);
+                },
+                error: function(e) {
+                console.log(e.message);
+                }
+            });
+        }
+
+        function drawTable(data) {
+            
+            var new_table = PopulateNewRows(data)
+            $("#table tbody").html(new_table)
+            //for (var i = 0; i < data.length; i++) {
+            //    drawRow(data[i]);
+            //}
+        }
+
+        function PopulateNewRows(data) {
+            var content;
+            for (var i = 0; i < data.length; i++) {
+                content += "<tr>"
+                content += '<td class="col-md-1">' + data[i].id + "</td>"
+                content += '<td class="col-md-2">' + data[i].location + "</td>"
+                content += '<td class="col-md-3">' + data[i].table + "</td>"
+                content += '<td class="col-md-6">' + data[i].column + "</td>"
+                content += "</tr>"
+            }
+            return content;          
+        }
+        
+
+        function drawRow(rowData) {
+            var row = $('<tr/>')
+            $("#table tbody").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
+            row.append($("<td><p>" + rowData.id + "</p></td>"));
+            row.append($("<td><p>" + rowData.location + "</p></td>"));
+            row.append($("<td><p>" + rowData.table + "</p></td>"));
+            row.append($("<td><p>" + rowData.column + "</p></td>"));
+        }
+    }
+});    
+</script>
+{% endblock %}

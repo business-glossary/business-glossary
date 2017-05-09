@@ -226,7 +226,8 @@ $(document).ready(function() {
     <div class='btn-toolbar pull-right'>
         <button type="button" id="addStepButton" class="btn btn-sm btn-default">Add Rule</button>
         <a href="{{ url_for('term_bp.add_related_term', term_id=term.id) }}" class="btn btn-sm btn-default" role="button">Add Related Term</a>
-        <a href="{{ url_for('term_bp.add_asset', term_id=term.id) }}" class="btn btn-sm btn-default" role="button">Add Asset</a>
+        <a href="{{ url_for('term_bp.add_assets_v3', term_id=term.id) }}" class="btn btn-sm btn-default" role="button">Add Asset (v3)</a>
+        <a href="{{ url_for('term_bp.add_assets_v4', term_id=term.id) }}" class="btn btn-sm btn-default" role="button">Add Asset (v4)</a>
     </div>
     {% endif %}
 </div>

@@ -5,7 +5,9 @@ from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleF
 from flask_admin.form.widgets import Select2Widget
 from wtforms.validators import DataRequired, URL, Required
 
-from ..models import Term, TermStatus, Person, Category, DocumentType, Rule
+from wtforms import SelectField, SelectMultipleField, SubmitField
+
+from ..models import Term, TermStatus, Person, Category, DocumentType, Rule, Column
 
 
 class TermForm(FlaskForm):
@@ -75,3 +77,46 @@ class RelatedTermForm(FlaskForm):
 #    terms = QuerySelectMultipleField(query_factory=lambda: Term.query.order_by(Term.name).all(),
  #                                    get_label="name")
     submit = SubmitField("Submit")
+
+
+
+class AssetForm(FlaskForm):
+    '''
+    Form for entering related assets
+    '''
+    columns = QuerySelectMultipleField(query_factory=lambda: Column.query.order_by(Column.name).all(),
+                                     get_label="name")
+    submit = SubmitField("Submit")
+
+
+class Select2MultipleField(SelectMultipleField):
+
+    def pre_validate(self, form):
+        # Prevent "not a valid choice" error
+        pass
+
+    def process_formdata(self, valuelist):
+        if valuelist:
+            self.data = ",".join(valuelist)
+        else:
+            self.data = ""
+
+
+class DemoForm(FlaskForm):
+    single_select = SelectField(u"单选", [DataRequired()],
+            choices=[("py", "python"), ("rb", "ruby"), ("js", "javascript")],
+            description=u"有限选项。无效化。",
+            render_kw={"disabled": "true"})
+    columns = Select2MultipleField("Select an asset", [DataRequired()],
+            choices=[("0", "")],
+            description="Select an asset",
+            render_kw={"multiple": "multiple"})
+    multi_select = Select2MultipleField(u"选择框", [],
+            choices=[("py", "python"), ("rb", "ruby"), ("js", "javascript")],
+            description=u"多选。有限选项。",
+            render_kw={"multiple": "multiple"})
+    tags = Select2MultipleField(u'标签', [],
+            choices=[("py", "python"), ("rb", "ruby"), ("js", "javascript")],
+            description=u"多选。无限选项。",
+            render_kw={"multiple": "multiple", "data-tags": "1"})
+    submit = SubmitField()

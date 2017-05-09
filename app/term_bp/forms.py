@@ -103,20 +103,20 @@ class Select2MultipleField(SelectMultipleField):
 
 
 class DemoForm(FlaskForm):
-    single_select = SelectField(u"单选", [DataRequired()],
+    single_select = SelectField("XX", [DataRequired()],
             choices=[("py", "python"), ("rb", "ruby"), ("js", "javascript")],
-            description=u"有限选项。无效化。",
+            description="XXXXX",
             render_kw={"disabled": "true"})
     columns = Select2MultipleField("Select an asset", [DataRequired()],
             choices=[("0", "")],
             description="Select an asset",
             render_kw={"multiple": "multiple"})
-    multi_select = Select2MultipleField(u"选择框", [],
+    multi_select = Select2MultipleField("yyyy", [],
             choices=[("py", "python"), ("rb", "ruby"), ("js", "javascript")],
-            description=u"多选。有限选项。",
+            description="YYYY",
             render_kw={"multiple": "multiple"})
-    tags = Select2MultipleField(u'标签', [],
+    tags = Select2MultipleField('zz', [],
             choices=[("py", "python"), ("rb", "ruby"), ("js", "javascript")],
-            description=u"多选。无限选项。",
+            description="ZZZZZ",
             render_kw={"multiple": "multiple", "data-tags": "1"})
     submit = SubmitField()

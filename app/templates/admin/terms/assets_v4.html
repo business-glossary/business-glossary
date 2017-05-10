@@ -37,7 +37,7 @@ $(document).ready(function() {
     });
 
     function setTable(query) {
-        var url = 'http://localhost:5000/autocomplete?q=' + query;
+        var url = '{{ url_for("term_bp.autocomplete") }}' + '?q=' + query;
 
         if (query.length >= 3) {
 

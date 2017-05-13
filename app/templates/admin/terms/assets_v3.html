@@ -46,8 +46,7 @@ $(document).ready(function() {
     function formatRepo (repo) {
         if (repo.loading) return repo.text;
         var markup = "<div class='select2-result-repository clearfix'>" +
-        "<div class='col-md-3'>" + repo.location + "." +  repo.table + "</div>" +
-        "<div class='col-md-5'>" + repo.column + "</div>";           
+        "<div class='col-md-6'>" + repo.location + " > " +  repo.table + " > " + repo.column + "</div>";
         "</div>" +
         "</div>";
         return markup;

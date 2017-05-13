@@ -74,7 +74,7 @@ web.config
 # Exclude uploaded static files
 app/static/files/
 app/static/source_code/
-app/static/images/
+
 
 # Exclude markdown pages
 app/pages/*.md

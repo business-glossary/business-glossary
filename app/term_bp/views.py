@@ -12,6 +12,7 @@ from .. import db
 from ..models import Term, Document, Rule, Link, Table, Column
 from config import BASE_DIR
 
+
 def check_admin():
     '''
     Prevent non-admins from accessing the page
@@ -528,18 +529,28 @@ def add_assets_v3(term_id):
 @term_bp.route("/term/<int:term_id>/assets/v4", methods=["GET", "POST"])
 def add_assets_v4(term_id):
     '''Relate assets to a term'''
+
+    app.config['SQLALCHEMY_ECHO'] = False
+
+    print("Grab term %s", term_id)
     term = Term.query.get_or_404(term_id)
-    print("\n**************")
-    print("term.columns %s" % term.columns)
-    print("**************\n")
 
-    form = DemoForm(columns=term.columns)
+    if request.method == "POST":
+        print("Form submitted")
 
-    print("form.columns.data %s" % form.columns.data)
+        selected = request.form.getlist('do_assign')
 
-    if form.validate_on_submit():
-        print(">> %s" % form.columns.data)
+        print("Loop through selected columns")
+        for selected_asset in selected:
 
-    print("Not validated")
+            print("Grab column %s" % selected_asset)
+            column = Column.query.filter_by(id=selected_asset).first()
 
-    return render_template("admin/terms/assets_v4.html", form=form, term=term)
+            # If the term exists the add the column to term relationship
+            term.columns.append(column)
+            db.session.commit()
+
+        # Redirect to term page
+        return redirect(url_for('main.show_term', selected_term=term_id))
+
+    return render_template("admin/terms/assets_v4.html", term=term)

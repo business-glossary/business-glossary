@@ -20,10 +20,14 @@ Related Terms
 
 <input type="text" name="autocomplete" id="asset" class="form-control input-lg" placeholder="Enter an asset name" />
 <p/>
-<table id="table" class="table table-striped table-condensed">
-    <thead></thead>
-    <tbody></tbody>
-</table>
+<form action="" method="post" id="asset_form">
+    <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+    <table id="table" class="table table-striped table-condensed">
+        <thead>
+        </thead>
+        <tbody></tbody>
+    </table>
+</form>
 
 {% endblock %}
 {% block footer %}
@@ -35,6 +39,13 @@ $(document).ready(function() {
         // alert( "Handler for .keyup() called." + $("#asset").val());
         setTable($("#asset").val());
     });
+
+    function toggle(source) {
+        checkboxes = document.getElementsByName('do_assign');
+        for(var i=0, n=checkboxes.length;i<n;i++) {
+            checkboxes[i].checked = source.checked;
+        }
+    }
 
     function setTable(query) {
         var url = '{{ url_for("term_bp.autocomplete") }}' + '?q=' + query;
@@ -69,17 +80,18 @@ $(document).ready(function() {
         function PopulateNewRows(data) {
             var content;
             for (var i = 0; i < data.length; i++) {
-                content += "<tr>"
-                content += '<td class="col-md-1">' + data[i].id + "</td>"
-                content += '<td class="col-md-2">' + data[i].location + "</td>"
-                content += '<td class="col-md-3">' + data[i].table + "</td>"
-                content += '<td class="col-md-6">' + data[i].column + "</td>"
-                content += "</tr>"
+                content += '<tr>'
+                content += '<td class="col-md-1">' + data[i].id + '</td>'
+                content += '<td class="col-md-2">' + data[i].location + '</td>'
+                content += '<td class="col-md-3">' + data[i].table + '</td>'
+                content += '<td class="col-md-5">' + data[i].column + '</td>'
+                content += '<td class="col-md-1"><input type=checkbox name=do_assign value="' + data[i].id + '"></td>'
+                content += '</tr>'
             }
-            return content;          
+            content += '<tr><td></td><td></td><td></td><td></td><td><input id=check_all type=checkbox></td></tr>'
+            return content;
         }
-        
-
+ 
         function drawRow(rowData) {
             var row = $('<tr/>')
             $("#table tbody").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
@@ -88,6 +100,14 @@ $(document).ready(function() {
             row.append($("<td><p>" + rowData.table + "</p></td>"));
             row.append($("<td><p>" + rowData.column + "</p></td>"));
         }
+
+        $("#check_all").click(function () {
+            checkboxes = document.getElementsByName('do_assign');
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+                checkboxes[i].checked = document.getElementById("check_all").checked;
+            }
+        });        
+        
     }
 });    
 </script>

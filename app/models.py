@@ -91,6 +91,7 @@ term_to_term_relationship = db.Table('term_to_term_relationship',
                                                          'related_term_id',
                                                          name='unique_related_terms'))
 
+
 class Term(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
@@ -199,12 +200,14 @@ class Term(db.Model):
         """
         return [item.serialize for item in self.columns]
 
+
 class TermStatus(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.String(20), unique=True, nullable=False)
 
     def __repr__(self):
         return self.status
+
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -221,6 +224,7 @@ class Category(db.Model):
             'name': self.name,
             'description': self.description
         }
+
 
 class Link(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -239,6 +243,7 @@ class Link(db.Model):
             'address': self.address
         }
 
+
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
@@ -246,8 +251,8 @@ class Person(db.Model):
     def __repr__(self):
         return self.name
 
-class Location(db.Model):
 
+class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
     host = db.Column(db.String(50))
@@ -258,8 +263,8 @@ class Location(db.Model):
     def __repr__(self):
         return self.name
 
-class Table(db.Model):
 
+class Table(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
     description = db.Column(db.String(length=100))
@@ -278,8 +283,8 @@ class Table(db.Model):
             'location': self.location.name
         }
 
-class Column(db.Model):
 
+class Column(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(100))
@@ -314,8 +319,8 @@ class Column(db.Model):
         """
         return [item.serialize for item in self.table]
 
-class Rule(db.Model):
 
+class Rule(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     identifier = db.Column(db.String(20), nullable=False)
     name = db.Column(db.String(100), unique=True)
@@ -344,9 +349,10 @@ class Rule(db.Model):
 
 class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    note_type = db.column(db.String(10))
+    note_type = db.Column(db.String(10))
     note = db.Column(db.Text)
     rule_id = db.Column(db.Integer, db.ForeignKey('rule.id'))
+    rule = db.relationship('Rule', foreign_keys=[rule_id])
     created_on = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     updated_on = db.Column(db.DateTime,
                            default=datetime.datetime.utcnow,
@@ -354,8 +360,8 @@ class Note(db.Model):
     def __repr__(self):
         return self.note
 
-class Document(db.Model):
 
+class Document(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     path = db.Column(db.String(100))
@@ -366,6 +372,7 @@ class Document(db.Model):
     def __repr__(self):
         return self.name
 
+
 class DocumentType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(45))
@@ -375,6 +382,7 @@ class DocumentType(db.Model):
 
     def __unicode__(self):
         return self.type
+
 
 @listens_for(Document, 'after_delete')
 def del_file(mapper, connection, target):
@@ -387,6 +395,7 @@ def del_file(mapper, connection, target):
         except OSError:
             # Don't care if was not deleted because it does not exist
             pass
+
 
 def dump_datetime(value):
     """Deserialize datetime object into string form for JSON processing."""

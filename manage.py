@@ -1,3 +1,11 @@
+"""
+This is the main manage.py script.
+
+From here you can load and dump data and start the built-in webserver.
+
+Copyright 2016, 2017 Alan Tindale
+"""
+
 import os
 
 import datetime
@@ -26,6 +34,7 @@ migrate = Migrate(app, db)
 
 manager.add_command('db', MigrateCommand)
 
+
 @manager.command
 def add_admin(email, password):
     """Add an admin user to your database"""
@@ -38,18 +47,20 @@ def add_admin(email, password):
     db.session.commit()
     print("Created admin user: %s" % (user, ))
 
+
 @manager.command
 def clear_db():
     '''Clear the database'''
     db.drop_all()
     db.create_all()
 
+
 @manager.command
 def load_data(filename):
     '''Load data into application'''
     from app.loader import load_yaml
-
     load_yaml.load(filename)
+
 
 @manager.option('-y', '--yaml', help='Dump to yaml format', dest='yaml', default=False, action="store_true")
 @manager.option('-j', '--json', help='Dump to json format', dest='json', default=False, action="store_true")
@@ -69,6 +80,7 @@ def dump(yaml, json):
     if json:
         from app.loader import dump_json
         dump_json.dump(file_name + ".json")
+
 
 @manager.command
 def test(coverage=False):

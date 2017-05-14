@@ -1,53 +1,31 @@
 '''Dump data to yaml'''
 
 import logging
-
+import textwrap
 import yaml
 
 from app import app
 from app.models import Category, Term, Person, TermStatus, Location, \
-    DocumentType, Rule
+    DocumentType, Rule, Note
 
 app.config['SQLALCHEMY_ECHO'] = False
 
 LOGGER = logging.getLogger("business-glossary.dump_data")
 
-class str_presenter(unicode): pass
 
-def str_presenter(dumper, data):
-    if len(data.splitlines()) > 1:  # check for multiline string
-        # The dumper will not respect "style='|'" if it detects trailing
-        # whitespace on any line within the data. For scripts the trailing
-        # whitespace is not important.
-        lines = [l.strip() for l in data.splitlines()]
-        data = '\n'.join(lines)
-        return dumper.represent_scalar(u'tag:yaml.org,2002:str', data, style='|')
-    return dumper.represent_scalar(u'tag:yaml.org,2002:str', data)
-
-yaml.add_representer(str, str_presenter)
-
-
-def unicode_representer(dumper, uni):
-    if len(uni.splitlines()) > 1:  # check for multiline string
-        # The dumper will not respect "style='|'" if it detects trailing
-        # whitespace on any line within the data. For scripts the trailing
-        # whitespace is not important.
-        lines = [l.strip() for l in uni.splitlines()]
-        data = '\n'.join(lines)
-        return dumper.represent_scalar(u'tag:yaml.org,2002:str', uni, style='|')
-    return dumper.represent_scalar(u'tag:yaml.org,2002:str', uni)
-    
-yaml.add_representer(unicode, unicode_representer)
-
-#yaml.add_representer(unicode, lambda dumper, value: dumper.represent_scalar(u'tag:yaml.org,2002:str', value))
+class literal(str): pass
+def literal_representer(dumper, data):
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
+yaml.add_representer(literal, literal_representer)
 
 
 def return_categories(term):
     '''Return category names as a list when dumping terms'''
-    cats = []
-    for cat in term.categories:
-        cats.append(cat.name)
-    return cats
+    categories = []
+    for category in term.categories:
+        categories.append(category.name)
+    return categories
+
 
 def return_terms(rule):
     '''Return the terms a rule belongs to as a list'''
@@ -56,18 +34,19 @@ def return_terms(rule):
         terms.append(term.name)
     return terms
 
+
 def prep_terms():
     '''Return terms as a dictionary'''
     LOGGER.info("Dumping Term")
-    terms = Term.query.all()
 
+    terms = Term.query.all()
     my_terms = []
 
     for term in terms:
         my_term = {
-            "term": term.name,
-            "short_description": term.short_description,
-            "long_description": str(term.long_description),
+            "name": term.name,
+            "short_description": literal(prepare_string(term.short_description)),
+            "long_description": literal(prepare_string(term.long_description)),
             "abbreviation": term.abbreviation,
             "status": term.status.status,
             "categories": return_categories(term),
@@ -79,25 +58,47 @@ def prep_terms():
         my_terms.append(my_term)
     return my_terms
 
+
+def prepare_rule_notes():
+    '''Returns rule notes as a dictionary'''
+    LOGGER.info("Dumping Rule Notes")
+
+    notes = Note.query.all()
+    my_notes = []
+
+    for note in notes:
+        # print("note_type: %s" % note.note_type)
+        my_note = {
+            "note": literal(prepare_string(note.note)),
+            "note_type": note.note_type,
+            "rule": note.rules.name,
+            "created_on": note.created_on,
+            "updated_on": note.updated_on
+        }
+        my_notes.append(my_note)
+    return my_notes
+
+
 def prep_rules():
     '''Return rules as a dictionary'''
     LOGGER.info("Dumping Rule")
-    rules = Rule.query.all()
 
+    rules = Rule.query.all()
     my_rules = []
 
     for rule in rules:
         my_rule = {
             "identifier": rule.identifier,
             "name": rule.name,
-            "description": str(rule.description),
-            "notes": str(rule.notes),
+            "description": literal(prepare_string(rule.description)),
+            "notes": literal(prepare_string(rule.notes)),
             "created_on": rule.created_on,
             "updated_on": rule.updated_on,
             "terms": return_terms(rule)
         }
         my_rules.append(my_rule)
     return my_rules
+
 
 def prep_person():
     '''Return people as a dictionary'''
@@ -110,6 +111,7 @@ def prep_person():
         }
         my_people.append(this_person)
     return my_people
+
 
 def prep_category():
     '''Return category as a dictionary'''
@@ -124,17 +126,19 @@ def prep_category():
         my_category.append(this_category)
     return my_category
 
+
 def prep_term_status():
     '''Return term status as a dictionary'''
     LOGGER.info("Dumping TermStatus")
     status = TermStatus.query.all()
     my_status = []
-    for stat in status:
+    for term_status in status:
         this_status = {
-            "status": stat.status,
+            "status": term_status.status,
         }
         my_status.append(this_status)
     return my_status
+
 
 def prep_location():
     '''Return location as a dictionary'''
@@ -152,17 +156,125 @@ def prep_location():
         my_locations.append(this_location)
     return my_locations
 
+
 def prep_document_type():
     '''Return document types as a dictionary'''
     LOGGER.info("Dumping DocumentType")
     types = DocumentType.query.all()
     my_types = []
-    for typ in types:
+    for doc_type in types:
         my_type = {
-            "type": typ.type,
+            "type": doc_type.type,
         }
         my_types.append(my_type)
     return my_types
+
+
+def prepare_string(data):
+    '''Conform a string'''
+    if len(data.splitlines()) > 1:
+        # If multi-line, loop through each line wrap that line and then join
+        # it back together
+        new_lines = []
+        for line in data.splitlines():
+            wrap = textwrap.fill(line, 100)
+            new_lines.append(wrap)
+
+        new_string = "\n".join(new_lines)
+    else:
+        new_string = textwrap.fill(data, 100)
+    return new_string
+
+
+def dump_term(rule, file_name):
+    log_format = "%(asctime)-15s [%(levelname)s] %(message)s"
+    logging.basicConfig(level=logging.INFO, format=log_format)
+
+    LOGGER.info("Dump process started")
+
+    rules = Rule.query.all()
+
+    for rule in rules:
+
+        data = rule.description
+
+        print("\n********************************************************")
+        print("The rule is %s" % rule.name)
+
+        print("There are %s lines" % len(data.splitlines()))
+
+        print("--------------------------------------------------------")
+        print("The before description is:")
+        print(data)
+
+        print("--------------------------------------------------------")
+        print("The after description is:")
+        print(prepare_string(data))
+
+        data = rule.notes
+
+        print("--------------------------------------------------------")
+        print("The before notes is:")
+        print(data)
+
+        print("--------------------------------------------------------")
+        print("The after notes is:")
+        print(prepare_string(data))
+
+
+        print("--------------------------------------------------------")
+        print("YAML Dump: \n")
+        my_rule = {
+            "identifier": rule.identifier,
+            "name": rule.name,
+            "description": literal(prepare_string(rule.description)),
+            "notes": prepare_string(rule.notes),
+            "created_on": rule.created_on,
+            "updated_on": rule.updated_on,
+            "terms": return_terms(rule)
+        }
+
+        print(yaml.dump(my_rule, allow_unicode=True))
+
+
+def dump_termx(term, file_name):
+    log_format = "%(asctime)-15s [%(levelname)s] %(message)s"
+    logging.basicConfig(level=logging.INFO, format=log_format)
+
+    LOGGER.info("Dump process started")
+
+    rules = Rule.query.all()
+
+    for rule in rules:
+
+        data = rule.description
+
+        print("\n********************************************************")
+        print("The term is %s" % rule.name)
+
+        print("There are %s lines" % len(data.splitlines()))
+
+        print("--------------------------------------------------------")
+        print("The before description is:")
+        print(data)
+
+        print("--------------------------------------------------------")
+        print("YAML Dump: \n")
+        my_term = {
+            "name": term.name,
+            "short_description": term.short_description,
+            "long_description": literal(prepare_string(term.long_description)),
+            "abbreviation": term.abbreviation,
+            "status": term.status.status,
+            "categories": return_categories(term),
+            "owner": term.owner.name,
+            "steward": term.steward.name,
+            "created_on": term.created_on,
+            "updated_on": term.updated_on
+        }
+
+        print(yaml.dump(my_term))
+
 
 def dump(file_name):
     '''Start the dumping process'''
@@ -173,18 +285,35 @@ def dump(file_name):
 
     app.config['SQLALCHEMY_ECHO'] = False
 
-    file_contents = {
+    file_contents_1 = {
         "person": prep_person(),
         "category": prep_category(),
         "document_type": prep_document_type(),
         "term_status": prep_term_status(),
-        "location": prep_location(),
-        "term": prep_terms(),
-        "rule": prep_rules()
+        "location": prep_location()
     }
+
+    file_contents_2 = {
+        "terms": prep_terms(),
+    }
+
+    file_contents_3 = {
+        "rules": prep_rules()
+    }
+
+    file_contents_4 = {
+        "notes": prepare_rule_notes()
+    }
+
     with open(file_name, 'w') as outfile:
-        yaml.dump(file_contents, outfile, default_flow_style=False, explicit_start=True,
-                  allow_unicode=True)
+        outfile.write("# People, Categories, Document Types and Status\n\n")
+        yaml.dump(file_contents_1, outfile, default_flow_style=False, allow_unicode=True)
+        outfile.write("\n# Terms\n\n")
+        yaml.dump(file_contents_2, outfile, default_flow_style=False, allow_unicode=True)
+        outfile.write("\n# Rules\n\n")
+        yaml.dump(file_contents_3, outfile, default_flow_style=False, allow_unicode=True)
+        outfile.write("\n# Rule Notes\n\n")
+        yaml.dump(file_contents_4, outfile, default_flow_style=False, allow_unicode=True)
 
     LOGGER.info("File %s created", file_name)
     LOGGER.info("Dump process ended")

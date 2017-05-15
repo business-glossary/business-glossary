@@ -17,14 +17,9 @@ $(document).ready(function() {
     <h1>Rule: {{ rule.name }}</h1>
 </div>
 
-<ul class="nav nav-tabs">
-    <li class="active"><a href="#">Rule</a></li>
-    <li{% if not rule.documents %} class="disabled"{% endif %}><a href="{{ url_for('main.show_rule_documents', selected_rule=rule.id) }}">Related Documents</a></li>
-</ul>
-
-<p class="lead">
+<p class="lead" />
 {{ rule.description|markdown }}
-</p>
+<p class="lead" />
 
 <div class="panel-group">
     <div class="panel panel-default">

@@ -187,7 +187,7 @@ def load(file_name):
                 print("after load")
 
                 # Should be a dict of lists of dicts
-                # If missing the record type then it just be a list of dicts
+                # If missing the record type then it will just be a list of dicts
                 if not isinstance(objects, dict):
                     LOGGER.error("Please check the file format, it appears to be incorrect.")
                     return
@@ -220,14 +220,14 @@ def load(file_name):
                     for obj in objects['category']:
                         add_category(obj)
 
-                if 'term' in objects:
+                if 'terms' in objects:
                     LOGGER.info("Loading terms from file %s", file_name)
-                    for obj in objects['term']:
+                    for obj in objects['terms']:
                         add_term(obj)
 
-                if 'rule' in objects:
+                if 'rules' in objects:
                     LOGGER.info("Loading rules from file %s", file_name)
-                    for obj in objects['rule']:
+                    for obj in objects['rules']:
                         add_rule(obj)
 
 

@@ -6,7 +6,7 @@ import yaml
 
 from app import app
 from app.models import Category, Term, Person, TermStatus, Location, \
-    DocumentType, Rule, Note
+    DocumentType, Rule, Note, Table, Column
 
 app.config['SQLALCHEMY_ECHO'] = False
 
@@ -157,6 +157,39 @@ def prep_location():
     return my_locations
 
 
+def prep_tables():
+    '''Return tables as a dictionary for dumping'''
+    LOGGER.info("Dumping tables")
+    tables = Table.query.all()
+    my_tables = []
+    for table in tables:
+        this_table = {
+            "name": table.name,
+            "description": table.description,
+            "location": table.location.name
+        }
+        my_tables.append(this_table)
+    return my_tables
+
+
+def prep_columns():
+    '''Return columns as a dictionary for dumping'''
+    LOGGER.info("Dumping columns")
+    columns = Column.query.all()
+    my_columns = []
+    for column in columns:
+        this_column = {
+            "name": column.name,
+            "description": column.description,
+            "type": column.type,
+            "length": column.length,
+            "format": column.format,
+            "table": column.table.name
+        }
+        my_columns.append(this_column)
+    return my_columns
+
+
 def prep_document_type():
     '''Return document types as a dictionary'''
     LOGGER.info("Dumping DocumentType")
@@ -294,7 +327,7 @@ def dump(file_name):
     }
 
     file_contents_2 = {
-        "terms": prep_terms(),
+        "terms": prep_terms()
     }
 
     file_contents_3 = {
@@ -303,6 +336,11 @@ def dump(file_name):
 
     file_contents_4 = {
         "notes": prepare_rule_notes()
+    }
+
+    file_contents_5 = {
+        "columns": prep_columns(),
+        "tables": prep_tables()
     }
 
     with open(file_name, 'w') as outfile:
@@ -314,6 +352,8 @@ def dump(file_name):
         yaml.dump(file_contents_3, outfile, default_flow_style=False, allow_unicode=True)
         outfile.write("\n# Rule Notes\n\n")
         yaml.dump(file_contents_4, outfile, default_flow_style=False, allow_unicode=True)
+        outfile.write("\n# Tables and Columns\n\n")
+        yaml.dump(file_contents_5, outfile, default_flow_style=False, allow_unicode=True)
 
     LOGGER.info("File %s created", file_name)
     LOGGER.info("Dump process ended")

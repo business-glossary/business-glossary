@@ -168,7 +168,8 @@ def prep_tables():
             "description": table.description,
             "location": table.location.name
         }
-        my_tables.append(this_table)
+        new_table = dict((k, v) for k, v in this_table.items() if v)
+        my_tables.append(new_table)
     return my_tables
 
 
@@ -186,7 +187,8 @@ def prep_columns():
             "format": column.format,
             "table": column.table.name
         }
-        my_columns.append(this_column)
+        new_column = dict((k, v) for k, v in this_column.items() if v)
+        my_columns.append(new_column)
     return my_columns
 
 

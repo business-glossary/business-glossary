@@ -1,10 +1,10 @@
-title: SAS Coding Conventions
+title: Commenting
 published: 2016-12-08
 tags: [sas, standards]
 
 # Overview
 
-This article describe the convention to follow when commenting SAS program code.
+This article describes the convention to follow when commenting SAS program code.
 
 # Program Header
 
@@ -15,7 +15,7 @@ For a program header comment block that is parseable to produce automated progra
   PROGRAM INFORMATION 
     PROJ: Account Management
     DESC: Provides aggregated program documentation. 
-    AUTH: Alan Tindale alan.tindale@boq.com.au 
+    AUTH: Alan Tindale <alan.tindale@boq.com.au> 
     DATE: 2016-11-08 
  
   INPUTS/OUTPUTS 
@@ -23,26 +23,26 @@ For a program header comment block that is parseable to produce automated progra
     OUTs: HTML file in base directory.
      
   MODIFICATIONS 
-    2016-01-19 Alan Tindale alan.tindale@boq.com.au  
+    2016-01-19 Alan Tindale <alan.tindale@boq.com.au>  
       (+) Added section headers. 
-    2015-09-21 Alan Tindale alan.tindale@boq.com.au  
+    2015-09-21 Alan Tindale <alan.tindale@boq.com.au>  
       (+) Added a proc datasets to clean up temp datasets. 
       (+) Added a data null step to generate html report. 
-    2015-08-31 Alan Tindale alan.tindale@boq.com.au 
+    2015-08-31 Alan Tindale <alan.tindale@boq.com.au> 
       (+) Added code line number. 
       (+) Added view combining file listing and detail listing. 
-    2015-08-30 Alan Tindale alan.tindale@boq.com.au 
+    2015-08-30 Alan Tindale <alan.tindale@boq.com.au> 
       (+) Accommodate arguments of macro programs. 
-    2015-08-26 Alan Tindale alan.tindale@boq.com.au 
+    2015-08-26 Alan Tindale <alan.tindale@boq.com.au> 
       (+) Filelist dataset includes only .sas programs. 
-    2015-08-25 Alan Tindale alan.tindale@boq.com.au 
+    2015-08-25 Alan Tindale <alan.tindale@boq.com.au> 
       (+) Added prog_doc dataset. 
       (-) Removed SQL proc to get paths and filenames. 
       (*) Fixed filesize field. 
 */
 ```
 
-The modification history is, of course, not really necessary with version control nut the above is a nice concise format (+ = addition, - = removed, * = updated).
+The modification history is, of course, not really necessary with version control but the above is a nice concise format (+ = addition, - = removed, * = updated).
 
 The attributes listed can be extended as needed.
 
@@ -58,7 +58,7 @@ In regards to general commenting throughout code, I favour liberal use of commen
 ********************************************************************************/
 ```
 
-The above would separate out a larger process containing multiple data or procedure steps. I think even add double lines and a section name/number for additional impact.
+The above would separate out a larger process containing multiple data or procedure steps. You may add double lines and a section name/number for additional impact.
 
 ```
 /********************************************************************************
@@ -72,7 +72,8 @@ The above would separate out a larger process containing multiple data or proced
 ********************************************************************************/
 ```
 
-If used within a macro (contents of the macro should be indented by 4 spaces) then the comment block should be indented in line.
+
+If used within a macro (contents of the macro should be indented by four spaces) then the comment block should be indented in line.
 
 ```
 %macro do_something;
@@ -95,7 +96,21 @@ data hello_world;
 run;
 ```
 
-As you can see from the above I predominately favour /* */ commenting and shy away from * ; style.
+As you can see from the above I predominately favour `/* */` commenting and shy away from `* ;` style.
+
+# Inline Comments
+
+Use inline comments sparingly.
+
+An inline comment is a comment on the same line as a statement. Inline comments should be separated by at least two spaces from the statement. They should use the form `/* */`.
+
+# Comment Text
+
+Comments that contradict the code are worse than no comments. Always make a priority of keeping the comments up-to-date when the code changes!
+
+Comments should be complete sentences. If a comment is a phrase or sentence, its first word should be capitalized.
+
+If a comment is short, the period at the end can be omitted. Block comments generally consist of one or more paragraphs built out of complete sentences, and each sentence should end in a period.
 
 # Tagging of Terms and Rules
 
@@ -112,8 +127,7 @@ data hello_world;
 run;
 ```
 
-The parser (once written) will place what is in the between the start and end tags into the notes section in the Glossary:
-
+The parser (once written) will place what is in the between the start and end tags into the notes section in the Glossary.
 
 The actual solution is likely to implement multiple notes per rule so that many sections of code can be captured.
 
@@ -149,19 +163,4 @@ rules:
         - Arrears
 ```
 
-```python
-print("hello, world")
-```
-
-# Code Indentation
-
-Code should be indented with four spaces. This means (among others) lines within a data step or procedure and lines within logic blocks.
-
-If using SAS Enterprise Guide set this as a default:
-
-Go to `Tools` > `Options`.
-
-Select SAS Programs and then select Editor Options.
-
-On the `General` tab ensure `Insert spaces for tabs` and `Replace tabs with spaces` on file open is selected.
 

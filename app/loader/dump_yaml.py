@@ -53,6 +53,14 @@ def return_document_types(document):
     return types
 
 
+def return_document_terms(document):
+    '''Return the terms a document is related to'''
+    terms = []
+    for term in document.terms:
+        terms.append(term.name)
+    return terms
+
+
 def return_related_terms(term):
     '''Return the related terms of a term'''
     terms = []
@@ -242,9 +250,11 @@ def prep_documents():
             "name": document.name,
             "path": document.path,
             "description": document.description,
-            "types": return_document_types(document)
+            "types": return_document_types(document),
+            "terms": return_document_terms(document)
         }
-        my_documents.append(my_document)
+        new_doc = dict((k, v) for k, v in my_document.items() if v)
+        my_documents.append(new_doc)
     return my_documents
 
 

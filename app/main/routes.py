@@ -76,7 +76,7 @@ class TermView(ProtectedModelView):
 class TableView(ProtectedModelView):
     '''Set the view options with displaying a Table in the admin view'''
     column_default_sort = 'name'
-    column_filters = ['location']
+    column_filters = ['location', 'name']
     form_excluded_columns = ('columns')
 
 class ColumnView(ProtectedModelView):

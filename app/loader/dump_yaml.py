@@ -5,8 +5,10 @@ import textwrap
 import yaml
 
 from app import app
-from app.models import Category, Term, Person, TermStatus, Location, \
-    DocumentType, Rule, Note, Table, Column
+from app.models import Category, Term, Person, TermStatus, \
+    Document, DocumentType, Rule, Note, \
+    Location, Table, Column, \
+    Link
 
 app.config['SQLALCHEMY_ECHO'] = False
 
@@ -31,6 +33,30 @@ def return_terms(rule):
     '''Return the terms a rule belongs to as a list'''
     terms = []
     for term in rule.terms:
+        terms.append(term.name)
+    return terms
+
+
+def return_column_terms(column):
+    '''Return the terms a column is associated with to as a list'''
+    terms = []
+    for term in column.terms:
+        terms.append(term.name)
+    return terms
+
+
+def return_document_types(document):
+    '''Return the document types of a document'''
+    types = []
+    for type in document.types:
+        types.append(type.type)
+    return types
+
+
+def return_related_terms(term):
+    '''Return the related terms of a term'''
+    terms = []
+    for term in term.related_terms:
         terms.append(term.name)
     return terms
 
@@ -175,7 +201,7 @@ def prep_tables():
 
 def prep_columns():
     '''Return columns as a dictionary for dumping'''
-    LOGGER.info("Dumping columns")
+    LOGGER.info("Dumping Columns")
     columns = Column.query.all()
     my_columns = []
     for column in columns:
@@ -185,7 +211,8 @@ def prep_columns():
             "type": column.type,
             "length": column.length,
             "format": column.format,
-            "table": column.table.name
+            "table": column.table.name,
+            "terms": return_column_terms(column)
         }
         new_column = dict((k, v) for k, v in this_column.items() if v)
         my_columns.append(new_column)
@@ -203,6 +230,51 @@ def prep_document_type():
         }
         my_types.append(my_type)
     return my_types
+
+
+def prep_documents():
+    '''Return documents as a dictionary'''
+    LOGGER.info("Dumping Documents")
+    documents = Document.query.all()
+    my_documents = []
+    for document in documents:
+        my_document = {
+            "name": document.name,
+            "path": document.path,
+            "description": document.description,
+            "types": return_document_types(document)
+        }
+        my_documents.append(my_document)
+    return my_documents
+
+
+def prep_links():
+    '''Return links as a dictionary'''
+    LOGGER.info("Dumping Links")
+    links = Link.query.all()
+    my_links = []
+    for link in links:
+        my_link = {
+            "text": link.text,
+            "address": link.address,
+            "term": link.term.name
+        }
+        my_links.append(my_link)
+    return my_links
+
+
+def prep_related_terms():
+    '''Return related terms as a dictionary'''
+    LOGGER.info("Dumping Related Terms")
+    terms = Term.query.filter(Term.related_terms != None).all()
+    my_terms = []
+    for term in terms:
+        my_term = {
+            "term": term.name,
+            "related_terms": return_related_terms(term)
+        }
+        my_terms.append(my_term)
+    return my_terms
 
 
 def prepare_string(data):
@@ -326,7 +398,7 @@ def dump(file_name):
         "document_type": prep_document_type(),
         "term_status": prep_term_status(),
         "location": prep_location()
-    }
+    }   
 
     file_contents_2 = {
         "terms": prep_terms()
@@ -345,6 +417,18 @@ def dump(file_name):
         "tables": prep_tables()
     }
 
+    file_contents_6 = {
+        "documents": prep_documents()
+    }
+
+    file_contents_7 = {
+        "links": prep_links()
+    }
+
+    file_contents_8 = {
+        "related_terms": prep_related_terms()
+    }
+
     with open(file_name, 'w') as outfile:
         outfile.write("# People, Categories, Document Types and Status\n\n")
         yaml.dump(file_contents_1, outfile, default_flow_style=False, allow_unicode=True)
@@ -356,6 +440,21 @@ def dump(file_name):
         yaml.dump(file_contents_4, outfile, default_flow_style=False, allow_unicode=True)
         outfile.write("\n# Tables and Columns\n\n")
         yaml.dump(file_contents_5, outfile, default_flow_style=False, allow_unicode=True)
+        outfile.write("\n# Documents\n\n")
+        if len(file_contents_6['documents']) == 0:
+            outfile.write("# No documents\n")
+        else:
+            yaml.dump(file_contents_6, outfile, default_flow_style=False, allow_unicode=True)
+        outfile.write("\n# Links\n\n")
+        if len(file_contents_7['links']) == 0:
+            outfile.write("# No links\n")
+        else:
+            yaml.dump(file_contents_7, outfile, default_flow_style=False, allow_unicode=True)
+        outfile.write("\n# Related Terms\n\n")
+        if len(file_contents_8['related_terms']) == 0:
+            outfile.write("# No related terms\n")
+        else:
+            yaml.dump(file_contents_8, outfile, default_flow_style=False, allow_unicode=True)
 
     LOGGER.info("File %s created", file_name)
     LOGGER.info("Dump process ended")

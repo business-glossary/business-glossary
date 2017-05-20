@@ -231,6 +231,7 @@ class Link(db.Model):
     text = db.Column(db.String(100), nullable=False)
     address = db.Column(db.String(200), nullable=False)
     term_id = db.Column(db.Integer, db.ForeignKey('term.id'))
+    term = db.relationship("Term", backref=db.backref('term_link', lazy='dynamic'))
 
     def __repr__(self):
         return self.text

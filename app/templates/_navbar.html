@@ -20,14 +20,14 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Guides <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <!--
-                            <li><a href="{{ url_for('page', path="getting-started/branding-guide") }}">Branding Guide</a></li>
+                            <li><a href="{{ url_for('main.page', path="getting-started/branding-guide") }}">Branding Guide</a></li>
                             -->
                             <li class="dropdown-header">Guidelines and Conventions</li>
                             <!--
-                            <li><a href="{{ url_for("tag", tag='standards') }}">Standards</a></li>
+                            <li><a href="{{ url_for("main.tag", tag='standards') }}">Standards</a></li>
                             -->
                             {% for page in tagged %}
-                            <li><a href="{{ url_for('page', path=page.path) }}">{{ page.title }}</a></li>
+                            <li><a href="{{ url_for('main.page', path=page.path) }}">{{ page.title }}</a></li>
                             {% endfor %}
                             <!--
                             <li role="separator" class="divider"></li>

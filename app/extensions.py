@@ -12,5 +12,15 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 
-from app.main.models import *
-from app.users.models import *
+from flask_security import Security
+from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail
+from flask_bootstrap import Bootstrap
+from flask_flatpages import FlatPages
+
+
+db = SQLAlchemy()
+security = Security()
+bootstrap = Bootstrap()
+mail = Mail()
+pages = FlatPages()

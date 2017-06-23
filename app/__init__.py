@@ -1,99 +1,16 @@
-#################
-#### imports ####
-#################
+#   Copyright 2017 Alan Tindale, All Rights Reserved.
+#
+#   Licensed under the Apache License, Version 2.0 (the "License"); you may
+#   not use this file except in compliance with the License. You may obtain
+#   a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#   License for the specific language governing permissions and limitations
+#   under the License.
 
-import os
+__version__ = '0.3.2dev'
 
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_flatpages import FlatPages
-from flaskext.markdown import Markdown
-from flask_moment import Moment
-from flask_mail import Mail
-from flask_bootstrap import Bootstrap
-
-from flask_wtf.csrf import CSRFProtect
-
-
-################
-#### config ####
-################
-
-app = Flask(__name__)
-
-app.config.from_object(os.getenv('BG_CONFIG') or 'config.DevelopmentConfig')
-app.config.from_envvar('BG_SETTINGS', silent=True)
-
-Bootstrap(app)
-db = SQLAlchemy(app)
-moment = Moment(app)
-mail = Mail(app)
-md = Markdown(app, extensions=['fenced_code', 'tables', 'abbr'])
-pages = FlatPages(app)
-csrf = CSRFProtect(app)
-
-print
-print("BG_SETTINGS=%s" % os.getenv('BG_SETTINGS'))
-print("MAIL_SERVER=%s" % app.config['MAIL_SERVER'])
-print("BG_CONFIG=%s" % os.getenv('BG_CONFIG'))
-print("TERMS_PER_PAGE=%s" % app.config['TERMS_PER_PAGE'])
-print("SQLALCHEMY_DATABASE_URI=" + app.config['SQLALCHEMY_DATABASE_URI'])
-print("SQLALCHEMY_TRACK_MODIFICATIONS=%s" % app.config['SQLALCHEMY_TRACK_MODIFICATIONS'])
-print("SQLALCHEMY_ECHO=" + str(app.config['SQLALCHEMY_ECHO']))
-print
-
-if not app.debug:
-    import logging
-    from logging.handlers import SMTPHandler
-    mail_handler = SMTPHandler(mailhost=app.config['MAIL_SERVER'],
-                               fromaddr=app.config['ADMINS_FROM_EMAIL'],
-                               toaddrs=app.config['ADMINS_EMAIL'],
-                               subject='Application Error Occurred')
-    mail_handler.setLevel(logging.ERROR)
-    app.logger.addHandler(mail_handler)
-
-# Send templated emails
-def send_mail(destination, subject, template, **template_kwargs):
-    text = flask.render_template("{0}.txt".format(template), **template_kwargs)
-
-    logging.info("Sending email to %s. Body is: %s", destination, repr(text)[:50])
-
-    msg = Message(subject, recipients=[destination])
-
-    msg.body = text
-    msg.html = flask.render_template("{0}.html".format(template),
-                                     **template_kwargs)
-
-    mail.send(msg)
-
-
-# Bootstrap helpers
-def alert_class_filter(category):
-    # Map different message types to Bootstrap alert classes
-    categories = {
-        "message": "warning"
-    }
-    return categories.get(category, category)
-
-app.jinja_env.filters['alert_class'] = alert_class_filter
-
-
-# WTForms helpers
-from .utils import wtf
-wtf.add_helpers(app)
-
-
-# Import the security/user models
-from .users import models
-
-
-# Import custom error templates
-from .errors import views
-
-
-# Register blueprints
-from .main import main as main_blueprint
-app.register_blueprint(main_blueprint)
-
-from .term_bp import term_bp as term_bp_blueprint
-app.register_blueprint(term_bp_blueprint)

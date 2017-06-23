@@ -7,10 +7,7 @@ Copyright 2016, 2017 Alan Tindale
 """
 
 import os
-
 import datetime
-
-from os.path import dirname, join
 
 COV = None
 
@@ -19,15 +16,24 @@ if os.environ.get('FLASK_COVERAGE'):
     COV = coverage.coverage(branch=True, include='app/*')
     COV.start()
 
+from app.users.models import User, Role
+from app.extensions import db
+
 from flask_script import Manager
-from flask_migrate import Migrate, MigrateCommand
+from flask_migrate import Migrate
+from flask_migrate import MigrateCommand
 
+from flask_security import SQLAlchemyUserDatastore
 from flask_security.utils import encrypt_password
-from app import app, db
-from app.users.models import user_datastore
-from config import BASE_DIR
 
-app.config.from_object(os.getenv('BG_CONFIG') or 'config.DevelopmentConfig')
+from app.core import create_app
+
+#from app.models import *
+#from app.users.models import db
+##from config import BASE_DIR
+
+
+app = create_app(os.getenv('BG_CONFIG') or 'default')
 
 manager = Manager(app)
 migrate = Migrate(app, db)
@@ -36,8 +42,15 @@ manager.add_command('db', MigrateCommand)
 
 
 @manager.command
-def add_admin(email, password):
+def create_user(email):
     """Add an admin user to your database"""
+
+    user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+    
+    from getpass import getpass
+
+    password = getpass()
+
     user = user_datastore.create_user(email=email, password=encrypt_password(password))
 
     admin_role = user_datastore.find_or_create_role("admin")
@@ -70,8 +83,8 @@ def dump(yaml, json):
     import time
     timestr = time.strftime("%Y%m%d-%H%M%S")
 
-    file_path = join(dirname(BASE_DIR), 'bg_interface')
-    file_name = join(file_path, "bg_export_" + timestr)
+    file_path = os.path.join(os.path.dirname(BASE_DIR), 'bg_interface')
+    file_name = os.path.join(file_path, "bg_export_" + timestr)
 
     if yaml:
         from app.loader import dump_yaml

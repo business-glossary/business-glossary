@@ -1,124 +1,54 @@
-'''Routes for the Business Glossary'''
+#   Copyright 2017 Alan Tindale, All Rights Reserved.
+#
+#   Licensed under the Apache License, Version 2.0 (the "License"); you may
+#   not use this file except in compliance with the License. You may obtain
+#   a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#   License for the specific language governing permissions and limitations
+#   under the License.
 
-# import os
 from os import mkdir
 from os.path import dirname, join
 
-import warnings
-
 from flask import render_template, request, send_from_directory, send_file
-from app import app, db, pages
+from flask import current_app
 
 from flask_flatpages import pygments_style_defs
-from config import BASE_DIR
 from flask_security import current_user
 from sqlalchemy import func
-from flask_admin import Admin, form, BaseView, expose
-from flask_admin.contrib.sqla import ModelView
-
+from app import models
 from . import main
-from ..models import Document, DocumentType, Term, TermStatus, Category, Person, Link, Location, Table, \
+from app.main.models import Document, DocumentType, Term, TermStatus, Category, Person, Link, Location, Table, \
     Column, Rule, Note
 
-# WTForms helpers
-from ..utils import wtf
-wtf.add_helpers(app)
-
-# Create directory for file fields to use
-FILE_PATH = join(BASE_DIR, 'app', 'static', 'files')
-
-try:
-    mkdir(FILE_PATH)
-except OSError:
-    pass
-
-#####################
-#### admin views ####
-#####################
-
-class ProtectedModelView(ModelView):
-    '''Check user has logged in for each admin view'''
-    def is_accessible(self):
-        return current_user.has_role('admin')
-
-class FileView(ProtectedModelView):
-    '''Override form field to use Flask-Admin FileUploadField'''
-    form_overrides = {
-        'path': form.FileUploadField
-    }
-
-    # Pass additional parameters to 'path' to FileUploadField constructor
-    form_args = {
-        'path': {
-            'label': 'File',
-            'base_path': FILE_PATH,
-            'allow_overwrite': False
-        }
-    }
-
-class RuleView(ProtectedModelView):
-    '''Set the view options with displaying a Rule in the admin view'''
-    form_excluded_columns = ('created_on', 'updated_on')
-    column_searchable_list = ['identifier', 'name', 'description']
-    column_default_sort = 'identifier'
-
-class TermView(ProtectedModelView):
-    '''Set the view options with displaying a Term in the admin view'''
-    form_create_rules = ('name', 'short_description', 'long_description', 'abbreviation', 'owner',
-                         'steward', 'status', 'categories', 'links', 'rules', 'documents')
-    form_edit_rules = ('name', 'short_description', 'long_description', 'abbreviation', 'owner',
-                       'steward', 'status', 'categories', 'links', 'rules', 'related_terms',
-                       'documents', 'columns')
-    column_list = ['name', 'short_description', 'abbreviation', 'status']
-    form_excluded_columns = ('created_on', 'updated_on')
-    column_searchable_list = ['name']
-
-class TableView(ProtectedModelView):
-    '''Set the view options with displaying a Table in the admin view'''
-    column_default_sort = 'name'
-    column_filters = ['location', 'name']
-    form_excluded_columns = ('columns')
-
-class ColumnView(ProtectedModelView):
-    '''Set the view options with displaying a Column in the admin view'''
-    column_filters = ['table', 'name']
-
-class BackupView(BaseView):
-    '''Add backup option to admin menu'''
-    @expose('/')
-    def index(self):
-        return self.render('backup/backup_restore.html')
-
-admin = Admin(app,
-              name='BUSINESS GLOSSARY',
-              template_mode='bootstrap3',
-              base_template='/admin/new_master.html')
-
-with warnings.catch_warnings():
-    warnings.filterwarnings('ignore', 'Fields missing from ruleset', UserWarning)
-    admin.add_view(TermView(Term, db.session))
-
-admin.add_view(RuleView(Rule, db.session))
-admin.add_view(ProtectedModelView(Note, db.session))
-admin.add_view(ProtectedModelView(Link, db.session))
-admin.add_view(FileView(Document, db.session))
-admin.add_view(ProtectedModelView(Location, db.session, category="Assets"))
-admin.add_view(TableView(Table, db.session, category="Assets"))
-admin.add_view(ColumnView(Column, db.session, category="Assets"))
-admin.add_view(ProtectedModelView(DocumentType, db.session, category="Lookups"))
-admin.add_view(ProtectedModelView(TermStatus, db.session, category="Lookups"))
-admin.add_view(ProtectedModelView(Category, db.session, category="Lookups"))
-admin.add_view(ProtectedModelView(Person, db.session, category="Lookups"))
-admin.add_view(BackupView(name='Backup', endpoint='backup', category='Backup & Restore'))
+from flask import current_app as app
 
 
-@app.context_processor
-def inject_user():
-    '''Inject pages to make it available on all pages'''
+#print(app.config)
+#print(pages)
+#tagged = [p for p in pages]
+
+
+#print(tagged)
+
+from flask_flatpages import FlatPages
+
+pages = FlatPages(app)
+
+@main.context_processor
+def inject_pages():
+    """
+    Returns pages that will be avaiables in every template view
+    """
+    from app.extensions import pages
     tagged = [p for p in pages]
 
     return dict(tagged=tagged)
-
 
 ###########################
 #### define the routes ####
@@ -134,25 +64,24 @@ def about():
 @main.route('/glossary/')
 def glossary():
     '''Display the glossary main list of terms'''
-    glossary = Term.query.order_by(Term.name).all()
+    glossary = models.Term.query.order_by(Term.name).all()
     return render_template('show_glossary.html', glossary=glossary)
 
 
 @main.route('/glossary_rules/')
 def glossary_rules():
     rules = Rule.query.order_by(Rule.identifier).all()
-
     return render_template('show_glossary_rules.html', rules=rules)
 
 
-@app.route('/<path:path>/')
+@main.route('/<path:path>/')
 def page(path):
     '''Serve up markdown pages using Flask-FlatPages'''
     page = pages.get_or_404(path)
     return render_template('flatpages/page.html', page=page)
 
 
-@app.route('/tag/<string:tag>/')
+@main.route('/tag/<string:tag>/')
 def tag(tag):
     '''Handle FlatPages tags'''
     tagged = [p for p in pages if tag in p.meta.get('tags', [])]
@@ -327,6 +256,6 @@ def source_code():
                                mimetype='text/html')
 
 
-@app.route('/graph2')
+@main.route('/graph2')
 def graph2():
     return render_template('graph2.html')

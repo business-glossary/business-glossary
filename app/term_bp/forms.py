@@ -21,6 +21,7 @@ class TermForm(FlaskForm):
     abbreviation = StringField('Abbrevation')
     categories = QuerySelectMultipleField(query_factory=lambda: Category.query.all(),
                                           get_label="name",
+                                          render_kw={"multiple": "multiple"},
                                           widget=Select2Widget())
     owner = QuerySelectField(query_factory=lambda: Person.query.all(),
                              get_label="name",

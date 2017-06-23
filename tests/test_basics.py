@@ -1,12 +1,16 @@
-from flask import Flask, url_for
-
+import os
 import unittest
 
-from app import app, db
+from flask import current_app, url_for
+from app import create_app
+from app.models import db
+from flask_sqlalchemy import SQLAlchemy
 
 from app.models import TermStatus, Document, DocumentType, Term, Category, Person, Link, Location, Table, Column, Rule
 
 from config import BASE_DIR
+
+os.environ["BG_CONFIG"] = "config.TestingConfig"
 
 class BasicTestCase(unittest.TestCase):
 
@@ -14,7 +18,7 @@ class BasicTestCase(unittest.TestCase):
         p = Person(name='Jo Black')
         ts = TermStatus(status='Approved')
         desc1 = """Comprehensive credit reporting (CCR) commenced on 12 March 2014 under changes to the Privacy Act."""
-        t = Term(term='Comprehensive Credit Reporting', abbreviation='CCR', description=desc1, owner=p, steward=p, status=ts)
+        t = Term(name='Comprehensive Credit Reporting', abbreviation='CCR', short_description='Hello', long_description=desc1, owner=p, steward=p, status=ts)
         db.session.add(p)
         db.session.add(ts)
         db.session.add(t)
@@ -22,18 +26,15 @@ class BasicTestCase(unittest.TestCase):
         return(t)
 
     def setUp(self):
-
-        app.config.from_object('config.TestingConfig')
-
-        self.app = Flask(__name__)
+        self.app = create_app('testing')
 
         self.app_context = self.app.app_context()
         self.app_context.push()
-
+        self.app.config['WTF_CSRF_ENABLED'] = False
         db.create_all()
 
         # creates a test client
-        self.client = app.test_client()
+        self.client = self.app.test_client()
 
         # propogate the exceptions to the test client
         self.client.testing = True
@@ -44,7 +45,10 @@ class BasicTestCase(unittest.TestCase):
         self.app_context.pop()
 
     def test_app_exists(self):
-        self.assertFalse(self.client is None)
+        self.assertFalse(current_app is None)
+
+    def test_app_is_testing(self):
+        self.assertTrue(current_app.config['TESTING'])
 
     def test_home_status_code(self):
 
@@ -64,7 +68,7 @@ class BasicTestCase(unittest.TestCase):
         assert str(ts) == 'Approved'
 
         desc1 = """Comprehensive credit reporting commenced on 12 March 2014 under changes to the Privacy Act."""
-        t = Term(term='Comprehensive Credit Reporting', abbreviation='CCR', description=desc1, owner=p, steward=p, status=ts)
+        t = Term(name='Comprehensive Credit Reporting', abbreviation='CCR', short_description='Hello', long_description=desc1, owner=p, steward=p, status=ts)
 
         self.assertTrue(str(t) == 'Comprehensive Credit Reporting')
 
@@ -83,12 +87,12 @@ class BasicTestCase(unittest.TestCase):
         assert ts.status == 'Approved'
 
         desc1 = """Comprehensive credit reporting commenced on 12 March 2014 under changes to the Privacy Act."""
-        t1 = Term(term='Comprehensive Credit Reporting', abbreviation='CCR', description=desc1, owner=p, steward=p, status=ts)
+        t1 = Term(name='Comprehensive Credit Reporting', abbreviation='CCR', short_description='Hello', long_description=desc1, owner=p, steward=p, status=ts)
 
         desc2 = """A standard jointly developed by the Australian Bureau of Statistics and Statistics New Zealand."""
-        t2 = Term(term='Australian and New Zealand Standard Industrial Classification', abbreviation='ANZSIC', description=desc2, owner=p, steward=p, status=ts)
+        t2 = Term(name='Australian and New Zealand Standard Industrial Classification', abbreviation='ANZSIC', short_description='Hello2', long_description=desc2, owner=p, steward=p, status=ts)
 
-        t1.related_to.append(t2)
+        t1.related_terms.append(t2)
 
         db.session.add(p)
         db.session.add(ts)
@@ -122,8 +126,8 @@ class BasicTestCase(unittest.TestCase):
         self.assertTrue(str(Rule(name='Test')) == 'Test')
         self.assertTrue(str(Document(name='Test')) == 'Test')
         self.assertTrue(str(DocumentType(type='Test')) == 'Test')
-        self.assertTrue(unicode(DocumentType(type='Test')) == 'Test')
-        self.assertTrue(unicode(Table(name='Test')) == 'Test')
+        self.assertTrue(str(DocumentType(type='Test')) == 'Test')
+        self.assertTrue(str(Table(name='Test')) == 'Test')
 
     def test_term(self):
         t = self._add_term()

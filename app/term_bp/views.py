@@ -7,10 +7,10 @@ from flask_login import current_user, login_required
 
 from sqlalchemy import exc
 from app.term_bp.forms import TermForm, DocumentForm, RuleForm, LinkForm, RelatedTermForm, AssetForm, DemoForm
+from app.config import BASE_DIR
 from . import term_bp
-from .. import db
-from ..models import Term, Document, Rule, Link, Table, Column
-from config import BASE_DIR
+from app.extensions import db
+from app.models import Term, Document, Rule, Link, Table, Column
 
 
 def check_admin():
@@ -51,11 +51,12 @@ def add_term():
             # Add term to the database
             db.session.add(term)
             db.session.commit()
+            print(">>>> Added a new term")
+            print(">>>>>>> %s" % term.id)                    
             flash('You have successfully added a new term.')
-        except:
-            # In case term name already exists
-            flash('Error: term name already exists.')
-
+        except Exception as ex:
+            print("Error %s occured." % ex)
+            flash('An error occurred when adding the new term.')
         # Redirect to term page
         return redirect(url_for('main.show_term', selected_term=term.id))
 
@@ -472,13 +473,10 @@ def add_assets_v2(term_id):
     term = Term.query.get_or_404(term_id)    
     return render_template('admin/terms/assets_v2.html', term=term)
 
-from app import app
-app.config['SQLALCHEMY_ECHO'] = False
-
 
 @term_bp.route('/autocomplete', methods=['GET'])
 def autocomplete():
-    app.config['SQLALCHEMY_ECHO'] = False
+    #current_app.config['SQLALCHEMY_ECHO'] = False
 
     search = request.args.get('q')
 
@@ -530,7 +528,7 @@ def add_assets_v3(term_id):
 def add_assets_v4(term_id):
     '''Relate assets to a term'''
 
-    app.config['SQLALCHEMY_ECHO'] = False
+    #app.config['SQLALCHEMY_ECHO'] = False
 
     print("Grab term %s", term_id)
     term = Term.query.get_or_404(term_id)

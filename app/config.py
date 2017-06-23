@@ -1,7 +1,7 @@
 import os
 
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-print("BASE_DIR=" + BASE_DIR)
+BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+print(">> BASE_DIR=" + BASE_DIR)
 
 class Config(object):
     '''Define the base configuration object'''
@@ -39,6 +39,11 @@ class Config(object):
     FLATPAGES_AUTO_RELOAD = True
     FLATPAGES_EXTENSION = '.md'
     FLATPAGES_MARKDOWN_EXTENSIONS = ['codehilite', 'tables', 'fenced_code', 'wikilinks']
+
+    @staticmethod
+    def init_app(app):
+        pass
+
 
 class DevelopmentConfig(Config):
     '''Define the development configuration object'''

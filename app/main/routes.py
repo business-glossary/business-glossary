@@ -77,6 +77,7 @@ def glossary_rules():
 @main.route('/<path:path>/')
 def page(path):
     '''Serve up markdown pages using Flask-FlatPages'''
+    from app.extensions import pages   
     page = pages.get_or_404(path)
     return render_template('flatpages/page.html', page=page)
 

@@ -118,6 +118,7 @@ def download(selected_filename):
     except Exception as e:
         return str(e)
 
+
 @main.route('/profile/')
 def profile():
     '''Present the user profile'''
@@ -243,6 +244,20 @@ def search():
         return render_template("results.html", terms=terms, columns=columns, rules=rules)
     return render_template('search.html')
 
+
+###########################################
+## Produce PDF
+###########################################
+
+@main.route('/full_glossary')
+def full_glossary():
+    terms = Term.query.order_by(Term.name).all()
+    return render_template('full_glossary.html', terms=terms)
+
+
+###########################################
+## Proof-of-concept type code
+###########################################
 
 @main.route('/source_code')
 def source_code():

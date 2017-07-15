@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Full Glossary</title>
+    <!--
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+-->
+
+    <style>
+    @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700");
+
+    body {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-size: 13px;
+        line-height: 1.846;
+        color: #000;
+        background-color: #ffffff;
+    }
+
+    @page {
+        size: a4 portrait;
+        margin: 20mm 20mm 20mm 20mm;
+        counter-increment: page;
+        @top-right {
+            content: 'Credit Risk Business Glossary';
+            font-family: 'Roboto';
+            font-size:10px;
+            white-space: pre;
+        }
+        @bottom-center {
+            content: 'Copyright \00a9  2017 Bank of Queensland';
+            font-family: 'Roboto';
+            font-size:10px;
+            white-space: pre;
+        }
+        @bottom-right {
+            content: 'Page ' counter(page);
+            font-family: 'Roboto';
+            font-size:10px;
+            white-space: pre;
+        }
+    }
+    @media print {
+        .page-break {
+            page-break-before:always;
+        }
+    }
+    #header-content {
+        position: fixed;
+        margin: -100px 0px 0px 0px ;
+        width: 680px;
+    }
+    #header-left{
+        padding-top: 10px;
+        float:left;
+        width:200px;
+    }
+    #header-right{
+        float:right;
+        width:300px;
+        text-align: right;
+    }
+    body {
+        padding-top: 0;
+    }
+    .page-header h1 {
+        margin-top: 0;
+        margin-left: 0;
+    }
+    h1 {
+        font-size: 24px;
+        font-weight: normal;
+        line-height: 1.1;
+    }
+    .lead {
+        font-size: 18px;
+        font-weight: 300;
+        line-height: 1.4;
+    }
+    .label {
+        display: inline;
+        border-color: #000;
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 2.4375px;
+        box-sizing: border-box;
+        font-size: 9px;
+        padding-bottom: 2.924999952316284px;
+        padding-left: 5.849999904632568px;
+        padding-right: 5.849999904632568px;
+        padding-top: 2.924999952316284px;
+    }
+    .page-header {
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+        border-bottom-color: #4169E1;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+    }
+    .pull-right {
+        float: right;
+    }
+    small {
+        font-size: 70%;
+    }
+    .term-footer {
+        font-size: 70%;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+    pre {
+        display: block;
+        padding: 9.5px;
+        margin: 0 0 10px;
+        font-size: 10px;
+        line-height: 1.428457;
+        background-color: #f5f5f5;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    code {
+        font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+    }
+    hr {
+        border: 0;
+        border-top: 1px solid #4169E1;
+    }
+    table{
+        border: 1px solid #ddd;
+        width: 100%;
+        border-collapse:  collapse;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        font-size: 8px;
+        width: 100px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    .link-address {
+        font-size: 70%;
+        padding: 0;
+        margin: 0;
+    }
+    .term-contents {
+        margin-left: 20px;
+    }
+    </style>
+    <!--link rel=stylesheet href="{{ url_for('static', filename='style.css') }}" /-->
+</head>
+<body>
+{% for term in terms %}
+    <div class='page-header'>
+        <h1>{{ term.name }}</h1>
+        <p class="lead">{{ term.short_description }}</p>
+        {% for c in term.categories %}
+            <span class="label label-default">{{ c.name }}</span>
+        {% endfor %}
+        <span class="label label-success">{{ term.status.status }}</span>
+        {% if term.abbreviation %}
+        <span class="pull-right abbreviation">{{ term.abbreviation }}</span>
+        {% endif %}
+    </div>
+
+    {{ term.long_description | markdown}}
+
+    <p/>
+
+    <div class="term-contents">
+    {% if term.related_terms %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>Related Terms</h4>
+                </div>
+                <div class="panel-body">
+                    {% for rt in term.related_terms %}
+                        {{ rt.name }}</a>{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if term.links.all()| length > 0 %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>Links</h4>
+                </div>
+                <div class="panel-body">
+                    {% for link in term.links.all() %}
+                        {{ link.text }}<br/>
+                        <div class="link-address">{{ link.address }}</div>{% if not loop.last %}<br/>{% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if term.documents %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>Documents</h4>
+                </div>
+                <div class="panel-body">
+                    {% for document in term.documents %}
+                        {{ document.name }}</a>{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% for rule in term.rules %}
+    <div class="panel-body">
+        <h2>{{ rule.name }}</h2>
+        <p class="list-group-item-text">{{ rule.description|markdown }}</p>
+        <h4>Notes</h4>
+        <p class="list-group-item-text">{{ rule.notes|markdown }}</p>
+        {% for note in rule.comments %}
+            <p>{{ note.note|markdown }}</p>
+            <small>Rule Note Created {{ note.created_on.strftime('%d/%m/%Y at %H:%m:%S')}}, Updated {{ note.updated_on.strftime('%d/%m/%Y at %H:%m:%S')}}</small>
+            <hr/>
+        {% endfor %}
+        <div>
+            <small>Rule Created {{ rule.created_on.strftime('%d/%m/%Y at %H:%m:%S')}}, Updated {{ rule.updated_on.strftime('%d/%m/%Y at %H:%m:%S')}}</small>
+        </div>
+    </div>
+
+    {% endfor %}
+
+    {% if term.columns %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>Assets</h4>
+                </div>
+                <div class="panel-body">
+                    <table>
+                        {% for a in term.columns %}
+                        <tr>
+                            <td>{{ a.table.location.name }}</td>
+                            <td>{{ a.table.name }}</td>
+                            <td>{{ a.name }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+
+    <!--
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title"><span class="glyphicon glyphicon-link"></span> Related Terms</h4>
+        </div>
+        <div class="panel-body">
+            {% for rt in term.related_terms %}
+                <a href="{{ url_for('main.show_term', selected_term=rt.id) }}">{{ rt.name }}</a>{% if not loop.last %},{% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    -->
+    <div class="term-footer">
+        Term Created {{ term.created_on.strftime('%d/%m/%Y at %H:%m:%S')}}, Updated {{ term.updated_on.strftime('%d/%m/%Y at %H:%m:%S')}}
+    </div>
+</div>
+    {% endfor %}
+</body>
+</html>

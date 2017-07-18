@@ -7,15 +7,20 @@ import yaml
 
 from os.path import dirname, join, isfile
 
-from app import db, app
-from app.models import Term, TermStatus, Person, Category, Link, \
+from flask import current_app as app
+
+from app import models
+#from app import db, app
+#from app.extensions import db
+
+from app.main.models import Term, TermStatus, Person, Category, Link, \
     Rule, Note, \
     Location, Table, Column, \
     Document, DocumentType
 
 from sqlalchemy import and_
 
-from config import BASE_DIR
+from app.config import BASE_DIR
 
 LOGGER = logging.getLogger("business-glossary.load_data")
 

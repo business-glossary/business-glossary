@@ -23,6 +23,8 @@ from flask_security import current_user
 from sqlalchemy import func
 from app import models
 from . import main
+from app.config import BASE_DIR
+
 from app.main.models import Document, DocumentType, Term, TermStatus, Category, Person, Link, Location, Table, \
     Column, Rule, Note
 

@@ -137,8 +137,9 @@ def delete_term(id):
 def upload_document(term_id):
     '''Upload a document to a term'''
     form = DocumentForm()
-    if form.validate_on_submit():
+    if form.validate_on_submit() and request.method == 'POST':
         document = form.document.data
+        print(document)
         filename = secure_filename(document.filename)
         # Save the document to the file system
         try:

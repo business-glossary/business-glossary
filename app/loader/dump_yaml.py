@@ -4,18 +4,20 @@ import logging
 import textwrap
 import yaml
 
-from app import app
-from app.models import Category, Term, Person, TermStatus, \
+from app.main.models import Category, Term, Person, TermStatus, \
     Document, DocumentType, Rule, Note, \
     Location, Table, Column, \
     Link
 
-app.config['SQLALCHEMY_ECHO'] = False
+from app.config import BASE_DIR
+from flask import current_app as app
+
+print(">> %s" % BASE_DIR)
 
 LOGGER = logging.getLogger("business-glossary.dump_data")
 
-
 class literal(str): pass
+
 def literal_representer(dumper, data):
     return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
 yaml.add_representer(literal, literal_representer)
@@ -289,17 +291,20 @@ def prep_related_terms():
 
 def prepare_string(data):
     '''Conform a string'''
-    if len(data.splitlines()) > 1:
-        # If multi-line, loop through each line wrap that line and then join
-        # it back together
-        new_lines = []
-        for line in data.splitlines():
-            wrap = textwrap.fill(line, 100)
-            new_lines.append(wrap)
+    if data != None:
+        if len(data.splitlines()) > 1:
+            # If multi-line, loop through each line wrap that line and then join
+            # it back together
+            new_lines = []
+            for line in data.splitlines():
+                wrap = textwrap.fill(line, 100)
+                new_lines.append(wrap)
 
-        new_string = "\n".join(new_lines)
+            new_string = "\n".join(new_lines)
+        else:
+            new_string = textwrap.fill(data, 100)
     else:
-        new_string = textwrap.fill(data, 100)
+        new_string = ""
     return new_string
 
 
@@ -399,7 +404,7 @@ def dump(file_name):
     logging.basicConfig(level=logging.INFO, format=log_format)
 
     LOGGER.info("Dump process started")
-
+    
     app.config['SQLALCHEMY_ECHO'] = False
 
     file_contents_1 = {

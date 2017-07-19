@@ -23,6 +23,8 @@ from flask_security import current_user
 from sqlalchemy import func
 from app import models
 from . import main
+from app.config import BASE_DIR
+
 from app.main.models import Document, DocumentType, Term, TermStatus, Category, Person, Link, Location, Table, \
     Column, Rule, Note
 
@@ -77,6 +79,7 @@ def glossary_rules():
 @main.route('/<path:path>/')
 def page(path):
     '''Serve up markdown pages using Flask-FlatPages'''
+    from app.extensions import pages   
     page = pages.get_or_404(path)
     return render_template('flatpages/page.html', page=page)
 
@@ -117,6 +120,7 @@ def download(selected_filename):
                          attachment_filename=selected_filename)
     except Exception as e:
         return str(e)
+
 
 @main.route('/profile/')
 def profile():
@@ -243,6 +247,20 @@ def search():
         return render_template("results.html", terms=terms, columns=columns, rules=rules)
     return render_template('search.html')
 
+
+###########################################
+## Produce PDF
+###########################################
+
+@main.route('/full_glossary')
+def full_glossary():
+    terms = Term.query.order_by(Term.name).all()
+    return render_template('full_glossary.html', terms=terms)
+
+
+###########################################
+## Proof-of-concept type code
+###########################################
 
 @main.route('/source_code')
 def source_code():

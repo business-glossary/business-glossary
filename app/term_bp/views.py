@@ -193,8 +193,9 @@ def delete_document(document_id):
         # Note that the document is deleted by the model
         db.session.delete(document)
         db.session.commit()
-    except:
-        flash('Something went wrong.')
+    except Exception as ex:
+        print("Error %s occured." % ex)
+        flash('An error occurred while deleting file.')
 
     # flash('You have successfully deleted the document.')
 

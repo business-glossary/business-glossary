@@ -392,7 +392,7 @@ def del_file(mapper, connection, target):
 
     if target.path:
         try:
-            os.remove(op.join(file_path, target.path))
+            os.remove(os.path.join(file_path, target.path))
         except OSError:
             # Don't care if was not deleted because it does not exist
             pass

@@ -26,8 +26,8 @@ from .term_bp import term_bp as term_bp_blueprint
 
 
 from flask import Flask
-#from flaskext.markdown import Markdown
-from flask_misaka import Misaka
+from flaskext.markdown import Markdown
+#from flask_misaka import Misaka
 from flask_moment import Moment
 
 from flask_security import SQLAlchemyUserDatastore
@@ -42,7 +42,9 @@ from app.models import Term, Rule, Note, Link, Table, Document, Location, Column
 
 moment = Moment()
 csrf = CSRFProtect()
-md = Misaka(math=True, math_explicit=True)
+
+# Misaka markdown parser
+# md = Misaka(math=True, math_explicit=True, no_intra_emphasis=True, tables=True, fenced_code=True, hard_wrap=True)
 
 
 # Bootstrap helpers
@@ -78,10 +80,12 @@ def create_app(config_name):
     bootstrap.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
+    
+    # Misaka markdown parser
+    # md.init_app(app)
 
-
-    #md = Markdown(app, extensions=['fenced_code', 'tables', 'abbr'])
-    md.init_app(app)
+    # Flask-Markdown markdown parser
+    md = Markdown(app, extensions=['fenced_code', 'tables', 'abbr'])
     #markdown = Markdown()
     #markdown.init_app(app, extensions=['fenced_code', 'tables', 'abbr'])
 

@@ -1,20 +1,15 @@
 #!/usr/bin/python
 # -*- encoding: utf-8-*-
 
+import os
 import logging
-
 import csv
-
-from os.path import dirname, join
-
-from app import app, db
+from app import create_app
+from app import db
 from app.models import Location, Table, Column
-
 from config import BASE_DIR
 
 LOGGER = logging.getLogger("business-glossary.load_data")
-
-app.config['SQLALCHEMY_ECHO'] = False
 
 def load_locations(file_name):
     '''
@@ -113,6 +108,9 @@ if __name__ == "__main__":
 
     LOGGER.info("Load process started")
 
+    app = create_app(os.getenv('BG_CONFIG') or 'default')
+    app.config['SQLALCHEMY_ECHO'] = False
+
     # Interface files are placed in a directory name bg_interface at the same level
     # as the application directory, i.e.
     #
@@ -121,7 +119,7 @@ if __name__ == "__main__":
     #
     # Call os.path.dirname twice to walk up to the parent directory
 
-    FILE_PATH = join(dirname(BASE_DIR), 'bg_interface')
+    FILE_PATH = os.path.join(os.path.dirname(BASE_DIR), 'bg_interface')
 
     # Delete all Columns
 
@@ -129,8 +127,8 @@ if __name__ == "__main__":
 
     LOGGER.info("%s columns deleted", cols_deleted)
 
-    load_locations(join(FILE_PATH, "bg_interface_locations.csv"))
-    load_tables(join(FILE_PATH, "bg_interface_table.csv"))
-    load_columns(join(FILE_PATH, "bg_interface_column.csv"))
+    load_locations(os.path.join(FILE_PATH, "bg_interface_locations.csv"))
+    load_tables(os.path.join(FILE_PATH, "bg_interface_table.csv"))
+    load_columns(os.path.join(FILE_PATH, "bg_interface_column.csv"))
 
     LOGGER.info("Load process ended")

@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block head %}
+  <link href="/admin/static/vendor/select2/select2.css?v=3.5.2" rel="stylesheet">
+  <link href="/admin/static/vendor/select2/select2-bootstrap3.css?v=1.4.6" rel="stylesheet">
+  <link href="/admin/static/vendor/bootstrap-daterangepicker/daterangepicker-bs3.css?v=1.3.22" rel="stylesheet">
+{% endblock head %}  
+{% block title %}
+{{ action }} Term
+{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class='btn-toolbar pull-right'>
+        <a href="javascript:{}" onclick="document.getElementById('rule_form').submit(); return false;" class="btn btn-sm btn-success" role="button">
+            <i class="fa fa-check"></i>
+        </a>
+        {% if action == "Add"  %}
+        <a href="{{ url_for('main.glossary') }}" class="btn btn-sm btn-danger" role="button">        
+        {% else %}
+        <a href="{{ url_for('main.show_term', selected_term=term_id) }}" class="btn btn-sm btn-danger" role="button">
+        {% endif %}
+            <i class="fa fa-times"></i></a>
+        </a>              
+    </div>
+    <h1>{{ action }} Rule</h1>
+</div>
+<div class="form-area">
+    <form method="post" class="form" role="form" id="rule_form">
+        {{ wtf.form_field(form.identifier) }}
+        {{ wtf.form_field(form.name, rows=3) }}
+        {{ wtf.form_field(form.description, rows=12) }}
+        {{ wtf.form_field(form.notes, rows=12) }}
+        {{ form.csrf_token }}
+    </form>
+
+    <hr />
+</div>
+{% endblock %}
+{% block footer %}
+<script src="/admin/static/vendor/select2/select2.min.js?v=3.5.2" type="text/javascript"></script>
+<script src="/admin/static/admin/js/form.js?v=1.0.1"></script>
+{% endblock footer %}

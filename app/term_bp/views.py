@@ -206,11 +206,37 @@ def delete_document(document_id):
 ##
 #########################################################################################
 
+#@term_bp.route('/term/<int:term_id>/rules/create', methods=['GET', 'POST'])
+#@login_required
+#def create_rule(term_id):
+#    term = Term.query.filter(Term.id == term_id).first_or_404()
+#    form = RuleForm()
+#    if form.validate_on_submit():
+#        rule = Rule()
+
+#        rule.name = form.name.data
+#        rule.identifier = form.identifier.data
+#        rule.description = form.description.data
+#        rule.notes = form.notes.data
+
+#        term.rules.append(rule)
+
+#        db.session.add(rule)
+#        db.session.commit()
+#        return jsonify(status='ok')
+#    return render_template('rules/add.html', form=form)
+
 @term_bp.route('/term/<int:term_id>/rules/create', methods=['GET', 'POST'])
 @login_required
 def create_rule(term_id):
+    '''
+    Add a rule to the database
+    '''
+    check_admin()
+
     term = Term.query.filter(Term.id == term_id).first_or_404()
     form = RuleForm()
+
     if form.validate_on_submit():
         rule = Rule()
 
@@ -223,29 +249,80 @@ def create_rule(term_id):
 
         db.session.add(rule)
         db.session.commit()
-        return jsonify(status='ok')
-    return render_template('rules/add.html', form=form)
+        
+        # Redirect to term page
+        return redirect(url_for('main.show_term', selected_term=term.id))
 
+    # Load term template
+    return render_template('admin/rules/rule.html',
+                           action="Add",
+                           form=form)
 
-@term_bp.route('/rule/edit/<int:rule_id>', methods=['GET', 'POST'])
-@login_required
-def edit_rule(rule_id):
+#@term_bp.route('/rule/edit/<int:rule_id>', methods=['GET', 'POST'])
+#@login_required
+#def edit_rule(rule_id):
     #term = Term.query.filter(Term.id == term_id).first_or_404()
+#    rule = Rule.query.filter(Rule.id == rule_id).first_or_404()
+#    form = RuleForm(obj=rule)
+#    if form.validate_on_submit():
+#        rule.name = form.name.data
+#        rule.identifier = form.identifier.data
+#        rule.description = form.description.data
+#        rule.notes = form.notes.data
+#        db.session.commit()
+        #flash('Successfully edited the rule.')
+#        return jsonify(status='ok')
+#    form.name.data = rule.name
+#    form.identifier.data = rule.identifier
+#    form.description.data = rule.description
+#    form.notes.data = rule.notes
+#    return render_template('rules/edit.html', form=form)
+
+def redirect_url(default='index'):
+    return request.args.get('next') or \
+           request.referrer or \
+           url_for(default)
+
+#@term_bp.route('/rule/edit/<int:rule_id>', methods=['GET', 'POST'])
+@term_bp.route('/term/<int:term_id>/rule/<int:rule_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_rule(term_id, rule_id):
+    '''
+    Edit a rule
+    '''
+    check_admin()
+
     rule = Rule.query.filter(Rule.id == rule_id).first_or_404()
     form = RuleForm(obj=rule)
+
     if form.validate_on_submit():
+        # No cancel and submit are not used.
         rule.name = form.name.data
         rule.identifier = form.identifier.data
         rule.description = form.description.data
         rule.notes = form.notes.data
+
         db.session.commit()
-        #flash('Successfully edited the rule.')
-        return jsonify(status='ok')
+        flash('You have successfully edited the rule.')
+
+        print(">> Referrer URL %s" % request.referrer)
+
+        print(">> %s" % request.values)
+
+        # Redirect to the terms page
+        # Need to find the term ID
+        return redirect(url_for('main.show_term', selected_term=term_id))
+
     form.name.data = rule.name
     form.identifier.data = rule.identifier
     form.description.data = rule.description
     form.notes.data = rule.notes
-    return render_template('rules/edit.html', form=form)
+
+    return render_template('admin/rules/rule.html',
+                           action="Edit",
+                           form=form,
+                           rule=rule,
+                           term_id=term_id)
 
 #########################################################################################
 ##

@@ -178,7 +178,7 @@ $(document).ready(function() {
                     <small>Created: {{ moment(rule.created_on).calendar() }}, Updated: {{ moment(rule.updated_on).calendar() }}</small>
                     {% if current_user.is_active %}
                     <div class='btn-toolbar pull-right'>
-                        <button type="button" data-href="{{ url_for('term_bp.edit_rule', rule_id=rule.id) }}" id="editStepButton" class="btn btn-sm btn-default editStepButton"><i class="fa fa-pencil"></i></button>
+                        <a href="{{ url_for('term_bp.edit_rule', rule_id=rule.id, term_id=term.id) }}" class="btn btn-sm btn-default"><i class="fa fa-pencil"></i></a>
                     </div>
                     {% endif %}
                 </div>
@@ -253,7 +253,7 @@ $(document).ready(function() {
     <small>Created: {{ moment(term.created_on).calendar() }}, Updated: {{ moment(term.updated_on).calendar() }}</small>
     {% if current_user.is_active %}   
     <div class='btn-toolbar pull-right'>
-        <button type="button" id="addStepButton" class="btn btn-sm btn-default">Add Rule</button>
+        <a href="{{ url_for('term_bp.create_rule', term_id=term.id) }}" class="btn btn-sm btn-default" role="button">Add Rule</a>
         <a href="{{ url_for('term_bp.add_related_term', term_id=term.id) }}" class="btn btn-sm btn-default" role="button">Relate Term</a>
         <a href="{{ url_for('term_bp.add_assets_v4', term_id=term.id) }}" class="btn btn-sm btn-default" role="button">Relate Asset</a>
     </div>

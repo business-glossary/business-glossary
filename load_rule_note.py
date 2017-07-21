@@ -45,7 +45,8 @@ def add_rule_note(rule_note):
         LOGGER.warning("Rule %s does not exist - we will create it", rule_note['name'])
         rule = Rule(identifier='BR_xxx',
                     name=rule_note['name'],
-                    description='*To be completed*'
+                    description='*To be completed*',
+                    notes='*To be completed*'
                     )
 
         db.session.add(rule)

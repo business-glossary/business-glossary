@@ -328,3 +328,39 @@ body {
 .table-borderless > thead > tr > th {
     border: none;
 }
+
+
+
+/********************************************************************
+** Style tables                                                    **
+********************************************************************/
+
+
+.term-page table, .term-page td, .term-page th {    
+    border: 1px solid #ddd;
+}
+
+.table-no-width table {
+    border-collapse: collapse;
+}
+
+.term-page table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.term-page th, .term-page td {
+    padding: 6px;
+}
+
+.table-no-width table, .table-no-width td, .table-no-width th {    
+    border: 1px solid #ddd;
+}
+
+.table-no-width table {
+    border-collapse: collapse;
+}
+
+.table-no-width th, .table-no-width td {
+    padding: 6px;
+}

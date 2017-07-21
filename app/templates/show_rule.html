@@ -38,7 +38,7 @@ $(document).ready(function() {
             <h4 class="panel-title"><span class="glyphicon glyphicon-comment"></span> Notes</h4>
         </div>
         <div class="panel-body">
-            {{ rule.notes or ''|markdown }}
+            {% if rule.notes %}{{ rule.notes|markdown }}{% endif %}
         </div><!-- panel body -->
     </div><!-- panel -->
 
@@ -49,7 +49,7 @@ $(document).ready(function() {
         <div class="panel-body">
             {% for note in rule.comments %}
                 <p class="list-group-item-text">{{ note.note|markdown }}</p>
-                <small>Created: {{ moment(note.created_on).calendar() }}, Updated: {{ moment(note.updated_on).calendar() }}</small>
+                <!--<small>Created: {{ moment(note.created_on).calendar() }}, Updated: {{ moment(note.updated_on).calendar() }}</small>-->
                 <hr />
             {% endfor %}
         </div><!-- panel body -->

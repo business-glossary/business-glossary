@@ -12,7 +12,7 @@ $(document).ready(function() {
 </script>
 {% endblock %}
 {% block content %}
-<div class='page-header term-page'>
+<div class='page-header'>
     {% if current_user.is_active %}
         <div class='btn-toolbar pull-right'>
             <a href="{{ url_for('term_bp.edit_term', id=term.id) }}" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>
@@ -38,7 +38,9 @@ $(document).ready(function() {
 
 {% set active_page = "term" %}
 
+<div class="term-page">
 {{ term.long_description|markdown }}
+</div>
 
 <div class="panel-group" id="accordion">
     {% if term.related_terms %}
@@ -164,14 +166,17 @@ $(document).ready(function() {
             </h4>
         </div>
         <div id="collapseBR{{ rule.id }}" class="panel-collapse collapse">
-            <div class="panel-body">
-                <h4>Description</h4>
+            <div class="panel-body term-page">
+                <h5>Description</h5>
                 {{ rule.description|markdown }}
-                <h4>Notes</h4>
+                <h5><span class="glyphicon glyphicon-comment"></span> Notes</h5>
                 {{ rule.notes|markdown }}
+                {% if rule.comments.count() > 0 %}
+                <h5><i class="fa fa-code" aria-hidden="true"></i> Implemented Logic</h5>
+                {% endif %}
                 {% for note in rule.comments %}
                     {{ note.note|markdown }}
-                    <small>Created: {{ moment(note.created_on).calendar() }}, Updated: {{ moment(note.updated_on).calendar() }}</small>
+                    <!--<small>Created: {{ moment(note.created_on).calendar() }}, Updated: {{ moment(note.updated_on).calendar() }}</small>-->
                     <hr/>
                 {% endfor %}
                 <div>

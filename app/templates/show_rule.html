@@ -38,7 +38,7 @@ $(document).ready(function() {
             <h4 class="panel-title"><span class="glyphicon glyphicon-comment"></span> Notes</h4>
         </div>
         <div class="panel-body">
-            {{ rule.notes|markdown }}    
+            {{ rule.notes or ''|markdown }}
         </div><!-- panel body -->
     </div><!-- panel -->
 

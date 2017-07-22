@@ -79,7 +79,7 @@ $(document).ready(function() {
                             <th>Link</th>
                             <th class="actions">
                                 {% if current_user.is_active %}
-                                <a href="{{ url_for('term_bp.add_link', term_id=term.id) }}" ><i class="fa fa-lg fa-plus-circle" aria-hidden="true"></i></a>
+                                <a href="{{ url_for('term_bp.add_link', term_id=term.id) }}"><i class="fa fa-lg fa-plus-circle" aria-hidden="true"></i></a>
                                 {% endif %}
                             </th>
                         </tr>
@@ -87,7 +87,7 @@ $(document).ready(function() {
                     <tbody>
                         {% for link in term.links.all() %}
                         <tr>
-                            <td><a href="{{ link.address }}">{{ link.text }}</a></td>
+                            <td><a href="{{ link.address }}" target="_blank">{{ link.text }}</a></td>
                             <td class="actions-danger" data-th="">
                                 {% if current_user.is_active %}
                                 <a href="#" data-href="{{ url_for('term_bp.delete_link', link_id=link.id) }}" data-toggle="modal" data-target="#confirmDelete" data-title="Delete Link" data-message="Are you sure you want to delete this link?">

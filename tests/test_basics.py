@@ -1,16 +1,15 @@
 import os
 import unittest
 
-from flask import current_app, url_for
-from app import create_app
+from flask import current_app
+from flask import url_for
+from app.core import create_app
 from app.models import db
 from flask_sqlalchemy import SQLAlchemy
 
-from app.models import TermStatus, Document, DocumentType, Term, Category, Person, Link, Location, Table, Column, Rule
+from app.main.models import TermStatus, Document, DocumentType, Term, Category, Person, Link, Location, Table, Column, Rule
 
-from config import BASE_DIR
-
-os.environ["BG_CONFIG"] = "config.TestingConfig"
+from app.config import BASE_DIR
 
 class BasicTestCase(unittest.TestCase):
 

@@ -30,7 +30,7 @@ from app.core import create_app
 
 #from app.models import *
 #from app.users.models import db
-##from config import BASE_DIR
+from app.config import BASE_DIR
 
 
 app = create_app(os.getenv('BG_CONFIG') or 'default')
@@ -46,7 +46,7 @@ def create_user(email):
     """Add an admin user to your database"""
 
     user_datastore = SQLAlchemyUserDatastore(db, User, Role)
-    
+
     from getpass import getpass
 
     password = getpass()

@@ -38,6 +38,8 @@ class BasicTestCase(unittest.TestCase):
         # propogate the exceptions to the test client
         self.client.testing = True
 
+        print(">>> %s " % BASE_DIR)
+
     def tearDown(self):
         db.session.remove()
         db.drop_all()

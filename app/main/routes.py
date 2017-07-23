@@ -20,25 +20,16 @@ from flask import current_app
 
 from flask_flatpages import pygments_style_defs
 from flask_security import current_user
+from flask_flatpages import FlatPages
 from sqlalchemy import func
 from app import models
-from . import main
 from app.config import BASE_DIR
+from . import main
 
 from app.main.models import Document, DocumentType, Term, TermStatus, Category, Person, Link, Location, Table, \
     Column, Rule, Note
 
 from flask import current_app as app
-
-
-#print(app.config)
-#print(pages)
-#tagged = [p for p in pages]
-
-
-#print(tagged)
-
-from flask_flatpages import FlatPages
 
 pages = FlatPages(app)
 
@@ -173,12 +164,19 @@ def show_rules(selected_term):
 
 
 @main.route('/rule/<int:selected_rule>')
-def show_rule(selected_rule):
+@main.route('/rule/<string:selected_rule_name>')
+def show_rule(selected_rule=None, selected_rule_name=None):
 
-    rule = Rule.query.filter_by(id=selected_rule).first()
-    print(rule.documents)
-    print(rule.comments)
-    return render_template('show_rule.html', rule=rule)
+    if selected_rule is None:
+        rule = Rule.query.filter(func.lower(Rule.name) == func.lower(selected_rule_name)).first()
+        if not rule:
+            return render_template('errors/404.html')
+        else:
+            return render_template('show_rule.html', rule=rule)
+
+    else:
+        rule = Rule.query.filter_by(id=selected_rule).first()
+        return render_template('show_rule.html', rule=rule)
 
 
 @main.route('/rule/documents/<int:selected_rule>')

@@ -253,7 +253,7 @@ def search():
 @main.route('/full_glossary')
 def full_glossary():
     terms = Term.query.order_by(Term.name).all()
-    return render_template('full_glossary.html', terms=terms)
+    return render_template('print/full_glossary.html', terms=terms)
 
 
 ###########################################

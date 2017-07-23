@@ -11,7 +11,7 @@ from flask import current_app as app
 
 from app import models
 #from app import db, app
-#from app.extensions import db
+from app.extensions import db
 
 from app.main.models import Term, TermStatus, Person, Category, Link, \
     Rule, Note, \

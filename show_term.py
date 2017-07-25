@@ -32,18 +32,18 @@ def list_rules():
 ##  Term, rule, rule note dump with indent                                             ##
 ##                                                                                     ##
 #########################################################################################
-        
+
 def list_terms_rules_indent():
     '''
     Produce a list of terms, rules and rule notes in this format:
-    
+
     Term: Application Number
       Rule: Balance and Account Balance Correction
-        Rule Note: Source: `acct\2.0_account_history\acct_hist_ext.sas`   
+        Rule Note: Source: `acct\2.0_account_history\acct_hist_ext.sas`
     '''
     for term in Term.query.all():
 #       print(term.name, end="|")
-        print("Term: %s" % term.name )
+        print("Term: %s" % term.name)
         for rule in term.rules:
 #           print(rule.name, end="|")
             print("  Rule: %s" % rule.name )
@@ -93,7 +93,7 @@ def output_terms(ws, start_row):
         ws.cell(row=term_row, column=1).value = term.name
         print("Term: %s (%s)" % (term.name, term_row))
         term_row = output_rules(ws, term, term_row)
-        
+
 def excel_term_dump():
     wb = Workbook()
     ws = wb.active
@@ -101,6 +101,53 @@ def excel_term_dump():
     output_terms(ws, 1)
 
     wb.save("H:\glossary.xlsx")
+
+#########################################################################################
+##                                                                                     ##
+##  Print routine                                                                      ##
+##                                                                                     ##
+#########################################################################################
+
+def print_report():
+
+    from markdown import markdown
+    import pdfkit
+    import flask
+
+    output_filename = 'glossary.pdf'
+
+    #terms = Term.query.limit(10)
+    terms = Term.query.order_by(Term.name).all()
+
+    html_text = flask.render_template('print/glossary_print.html', terms=terms)
+
+    options = {
+        'page-size': 'A4',
+        'dpi': 300,
+        'margin-top': '20mm',
+        'margin-right': '20mm',
+        'margin-bottom': '20mm',
+        'margin-left': '20mm',
+        'encoding': "UTF-8",
+        'header-left': "BOQ Credit Risk",
+        'header-right': "Full Glossary",
+        'header-font-name': 'Roboto',
+        'header-font-size': '8',
+        'header-spacing': '10',
+        'footer-left': '[date], [time]',
+        'footer-right': 'Page [page] of [topage]',
+        'footer-font-name': 'Roboto',
+        'footer-font-size': '8',
+        'footer-spacing': '10',
+        'no-outline': None
+    }
+
+    css = 'C:/Users/Alan/Projects/glossary/print-test/style.css'
+
+    print(html_text)
+
+    pdfkit.from_string(html_text, output_filename, options=options, css=css)
+
 
 #########################################################################################
 ##                                                                                     ##
@@ -131,17 +178,19 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Utility to dump data from the Glossary',
                                      usage=msg())
-    
+
     parser.add_argument("command", help="Enter the command to run")
     args = parser.parse_args()
 
     if args.command == "rules":
         list_rules()
-    elif args.command ==  "terms":
+    elif args.command == "terms":
         list_terms()
-    elif args.command ==  "excel_term_dump":
+    elif args.command == "excel_term_dump":
         excel_term_dump()
-    elif args.command ==  "terms_rules_indent":
+    elif args.command == "terms_rules_indent":
         list_terms_rules_indent()
+    elif args.command == "print":
+        print_report()
     else:
         parser.print_help()

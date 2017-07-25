@@ -83,7 +83,7 @@ def create_app(config_name):
     # md.init_app(app)
 
     # Flask-Markdown markdown parser
-    md = Markdown(app, extensions=['fenced_code', 'tables', 'abbr'])
+    md = Markdown(app, output_format='html5', extensions=['fenced_code', 'tables', 'abbr'])
     #markdown = Markdown()
     #markdown.init_app(app, extensions=['fenced_code', 'tables', 'abbr'])
 

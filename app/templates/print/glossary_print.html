@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Full Glossary</title>
+</head>
+<body>
+    {% for term in terms %}
+    <h1>{{ term.name }}</h1>
+    <h2 class="short-desc">{{ term.short_description }}</h2>
+
+    {{ term.long_description | markdown}}
+
+    <p/>
+    {% endfor %}
+
+</body>
+</html>

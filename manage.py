@@ -32,7 +32,6 @@ from app.core import create_app
 #from app.users.models import db
 from app.config import BASE_DIR
 
-
 app = create_app(os.getenv('BG_CONFIG') or 'default')
 
 manager = Manager(app)

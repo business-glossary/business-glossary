@@ -64,7 +64,7 @@ def create_app(config_name):
     """
     app = Flask(__name__)
 
-    app.config.from_object(os.getenv('BG_CONFIG') or config[config_name])
+    app.config.from_object(config[os.getenv('BG_CONFIG')] or config[config_name])
     app.config.from_envvar('BG_SETTINGS', silent=True)
     config[config_name].init_app(app)
 

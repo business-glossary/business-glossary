@@ -256,13 +256,15 @@ $(document).ready(function() {
 </div>
 <div>
     <small>Created: {{ moment(term.created_on).calendar() }}, Updated: {{ moment(term.updated_on).calendar() }}</small>
-    {% if current_user.is_active %}   
     <div class='btn-toolbar pull-right'>
+        <a href="{{ url_for('term_bp.print_report', term_id=term.id) }}" class="btn btn-sm btn-default" role="button">Print Term</a>
+        {% if current_user.is_active %}   
         <a href="{{ url_for('term_bp.create_rule', term_id=term.id) }}" class="btn btn-sm btn-default" role="button">Add Rule</a>
         <a href="{{ url_for('term_bp.add_related_term', term_id=term.id) }}" class="btn btn-sm btn-default" role="button">Relate Term</a>
         <a href="{{ url_for('term_bp.add_assets_v4', term_id=term.id) }}" class="btn btn-sm btn-default" role="button">Relate Asset</a>
+        <a href="{{ url_for('term_bp.add_assets_v4', term_id=term.id) }}" class="btn btn-sm btn-default" role="button">Relate Asset</a>
+        {% endif %}
     </div>
-    {% endif %}
 </div>
 <div id="stepDialog" class="modal fade" tabindex=-1 role="dialog">
   <div class="modal-dialog" role="document">

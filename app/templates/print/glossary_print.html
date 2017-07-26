@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Full Glossary</title>
+    <base href="http://localhost/">
+</head>
+<body>
+    {% for term in terms %}
+    <h1>{{ term.name }}</h1>
+    <h2 class="short-desc">{{ term.short_description }}</h2>
+
+    {{ term.long_description | markdown}}
+
+    {%- if term.related_terms %}
+        <h2>Related Terms</h2>
+        {%- for rt in term.related_terms %}
+            <p>{{ rt.name }}</p>
+        {%- endfor %}
+    {% endif %}
+
+    {% if term.links.all()| length > 0 %}
+        <h2>Links</h2>
+        {% for link in term.links.all() %}
+            {{ link.text }}<br/>
+            <div class="link-address">{{ link.address }}</div>{% if not loop.last %}<br/>{% endif %}
+        {% endfor %}
+    {% endif %}    
+
+    {% if term.documents %}
+        <h2>Documents</h2>
+        {% for document in term.documents %}
+            <p>{{ document.name }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% for rule in term.rules %}
+        <h2>Rule: {{ rule.name }}</h2>
+        {{ rule.description|markdown }}
+        <h3>Notes</h3>
+        {{ rule.notes|markdown }}
+        {% for note in rule.comments %}
+            <h3>Implemented Logic</h3>
+            {{ note.note|markdown }}
+            <hr/>
+        {% endfor %}
+    {% endfor %}    
+    
+    {% if term.columns %}
+        <h2>Assets</h2>
+        <table>
+            {% for a in term.columns %}
+            <tr>
+                <td>{{ a.table.location.name }}</td>
+                <td>{{ a.table.name }}</td>
+                <td>{{ a.name }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+    <p/>
+    {% endfor %}
+
+</body>
+</html>

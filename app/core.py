@@ -64,7 +64,7 @@ def create_app(config_name):
     """
     app = Flask(__name__)
 
-    app.config.from_object(config[os.getenv('BG_CONFIG')] or config[config_name])
+    app.config.from_object(config[config_name] or config[os.getenv('BG_CONFIG')])
     app.config.from_envvar('BG_SETTINGS', silent=True)
     config[config_name].init_app(app)
 
@@ -83,7 +83,7 @@ def create_app(config_name):
     # md.init_app(app)
 
     # Flask-Markdown markdown parser
-    md = Markdown(app, extensions=['fenced_code', 'tables', 'abbr'])
+    md = Markdown(app, extensions=['fenced_code', 'tables', 'abbr', 'footnotes'])
     #markdown = Markdown()
     #markdown.init_app(app, extensions=['fenced_code', 'tables', 'abbr'])
 

@@ -2,7 +2,7 @@ import os
 
 from werkzeug.utils import secure_filename
 
-from flask import abort, flash, redirect, render_template, url_for, request, jsonify
+from flask import abort, flash, redirect, render_template, url_for, request, jsonify, send_from_directory, Response
 from flask_login import current_user, login_required
 
 from sqlalchemy import exc
@@ -125,6 +125,84 @@ def delete_term(id):
     # Redirect to term page
     #return redirect(url_for('main.show_term', selected_term=1))
 
+
+#########################################################################################
+##                                                                                     ##
+##  Print routine                                                                      ##
+##                                                                                     ##
+#########################################################################################
+
+@term_bp.route('/term/print/<int:term_id>')
+def print_report(term_id):
+
+    #from markdown import markdown
+    import pdfkit
+    #import flask
+
+    #flask.response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    #flask.response.headers['Pragma'] = 'no-cache'
+
+    pdf_directory = 'C:/Users/Alan/Projects/glossary/bg_pdf'
+
+    path = os.getenv("PATH")
+    if "wkhtmltopdf" not in path:
+        os.environ["PATH"] += os.pathsep + 'C:/Program Files/wkhtmltopdf/bin'    
+
+
+    output_filename = 'glossary.pdf'
+
+    print(">> Generating PDF for term %s" % term_id)
+    #terms = Term.query.limit(10)
+    terms = Term.query.filter_by(id=term_id).all()
+
+    print(terms)
+    from flask import current_app
+
+    domain = current_app.config.get('SERVER_NAME', 'http://localhost/')
+    print(">>> %s" % domain)
+
+    html_text = render_template('print/glossary_print.html', terms=terms)
+
+    options = {
+        'page-size': 'A4',
+        'dpi': 300,
+        'margin-top': '20mm',
+        'margin-right': '20mm',
+        'margin-bottom': '20mm',
+        'margin-left': '20mm',
+        'encoding': "UTF-8",
+        'header-left': "BOQ Credit Risk Analytics",
+        'header-right': "Term Definition",
+        'header-font-name': 'Roboto',
+        'header-font-size': '8',
+        'header-spacing': '10',
+        'footer-left': '[date], [time]',
+        'footer-right': 'Page [page] of [topage]',
+        'footer-font-name': 'Roboto',
+        'footer-font-size': '8',
+        'footer-spacing': '10',
+        'no-outline': None
+    }
+
+    css = 'C:/Users/Alan/Projects/glossary/print-test/style.css'
+
+    print(html_text)
+
+    pdfkit.from_string(html_text, os.path.join(pdf_directory, output_filename), options=options, css=css)
+
+    response = Response()
+    #response.headers['Content-Disposition'] = \
+    #    'attachment;filename="%s"' % filename_for (node, ext='zip')
+    #response.headers['Content-Length'] = obj_cache.get_value (size_key)
+    #response.headers['Content-Type'] = 'application/octet-stream'
+    response.headers.add('Cache-Control', 'no-cache, no-store, must-revalidate')
+    response.headers.add('Pragma', 'no-cache')
+    response.headers.add('Content-Length', str(os.path.getsize('glossary.pdf')))
+
+    return send_from_directory(directory=pdf_directory,
+                               filename=output_filename,
+                               as_attachment=True,
+                               mimetype='application/pdf')
 
 #########################################################################################
 ##

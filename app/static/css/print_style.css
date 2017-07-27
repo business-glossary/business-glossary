@@ -1,0 +1,75 @@
+html, p {
+  font-family: Roboto, Helvetica, sans-serif;
+  font-size: 11pt;
+  -webkit-text-size-adjust:100%;
+  -ms-text-size-adjust:100%
+}
+ 
+body {
+  margin:0;
+}
+ 
+p {
+  font-family: Roboto, Helvetica, sans-serif;
+  font-size: 11pt;
+  -webkit-text-size-adjust:100%;
+  -ms-text-size-adjust:100%
+} 
+ 
+h1,
+.h1 {
+  font-size: 24px;
+}
+ 
+h2,
+.h2 {
+	font-family: Roboto-Light, Helvetica, sans-serif;
+  font-size: 18px;
+}
+
+h3,
+.h3 {
+  font-size: 16px;
+}
+ 
+h4,
+.h4 {
+  font-size: 12px;
+}
+ 
+h5,
+.h5 {
+  font-size: 11px;
+}
+ 
+h6,
+.h6 {
+  font-size: 9px;
+}
+
+.short-desc {
+	font-family: Roboto, Helvetica, sans-serif;
+	font-weight: 200;
+}
+
+table, td, th {    
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 5px;
+}
+
+thead {
+	display: table-header-group;
+}
+
+tr {
+	page-break-inside: avoid;
+}

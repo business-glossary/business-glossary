@@ -184,7 +184,7 @@ def print_report(term_id):
         'no-outline': None
     }
 
-    css = 'C:/Users/Alan/Projects/glossary/print-test/style.css'
+    css = os.path.join('BASE_DIR','static','css', 'print_style.css')
 
     print(html_text)
 

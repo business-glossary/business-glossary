@@ -52,7 +52,7 @@ def add_term():
             db.session.add(term)
             db.session.commit()
             print(">>>> Added a new term")
-            print(">>>>>>> %s" % term.id)                    
+            print(">>>>>>> %s" % term.id)
             flash('You have successfully added a new term.')
         except Exception as ex:
             print("Error %s occured." % ex)
@@ -317,7 +317,7 @@ def create_rule(term_id):
 
         db.session.add(rule)
         db.session.commit()
-        
+
         # Redirect to term page
         return redirect(url_for('main.show_term', selected_term=term.id))
 
@@ -582,8 +582,6 @@ def list_assets():
     '''
     List all assets by table and column.
     '''
-  
-    query = Table.query
 
     tables = Table.query.limit(200)
 
@@ -616,7 +614,7 @@ def list_assets():
 
 @term_bp.route('/term/<int:term_id>/assets/v2')
 def add_assets_v2(term_id):
-    term = Term.query.get_or_404(term_id)    
+    term = Term.query.get_or_404(term_id)
     return render_template('admin/terms/assets_v2.html', term=term)
 
 
@@ -665,7 +663,7 @@ def add_assets_v3(term_id):
     if form.validate_on_submit():
         print(">> %s" % form.columns.data)
 
-    print("Not validated")        
+    print("Not validated")
 
     return render_template("admin/terms/assets_v3.html", form=form, term=term)
 

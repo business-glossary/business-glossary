@@ -25,30 +25,36 @@
             {{ link.text }}<br/>
             <div class="link-address">{{ link.address }}</div>{% if not loop.last %}<br/>{% endif %}
         {% endfor %}
-    {% endif %}    
+    {% endif %}
 
     {% if term.documents %}
         <h2>Documents</h2>
         {% for document in term.documents %}
-            <p>{{ document.name }}</p>
+            {{ document.name }}<br/>
+            <div class="link-address">{{ document.path }}</div>{% if not loop.last %}<br/>{% endif %}
         {% endfor %}
+        <p/>
     {% endif %}
 
     {% for rule in term.rules %}
+        <hr class="rule-hr" />
         <h2>Rule: {{ rule.name }}</h2>
         {{ rule.description|markdown }}
         <h3>Notes</h3>
         {{ rule.notes|markdown }}
         {% for note in rule.comments %}
+            <hr class="note-hr" />
             <h3>Implemented Logic</h3>
+            <div class="wide">
             {{ note.note|markdown }}
-            <hr/>
+            </div>
         {% endfor %}
+        {% if loop.last %}<hr class="rule-hr" />{% endif %}
     {% endfor %}    
     
     {% if term.columns %}
         <h2>Assets</h2>
-        <table>
+        <table class="asset-table">
             {% for a in term.columns %}
             <tr>
                 <td>{{ a.table.location.name }}</td>

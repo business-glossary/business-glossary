@@ -27,6 +27,10 @@ body {
     font-size: 10px;
 }    
 
+.container {
+    padding-bottom: 10px;
+}
+
 .dashboard-page {
     font-size: 11px;
 }

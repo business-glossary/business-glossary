@@ -35,6 +35,7 @@
 html, p {
   font-family: Roboto, Helvetica, sans-serif;
   font-size: 11pt;
+  font-weight: 400;
   -webkit-text-size-adjust:100%;
   -ms-text-size-adjust:100%
 }
@@ -46,6 +47,7 @@ body {
 p {
   font-family: Roboto, Helvetica, sans-serif;
   font-size: 11pt;
+  font-weight: 400;
   -webkit-text-size-adjust:100%;
   -ms-text-size-adjust:100%
 } 

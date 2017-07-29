@@ -136,7 +136,6 @@ def delete_term(id):
 def print_report(term_id):
 
     import pdfkit
-    #import flask
 
     pdf_directory = os.path.join(BASE_DIR, 'app', 'static', 'files')
     path = os.getenv("PATH")
@@ -178,10 +177,11 @@ def print_report(term_id):
     }
 
     css = os.path.join(BASE_DIR, 'app', 'static', 'css', 'print_style.css')
+    cover = os.path.join(BASE_DIR, 'app', 'templates', 'print', 'cover_page.html')
 
     print(html_text)
 
-    pdfkit.from_string(html_text, os.path.join(pdf_directory, output_filename), options=options, css=css)
+    pdfkit.from_string(html_text, os.path.join(pdf_directory, output_filename), options=options, css=css, cover=cover)
 
     response = Response()
     response.headers.add('Cache-Control', 'no-cache, no-store, must-revalidate')

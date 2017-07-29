@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Print Glossary Content</h1>
+</div>
+
+<form action="{{ url_for('main.do_print') }}" method="post">
+    <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+    <p>Generate PDF of glossary content.<p>
+    <p>Please note it may take some time to generate the full PDF.<p>
+    <button type="submit" class="btn btn-default">Generate PDF</button>
+</form>
+{% endblock %}

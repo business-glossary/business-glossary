@@ -96,7 +96,7 @@ def create_app(config_name):
                 base_template='/admin/new_master.html')
 
     # Setup admin view - should find a better place for this
-    from app.main.admin import RuleView, FileView, TableView, ColumnView, ProtectedModelView, BackupView, TermView
+    from app.main.admin import RuleView, FileView, TableView, ColumnView, ProtectedModelView, BackupView, TermView, PrintView
 
     with warnings.catch_warnings():
         warnings.filterwarnings('ignore', 'Fields missing from ruleset', UserWarning)
@@ -113,9 +113,8 @@ def create_app(config_name):
     admin.add_view(ProtectedModelView(TermStatus, db.session, category="Lookups"))
     admin.add_view(ProtectedModelView(Category, db.session, category="Lookups"))
     admin.add_view(ProtectedModelView(Person, db.session, category="Lookups"))
-    admin.add_view(BackupView(name='Backup', endpoint='backup', category='Backup & Restore'))
-
-
+    admin.add_view(BackupView(name='Backup & Restore', endpoint='backup'))
+    admin.add_view(PrintView(name='Print Glossary', endpoint='print'))
 
     app.jinja_env.filters['alert_class'] = alert_class_filter
 

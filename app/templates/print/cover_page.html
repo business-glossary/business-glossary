@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Full Glossary</title>
+    <base href="http://localhost/">
+    <style>
+    .title-container {
+        position: relative;
+    }
+    .right {
+        position: absolute;
+        top: 300px;
+        float: right;
+        width: 100%;
+        text-align: right;
+        font-family: Roboto, Helvetica, sans-serif;
+    }
+    .second {
+        position: absolute;
+        top: 600px;
+        float: right;
+        width: 100%;
+        text-align: right;
+        font-family: Roboto, Helvetica, sans-serif;
+        font-weight: 300;
+    }
+    .title-main {
+        font-family: Roboto, Helvetica, sans-serif;
+        font-weight: 700;
+        font-size: 32pt;
+    }
+    .title-second {
+        font-family: Roboto, Helvetica, sans-serif;
+        font-weight: 700;
+        font-size: 28pt;
+    }
+    </style>
+
+</head>
+<body>
+    <div class="title-container">
+        <div class="right">
+            <div class="title-main">Credit Risk Analytics</div>
+            <div class="title-second">Business Glossary</div>
+        </div>
+        <div class="second">
+            <p id="demo"></p>
+            <p>Commercial-in-Confidence</p>
+        </div>
+    </div>            
+</body>
+    <script>
+        function pad(s) { return (s < 10) ? '0' + s : s; }
+        function convertDate() {
+                var d = new Date();
+                return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/');
+        }
+
+        var dt = new Date();
+        time = pad(dt.getHours()) + ":" + pad(dt.getMinutes()) + ":" + pad(dt.getSeconds());
+        date = dt.toLocaleDateString("en-AU")
+        date = convertDate()
+        msg = "Generated on " + date + " at " + time
+        document.getElementById("demo").innerHTML = msg;
+    </script>
+</html>

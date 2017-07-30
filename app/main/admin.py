@@ -96,3 +96,9 @@ class BackupView(BaseView):
     @expose('/')
     def index(self):
         return self.render('backup/backup_restore.html')
+
+class PrintView(BaseView):
+    '''Add print option to admin menu'''
+    @expose('/')
+    def index(self):
+        return self.render('print/print_admin_menu.html')

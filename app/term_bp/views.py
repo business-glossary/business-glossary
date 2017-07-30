@@ -52,7 +52,7 @@ def add_term():
             db.session.add(term)
             db.session.commit()
             print(">>>> Added a new term")
-            print(">>>>>>> %s" % term.id)                    
+            print(">>>>>>> %s" % term.id)
             flash('You have successfully added a new term.')
         except Exception as ex:
             print("Error %s occured." % ex)
@@ -135,27 +135,19 @@ def delete_term(id):
 @term_bp.route('/term/print/<int:term_id>')
 def print_report(term_id):
 
-    #from markdown import markdown
     import pdfkit
-    #import flask
 
-    #flask.response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-    #flask.response.headers['Pragma'] = 'no-cache'
-
-    pdf_directory = 'C:/Users/Alan/Projects/glossary/bg_pdf'
-
+    pdf_directory = os.path.join(BASE_DIR, 'app', 'static', 'files')
     path = os.getenv("PATH")
     if "wkhtmltopdf" not in path:
-        os.environ["PATH"] += os.pathsep + 'C:/Program Files/wkhtmltopdf/bin'    
-
+        os.environ["PATH"] += os.pathsep + 'C:/Program Files/wkhtmltopdf/bin'
 
     output_filename = 'glossary.pdf'
 
     print(">> Generating PDF for term %s" % term_id)
-    #terms = Term.query.limit(10)
     terms = Term.query.filter_by(id=term_id).all()
-
     print(terms)
+
     from flask import current_app
 
     domain = current_app.config.get('SERVER_NAME', 'http://localhost/')
@@ -184,20 +176,17 @@ def print_report(term_id):
         'no-outline': None
     }
 
-    css = 'C:/Users/Alan/Projects/glossary/print-test/style.css'
+    css = os.path.join(BASE_DIR, 'app', 'static', 'css', 'print_style.css')
+    cover = os.path.join(BASE_DIR, 'app', 'templates', 'print', 'cover_page.html')
 
     print(html_text)
 
-    pdfkit.from_string(html_text, os.path.join(pdf_directory, output_filename), options=options, css=css)
+    pdfkit.from_string(html_text, os.path.join(pdf_directory, output_filename), options=options, css=css, cover=cover)
 
     response = Response()
-    #response.headers['Content-Disposition'] = \
-    #    'attachment;filename="%s"' % filename_for (node, ext='zip')
-    #response.headers['Content-Length'] = obj_cache.get_value (size_key)
-    #response.headers['Content-Type'] = 'application/octet-stream'
     response.headers.add('Cache-Control', 'no-cache, no-store, must-revalidate')
     response.headers.add('Pragma', 'no-cache')
-    response.headers.add('Content-Length', str(os.path.getsize('glossary.pdf')))
+    response.headers.add('Content-Length', str(os.path.getsize(os.path.join(pdf_directory, output_filename))))
 
     return send_from_directory(directory=pdf_directory,
                                filename=output_filename,
@@ -328,7 +317,7 @@ def create_rule(term_id):
 
         db.session.add(rule)
         db.session.commit()
-        
+
         # Redirect to term page
         return redirect(url_for('main.show_term', selected_term=term.id))
 
@@ -593,8 +582,6 @@ def list_assets():
     '''
     List all assets by table and column.
     '''
-  
-    query = Table.query
 
     tables = Table.query.limit(200)
 
@@ -627,7 +614,7 @@ def list_assets():
 
 @term_bp.route('/term/<int:term_id>/assets/v2')
 def add_assets_v2(term_id):
-    term = Term.query.get_or_404(term_id)    
+    term = Term.query.get_or_404(term_id)
     return render_template('admin/terms/assets_v2.html', term=term)
 
 
@@ -676,7 +663,7 @@ def add_assets_v3(term_id):
     if form.validate_on_submit():
         print(">> %s" % form.columns.data)
 
-    print("Not validated")        
+    print("Not validated")
 
     return render_template("admin/terms/assets_v3.html", form=form, term=term)
 

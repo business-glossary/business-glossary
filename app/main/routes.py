@@ -103,6 +103,19 @@ def do_backup():
     return render_template('backup/do_backup.html', filename=filename)
 
 
+@main.route('/generate_pdf/', methods=['POST'])
+def do_print():
+    '''
+    Generate a PDF of all glossary content
+    '''
+    from app.print import generate_pdf
+    import time
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    filename = "glossary_" + timestr + ".pdf"
+    generate_pdf(filename)
+    return render_template('print/print_finished.html', filename=filename)
+
+
 @main.route('/download/<string:selected_filename>/')
 def download(selected_filename):
     try:

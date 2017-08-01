@@ -19,12 +19,13 @@
         {%- endfor %}
     {% endif %}
 
-    {% if term.links.all()| length > 0 %}
+    {% if term.links.all() | length > 0 %}
         <h2>Links</h2>
         {% for link in term.links.all() %}
             {{ link.text }}<br/>
             <div class="link-address">{{ link.address }}</div>{% if not loop.last %}<br/>{% endif %}
         {% endfor %}
+        <p/>
     {% endif %}
 
     {% if term.documents %}
@@ -45,9 +46,7 @@
         {% for note in rule.comments %}
             <hr class="note-hr" />
             <h3>Implemented Logic</h3>
-            <div class="wide">
             {{ note.note|markdown }}
-            </div>
         {% endfor %}
         {% if loop.last %}<hr class="rule-hr" />{% endif %}
     {% endfor %}    

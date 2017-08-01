@@ -16,6 +16,11 @@ import os
 from flask_admin import Admin, BaseView, form, expose
 from flask_admin.contrib.sqla import ModelView
 from flask_security import current_user
+
+#from app.term_bp.forms import PrintForm
+from app.extensions import db
+from app.models import Category
+
 from app.config import BASE_DIR
 
 # Create directory for file fields to use
@@ -101,4 +106,5 @@ class PrintView(BaseView):
     '''Add print option to admin menu'''
     @expose('/')
     def index(self):
-        return self.render('print/print_admin_menu.html')
+        categories = Category.query.all()
+        return self.render('print/print_admin_menu.html', categories=categories)

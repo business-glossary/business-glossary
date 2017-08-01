@@ -15,7 +15,7 @@
 import os
 from flask import render_template, Response, send_from_directory
 from app.config import BASE_DIR
-from app.main.models import Term
+from app.main.models import Term, Category
 
 #########################################################################################
 ##                                                                                     ##
@@ -23,7 +23,7 @@ from app.main.models import Term
 ##                                                                                     ##
 #########################################################################################
 
-def print_report():
+def old_print_report():
 
     from markdown import markdown
     import pdfkit
@@ -63,7 +63,7 @@ def print_report():
     pdfkit.from_string(html_text, output_filename, options=options, css=css)
 
 
-def generate_pdf(filename):
+def generate_pdf(filename, categories):
     '''
     Dump all glossary content
     '''
@@ -77,8 +77,13 @@ def generate_pdf(filename):
     if "wkhtmltopdf" not in path:
         os.environ["PATH"] += os.pathsep + 'C:/Program Files/wkhtmltopdf/bin'
 
-    terms = Term.query.order_by(Term.name).all()
-
+    if categories:
+        print("Categories requested: %s" % categories)
+        terms = Term.query.join(Term.categories).filter(Category.id.in_(categories)).order_by(Term.name).all()
+        print(terms)
+    else:
+        #terms = Term.query.order_by(Term.name).limit(10).all()
+        terms = Term.query.order_by(Term.name).all()
 
     html_text = render_template('print/glossary_print.html', terms=terms)
 

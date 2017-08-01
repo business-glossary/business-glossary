@@ -25,15 +25,43 @@
         font-family: Roboto, Helvetica, sans-serif;
         font-weight: 300;
     }
-    .title-main {
-        font-family: Roboto, Helvetica, sans-serif;
-        font-weight: 700;
-        font-size: 32pt;
+    .title-first {
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+        font-size: 16pt;
+        color: #1b75bc;
     }
     .title-second {
-        font-family: Roboto, Helvetica, sans-serif;
-        font-weight: 700;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
         font-size: 28pt;
+        color: #1b75bc;
+    }
+    .title-third {
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+        font-size: 14pt;
+        color: #1b75bc;
+    }
+    .title-forth {
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+        font-size: 28pt;
+        color: #febd36;
+    }
+    .title-first, .title-second, .title-third, .title-forth {
+        padding: 10px 0 10px 0;
+    }
+    .logo {
+        position: absolute;
+        top: 1150px;
+        float: right;
+        width: 100%;
+    }
+    .logo img {
+        position: absolute;
+        bottom: 0;
+        right: 0;
     }
     </style>
 
@@ -41,14 +69,19 @@
 <body>
     <div class="title-container">
         <div class="right">
-            <div class="title-main">Credit Risk Analytics</div>
+            <div class="title-first">Credit Risk Data Environment</div>
             <div class="title-second">Business Glossary</div>
+            <div class="title-third">Group Portfolio Management and Quantitive Modelling</div>
+            <div class="title-forth">Bank of Queensland</div>
         </div>
         <div class="second">
-            <p id="demo"></p>
             <p>Commercial-in-Confidence</p>
+            <p id="generated"></p>
         </div>
-    </div>            
+        <div class="logo">
+            <img src="/static/images/cover_logo.jpg" width=350px>
+        </div>
+    </div>
 </body>
     <script>
         function pad(s) { return (s < 10) ? '0' + s : s; }
@@ -62,6 +95,6 @@
         date = dt.toLocaleDateString("en-AU")
         date = convertDate()
         msg = "Generated on " + date + " at " + time
-        document.getElementById("demo").innerHTML = msg;
+        document.getElementById("generated").innerHTML = msg;
     </script>
 </html>

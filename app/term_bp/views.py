@@ -136,22 +136,21 @@ def delete_term(id):
 def print_report(term_id):
 
     import pdfkit
+    import time
 
     pdf_directory = os.path.join(BASE_DIR, 'app', 'static', 'files')
     path = os.getenv("PATH")
     if "wkhtmltopdf" not in path:
         os.environ["PATH"] += os.pathsep + 'C:/Program Files/wkhtmltopdf/bin'
 
-    output_filename = 'glossary.pdf'
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    output_filename = "glossary_" + timestr + ".pdf"
 
     print(">> Generating PDF for term %s" % term_id)
     terms = Term.query.filter_by(id=term_id).all()
     print(terms)
 
     from flask import current_app
-
-    domain = current_app.config.get('SERVER_NAME', 'http://localhost/')
-    print(">>> %s" % domain)
 
     html_text = render_template('print/glossary_print.html', terms=terms)
 
@@ -176,12 +175,15 @@ def print_report(term_id):
         'no-outline': None
     }
 
-    css = os.path.join(BASE_DIR, 'app', 'static', 'css', 'print_style.css')
+    #css = os.path.join(BASE_DIR, 'app', 'static', 'css', 'print_style.css')
+    css = 'C:/Glossary/business-glossary/app/static/css/print_style.css'
     cover = os.path.join(BASE_DIR, 'app', 'templates', 'print', 'cover_page.html')
+    
+    print("css=%s" % css)
+    print("pdf_directory=%s" % pdf_directory)
 
     print(html_text)
-
-    pdfkit.from_string(html_text, os.path.join(pdf_directory, output_filename), options=options, css=css, cover=cover)
+    pdfkit.from_string(html_text, os.path.join(pdf_directory, output_filename), options=options, css=css)
 
     response = Response()
     response.headers.add('Cache-Control', 'no-cache, no-store, must-revalidate')
@@ -190,6 +192,7 @@ def print_report(term_id):
 
     return send_from_directory(directory=pdf_directory,
                                filename=output_filename,
+
                                as_attachment=True,
                                mimetype='application/pdf')
 

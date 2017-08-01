@@ -5,10 +5,15 @@
     <h1>Print Glossary Content</h1>
 </div>
 
-<form action="{{ url_for('main.do_print') }}" method="post">
+<form class="form-horizontal" action="{{ url_for('main.do_print') }}" method="post">
     <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
     <p>Generate PDF of glossary content.<p>
     <p>Please note it may take some time to generate the full PDF.<p>
+    <p>Select a category to print</p>
+    {% for category in categories %}
+    <label class="checkbox-inline"><input type="checkbox" name="category" id="category{{ category.id }}" value="{{ category.id }}">{{ category.name }}</label>
+    {% endfor %}
+    <hr/>
     <button type="submit" class="btn btn-default">Generate PDF</button>
 </form>
 {% endblock %}

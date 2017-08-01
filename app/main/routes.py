@@ -78,6 +78,7 @@ def page(path):
 @main.route('/tag/<string:tag>/')
 def tag(tag):
     '''Handle FlatPages tags'''
+    from app.extensions import pages
     tagged = [p for p in pages if tag in p.meta.get('tags', [])]
     return render_template('flatpages/tag.html', pages=tagged, tag=tag)
 
@@ -108,11 +109,13 @@ def do_print():
     '''
     Generate a PDF of all glossary content
     '''
+    categories = request.form.getlist("category")
+    
     from app.print import generate_pdf
     import time
     timestr = time.strftime("%Y%m%d-%H%M%S")
     filename = "glossary_" + timestr + ".pdf"
-    generate_pdf(filename)
+    generate_pdf(filename, categories)
     return render_template('print/print_finished.html', filename=filename)
 
 

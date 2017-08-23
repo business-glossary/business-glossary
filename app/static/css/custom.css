@@ -318,11 +318,9 @@ body {
     color: #d9534f
 }
 
-
 .btn-circ {
     border-radius: 50% !important
 }
-
 
 .table-borderless > tbody > tr > td,
 .table-borderless > tbody > tr > th,
@@ -333,13 +331,11 @@ body {
     border: none;
 }
 
-
-
 /********************************************************************
 ** Style tables                                                    **
 ********************************************************************/
 
-
+.wiki-page table, .wiki-page td, .wiki-page th,
 .term-page table, .term-page td, .term-page th {    
     border: 1px solid #ddd;
 }
@@ -348,11 +344,13 @@ body {
     border-collapse: collapse;
 }
 
+.wiki-page table,
 .term-page table {
     border-collapse: collapse;
     width: 100%;
 }
 
+.wiki-page th, .wiki-page td,
 .term-page th, .term-page td {
     padding: 6px;
 }
@@ -368,3 +366,19 @@ body {
 .table-no-width th, .table-no-width td {
     padding: 6px;
 }
+
+/********************************************************************
+** Style wiki pages                                                **
+********************************************************************/
+
+.wiki-page body, .wiki-page p {
+    font-size: 14px;
+}
+
+.wiki-page pre {
+    border-radius: 4px;
+    background-color: #eff0f1;
+    color: #393318;
+}
+
+

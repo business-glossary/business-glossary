@@ -39,9 +39,11 @@ def inject_pages():
     Returns pages that will be avaiables in every template view
     """
     from app.extensions import pages
-    tagged = [p for p in pages]
-
-    return dict(tagged=tagged)
+    tagged = [p for p in pages if 'index' in p.meta.get('tags', [])]
+    
+    ordered = sorted(tagged, key=lambda p: p.meta['title'])
+       
+    return dict(tagged=ordered)
 
 ###########################
 #### define the routes ####

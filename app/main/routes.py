@@ -52,7 +52,8 @@ def inject_pages():
 @main.route('/about')
 def about():
     '''Present the about page'''
-    return render_template('about.html')
+    from app import __VERSION__
+    return render_template('about.html', version=__VERSION__)
 
 
 @main.route('/')

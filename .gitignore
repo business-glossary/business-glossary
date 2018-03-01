@@ -62,9 +62,6 @@ target/
 # Mac artefacts
 .DS_Store
 
-# Ignore config files
-*.cfg
-
 # Ignore Visual Studio Code settings
 .vscode 
 

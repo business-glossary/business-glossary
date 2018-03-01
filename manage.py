@@ -76,13 +76,22 @@ def load_data(filename):
 
 @manager.option('-y', '--yaml', help='Dump to yaml format', dest='yaml', default=False, action="store_true")
 @manager.option('-j', '--json', help='Dump to json format', dest='json', default=False, action="store_true")
-def dump(yaml, json):
+@manager.option('-d', '--dir', help='Specify a directory where the export file will be created', dest='dir', default='None')
+def dump(yaml, json, dir):
     '''Dump data from application'''
 
     import time
     timestr = time.strftime("%Y%m%d-%H%M%S")
 
-    file_path = os.path.join(os.path.dirname(BASE_DIR), 'bg_interface')
+    if dir == "None":
+        file_path = os.path.join(os.path.dirname(BASE_DIR), 'bg_interface')
+    else:
+        file_path = dir
+
+    if not os.path.isdir(file_path):
+        print("The directory %s does not exist" % file_path)
+        return
+
     file_name = os.path.join(file_path, "bg_export_" + timestr)
 
     if yaml:

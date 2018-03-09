@@ -289,8 +289,3 @@ def source_code():
                                filename,
                                as_attachment=False,
                                mimetype='text/html')
-
-
-@main.route('/graph2')
-def graph2():
-    return render_template('graph2.html')

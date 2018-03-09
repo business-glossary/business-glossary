@@ -27,8 +27,9 @@
     <script type="text/javascript">
     var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     window.setTimeout(function() {
-    $(".flash").fadeTo(500, 0).slideUp(500, function(){
+    $(".flash").fadeTo(1000, 500).slideUp(500, function(){
         $(this).remove();
+        $(".flash").slideUp(500);
     });
     }, 2000);
     </script>
@@ -40,21 +41,22 @@
 {% include "_navbar.html" %}
 
 {%- block body_inner%}
-<div class="container fade-in flash">
-    <div id="messages-wrap">
-        <div id="messages">
-        {% for category, msg in get_flashed_messages(with_categories=true) %}
-            {% if loop.first %}
-                <br />
-            {% endif %}
-            <div class="alert alert-{{ category|alert_class }}">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                {{ msg }}
-            </div>
-        {% endfor %}
-        </div>
-    </div>
-</div>
+<div><!-- fade-in flash"-->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
+        {% for category, msg in messages %}
+                {% if loop.first %}
+                    <br />
+                {% endif %}
+                <div class="alert alert-{{ category|alert_class }} alert-dismissable flash" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    {{ msg }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div-->
 {%- endblock body_inner %}
 
 <div class="container">

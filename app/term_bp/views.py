@@ -175,8 +175,7 @@ def print_report(term_id):
         'no-outline': None
     }
 
-    #css = os.path.join(BASE_DIR, 'app', 'static', 'css', 'print_style.css')
-    css = 'C:/Glossary/business-glossary/app/static/css/print_style.css'
+    css = os.path.join(BASE_DIR, 'app', 'static', 'css', 'print_style.css')
     cover = os.path.join(BASE_DIR, 'app', 'templates', 'print', 'cover_page.html')
     
     print("css=%s" % css)
@@ -320,6 +319,8 @@ def create_rule(term_id):
 
         db.session.add(rule)
         db.session.commit()
+
+        flash('You have successfully added the %s rule.' % rule.name)
 
         # Redirect to term page
         return redirect(url_for('main.show_term', selected_term=term.id))

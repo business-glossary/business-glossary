@@ -28,10 +28,9 @@ from flask_security.utils import encrypt_password
 
 from app.core import create_app
 
-#from app.models import *
-#from app.users.models import db
 from app.config import BASE_DIR
 
+# Create application from BG_CONFIG environment variable or use default.
 app = create_app(os.getenv('BG_CONFIG') or 'default')
 
 manager = Manager(app)

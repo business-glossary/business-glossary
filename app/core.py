@@ -27,7 +27,6 @@ from .term_bp import term_bp as term_bp_blueprint
 
 from flask import Flask
 from flaskext.markdown import Markdown
-#from flask_misaka import Misaka
 from flask_moment import Moment
 
 from flask_security import SQLAlchemyUserDatastore
@@ -42,9 +41,6 @@ from app.models import Term, Rule, Note, Link, Table, Document, Location, Column
 
 moment = Moment()
 csrf = CSRFProtect()
-
-# Misaka markdown parser
-# md = Misaka(math=True, math_explicit=True, no_intra_emphasis=True, tables=True, fenced_code=True, hard_wrap=True)
 
 
 # Bootstrap helpers
@@ -79,9 +75,6 @@ def create_app(config_name):
     mail.init_app(app)
     moment.init_app(app)
     
-    # Misaka markdown parser
-    # md.init_app(app)
-
     # Flask-Markdown markdown parser
     md = Markdown(app, output_format='html5', extensions=['fenced_code', 'tables', 'abbr', 'footnotes'])
     #markdown = Markdown()
@@ -140,6 +133,7 @@ def create_app(config_name):
     with app.app_context():
         db.create_all()
         if not User.query.first():
+            # Create a default admin user if there is no user in the database
             user_datastore.create_user(
                 email='admin@example.com',
                 password=encrypt_password('password')
@@ -161,6 +155,14 @@ def create_app(config_name):
 
 # Send templated emails
 def send_mail(destination, subject, template, **template_kwargs):
+    """
+    Send templatised emails.
+        
+    :param destination: The destination email address.
+    :param subject: The email subject line.
+    :param template: The template email.
+    :param template_kwargs: Any parameters to substitute in the email.
+    """
     text = flask.render_template("{0}.txt".format(template), **template_kwargs)
 
     logging.info("Sending email to %s. Body is: %s", destination, repr(text)[:50])

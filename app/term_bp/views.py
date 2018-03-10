@@ -181,8 +181,13 @@ def print_report(term_id):
     print("css=%s" % css)
     print("pdf_directory=%s" % pdf_directory)
 
-    print(html_text)
-    pdfkit.from_string(html_text, os.path.join(pdf_directory, output_filename), options=options, css=css)
+    try:
+        pdfkit.from_string(html_text, os.path.join(pdf_directory, output_filename), options=options, css=css)
+    except IOError as ex:
+        print("An error has happened")
+        print("Error %s occured." % ex)
+        return render_template('errors/print_error.html',
+                               error=ex)
 
     response = Response()
     response.headers.add('Cache-Control', 'no-cache, no-store, must-revalidate')

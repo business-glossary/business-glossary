@@ -7,13 +7,7 @@
 <script type="text/javascript">
 $(document).ready(function() {
     $('#example').DataTable({
-        "scrollY":        "600px",
-        "scrollCollapse": true,
-        "paging":         false,    
-        "columnDefs": [
-            { "searchable": false, "targets": [ 2 ] },
-            { "orderable": false, "targets": [ 2, 3 ] },
-        ]
+        "lengthMenu": [[15, 30, 50, -1], [15, 30, 50, "All"]]
     });
 });
 </script>

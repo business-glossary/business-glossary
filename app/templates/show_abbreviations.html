@@ -20,17 +20,21 @@
 <script type="text/javascript">
 $(document).ready(function() {
     var table = $('#abbrev').DataTable( {
-        "scrollY":        "600px",
-        "scrollCollapse": true,
-        "paging":         false,        
+        "lengthMenu": [[15, 30, 50, -1], [15, 30, 50, "All"]],
         "columnDefs": [
             { "searchable": false, "targets": [ 0 ] },
             { "orderable": false, "targets": [ 1, 2 ] },
         ],
-        buttons: [
-            {
+        buttons: {
+            dom: {
+                container: {
+                    className: 'dt-buttons btn-group pull-right'
+                }
+            },
+            buttons: [{
                 extend: 'pdf',
                 pageSize: 'A4',
+                className: 'btn-sm',
                 exportOptions: {
                     columns: [0, 1]
                 },
@@ -40,8 +44,8 @@ $(document).ready(function() {
                     doc.styles.tableBodyOdd = { margin: [5, 0, 5, 0] };
                     doc.styles.tableBodyEven = { margin: [5, 0, 5, 0], fillColor: '#f3f3f3' };
                 }
-            }
-        ]
+            }]
+        }
     });
     table.buttons().container()
         .appendTo('#abbrev_wrapper');

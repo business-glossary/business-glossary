@@ -69,7 +69,7 @@ class LinkForm(FlaskForm):
     Form for entering new links
     '''
     text = StringField('Text', validators=[DataRequired('Please enter descriptive text for the link')])
-    address = StringField('Address', validators=[URL('Please enter a valid URL')])
+    address = StringField('Address', validators=[DataRequired('Please enter a valid URL')])
     submit = SubmitField('Submit')
 
 

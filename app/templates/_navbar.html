@@ -14,6 +14,7 @@
                 <ul class="nav navbar-nav">
                     <li{% if active_page == "glossary" %} class="active"{% endif %}><a href="{{ url_for('main.glossary') }}">Terms</a></li>
                     <li ><a href="{{ url_for('main.glossary_rules') }}">Rules</a></li>
+                    <li ><a href="{{ url_for('main.show_tables') }}">Tables</a></li>
                     <li ><a href="{{ url_for('main.abbreviations') }}">Abbreviations</a></li>
 
                     <li class="dropdown">

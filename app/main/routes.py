@@ -225,6 +225,16 @@ def show_location_tables(selected_location):
     return render_template('show_location_tables.html', location=location, tables=tables)
 
 
+@main.route('/tables')
+def show_tables():
+
+    tables = Table.query.all()
+
+    for table in tables:
+
+    return render_template('show_tables.html', tables=tables)
+
+
 @main.route('/table/<selected_table>')
 @main.route('/table/<selected_table>/details')
 def show_table_details(selected_table):

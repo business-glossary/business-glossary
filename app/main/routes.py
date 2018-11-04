@@ -40,9 +40,9 @@ def inject_pages():
     """
     from app.extensions import pages
     tagged = [p for p in pages if 'index' in p.meta.get('tags', [])]
-    
+
     ordered = sorted(tagged, key=lambda p: p.meta['title'])
-       
+
     return dict(tagged=ordered)
 
 ###########################
@@ -73,7 +73,7 @@ def glossary_rules():
 @main.route('/<path:path>/')
 def page(path):
     '''Serve up markdown pages using Flask-FlatPages'''
-    from app.extensions import pages   
+    from app.extensions import pages
     page = pages.get_or_404(path)
     return render_template('flatpages/page.html', page=page)
 
@@ -113,7 +113,7 @@ def do_print():
     Generate a PDF of all glossary content
     '''
     categories = request.form.getlist("category")
-    
+
     from app.print import generate_pdf
     import time
     timestr = time.strftime("%Y%m%d-%H%M%S")
@@ -230,8 +230,6 @@ def show_tables():
 
     tables = Table.query.all()
 
-    for table in tables:
-
     return render_template('show_tables.html', tables=tables)
 
 
@@ -275,27 +273,10 @@ def search():
     return render_template('search.html')
 
 
-###########################################
-## Produce PDF
-###########################################
-
 @main.route('/full_glossary')
 def full_glossary():
+    '''
+    Produce a PDF of the full glossary.
+    '''
     terms = Term.query.order_by(Term.name).all()
     return render_template('print/full_glossary.html', terms=terms)
-
-
-###########################################
-## Proof-of-concept type code
-###########################################
-
-@main.route('/source_code')
-def source_code():
-    """This is a proof-of-concept for return a position in source code to the browser"""
-    filename = '05_ACCT HIST.sas'
-    root_dir = os.path.dirname(os.getcwd())
-    print(root_dir)
-    return send_from_directory(os.path.join('.', 'static', 'source_code'),
-                               filename,
-                               as_attachment=False,
-                               mimetype='text/html')

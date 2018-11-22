@@ -1,10 +1,11 @@
+{% set active_page = "rules" %}
 {% extends "layout.html" %}
 
 {% block content %}
 <div class="page-header">
     <h1>Rules</h1>
 </div>
-
+<!-- text is {{ active_page }} -->
 <table class="table list-group-item-text">
     <thead>
         <tr>
@@ -13,13 +14,12 @@
         </tr>
     </thead>
     <tbody>
-    {% for rule in rules %}
+    {%- for rule in rules %}
         <tr>
-            
             <td><a href="{{ url_for('main.show_rule', selected_rule=rule.id) }}">{{ rule.identifier }}</a></td>
             <td>{{ rule.name }}</td>
         </tr>
-    {% endfor %}
+    {%- endfor -%}
     </tbody>
 </table>
 {% endblock %}

@@ -59,6 +59,9 @@ class User(db.Model, UserMixin):
         else:
             return app.config.get("DEFAULT_TIMEZONE", pytz.utc)
 
+    def has_role(self, role):
+            return role in self.roles
+
     def dict(self):
         """
         A dictionary representation that can be used for JSON serialization

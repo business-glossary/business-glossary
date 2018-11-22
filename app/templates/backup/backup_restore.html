@@ -5,15 +5,15 @@
     <h1>Backup & Restore</h1>
 </div>
 
-<h2>Backup Business Glossary Data</h2>
+<h2>Backup Business Glossary</h2>
 <form action="{{ url_for('main.do_backup') }}" method="post">
     <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
-    <p>Export the Business Glossary data can be to YAML file format.<p>
-    <button type="submit" class="btn btn-default">Backup</button>
+    <p class="lead">Export the Business Glossary data to a YAML file.<p>
+    <button type="submit" class="btn btn-primary">Backup</button>
 </form>
 
-<h2>Restore Business Glossary Data</h2>
-<p>To restore or import glossary data in the YAML format you should use the command line interface.</p>
+<h2>Restore Business Glossary</h2>
+<p class="lead">To restore or import glossary data from a YAML format you should use the command line interface.</p>
 <pre>
 <code>
 python manage.py load_data <path_to_yaml_file>

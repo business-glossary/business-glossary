@@ -24,6 +24,9 @@
       {% if security.registerable %}
         Don't have an account yet? <a href="{{ url_for_security('register') }}">Create a new account</a><br />
       {% endif %}
+      {% if security.registerable %}
+        <a href="{{ url_for_security('register') }}">Regster</a><br />
+      {% endif %}
       {% if security.recoverable %}
         <a href="{{ url_for_security('forgot_password') }}">Forgot your password?</a><br />
       {% endif %}

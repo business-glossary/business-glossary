@@ -1,0 +1,40 @@
+{% set active_page = "admin" %}
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-header">
+    <h1>Users</h1>
+</div>
+
+<p class="lead"/>
+
+<table class="table list-group-item-text">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email Address</th>
+            <th>Last Logged On</th>
+            <th>Roles</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.name }}</td>
+            <td><a href="{{ url_for('main.show_user', selected_user=user.id) }}">{{ user.email }}</a></td>
+            <td>{{ user.last_login_at }}</td>
+            <td>
+            {% for role in user.roles %}
+                {{ role.name }}
+            {% endfor %}
+            </td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div class="row">
+  <br/>
+  <a class='btn btn-primary btn-sm' href="{{ url_for('main.admin_create_user') }}"><span class="glyphicon glyphicon-add"></span>Create User</a>
+</div>
+
+{% endblock %}

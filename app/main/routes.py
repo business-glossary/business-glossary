@@ -15,19 +15,26 @@
 from os import mkdir
 from os.path import dirname, join
 
-from flask import render_template, request, send_from_directory, send_file
+from flask import flash, redirect, url_for, render_template, request, \
+    send_from_directory, send_file
 from flask import current_app
 
 from flask_flatpages import pygments_style_defs
-from flask_security import current_user
+from flask_security import current_user, login_required, roles_required
+from flask_security.utils import encrypt_password
 from flask_flatpages import FlatPages
 from sqlalchemy import func
 from app import models
 from app.config import BASE_DIR
+from app.main.forms import RegistrationForm
+from app.extensions import db
 from . import main
 
-from app.main.models import Document, DocumentType, Term, TermStatus, Category, Person, Link, Location, Table, \
+from app.main.models import Document, DocumentType, Term, TermStatus, \
+    Category, Person, Link, Location, Table, \
     Column, Rule, Note
+
+from app.users.models import User
 
 from flask import current_app as app
 
@@ -58,6 +65,7 @@ def about():
 
 @main.route('/')
 @main.route('/glossary/')
+@login_required
 def glossary():
     '''Display the glossary main list of terms'''
     glossary = models.Term.query.order_by(Term.name).all()
@@ -65,6 +73,7 @@ def glossary():
 
 
 @main.route('/glossary_rules/')
+@login_required
 def glossary_rules():
     rules = Rule.query.order_by(Rule.identifier).all()
     return render_template('show_glossary_rules.html', rules=rules)
@@ -87,17 +96,24 @@ def tag(tag):
 
 
 @main.route('/abbreviations/')
+@login_required
 def abbreviations():
     glossary = Term.query.filter(Term.abbreviation != "").order_by(Term.abbreviation).all()
     return render_template('show_abbreviations.html', glossary=glossary)
 
 
-@main.route('/backup_restore/')
-def backup_restore():
+@main.route('/admin/backup/')
+@roles_required('admin')
+def show_backup():
+    '''
+    This route presents the backup and restore page from which the do_backup
+    is called.
+    '''
     return render_template('backup/backup_restore.html')
 
 
 @main.route('/do_backup/', methods=['POST'])
+@login_required
 def do_backup():
     from app.loader import dump_yaml
     import time
@@ -108,6 +124,7 @@ def do_backup():
 
 
 @main.route('/generate_pdf/', methods=['POST'])
+@login_required
 def do_print():
     '''
     Generate a PDF of all glossary content
@@ -123,6 +140,7 @@ def do_print():
 
 
 @main.route('/download/<string:selected_filename>/')
+@login_required
 def download(selected_filename):
     try:
         return send_file(join(dirname(BASE_DIR), 'bg_interface', selected_filename),
@@ -133,6 +151,7 @@ def download(selected_filename):
 
 
 @main.route('/profile/')
+@login_required
 def profile():
     '''Present the user profile'''
     return render_template('show_profile.html')
@@ -140,6 +159,7 @@ def profile():
 
 @main.route('/term/<int:selected_term>')
 @main.route('/term/<string:selected_term_name>')
+@login_required
 def show_term(selected_term=None, selected_term_name=None):
 
     if selected_term is None:
@@ -156,6 +176,7 @@ def show_term(selected_term=None, selected_term_name=None):
 
 
 @main.route('/documents/<int:selected_term>')
+@login_required
 def show_documents(selected_term):
     documents = Document.query.order_by(Document.name).all()
     term = Term.query.filter_by(id=selected_term).first()
@@ -165,6 +186,7 @@ def show_documents(selected_term):
 
 
 @main.route('/assets/<int:selected_term>')
+@login_required
 def show_assets(selected_term):
 
     term = Term.query.filter_by(id=selected_term).first()
@@ -174,6 +196,7 @@ def show_assets(selected_term):
 
 
 @main.route('/rules/<int:selected_term>')
+@login_required
 def show_rules(selected_term):
 
     term = Term.query.filter_by(id=selected_term).first()
@@ -184,6 +207,7 @@ def show_rules(selected_term):
 
 @main.route('/rule/<int:selected_rule>')
 @main.route('/rule/<string:selected_rule_name>')
+@login_required
 def show_rule(selected_rule=None, selected_rule_name=None):
 
     if selected_rule is None:
@@ -199,6 +223,7 @@ def show_rule(selected_rule=None, selected_rule_name=None):
 
 
 @main.route('/rule/documents/<int:selected_rule>')
+@login_required
 def show_rule_documents(selected_rule):
 
     rule = Rule.query.filter_by(id=selected_rule).first()
@@ -209,6 +234,7 @@ def show_rule_documents(selected_rule):
 
 @main.route('/location/<selected_location>')
 @main.route('/location/<selected_location>/details')
+@login_required
 def show_location_details(selected_location):
 
     location = Location.query.filter_by(id=selected_location).first()
@@ -217,6 +243,7 @@ def show_location_details(selected_location):
 
 
 @main.route('/location/<selected_location>/tables')
+@login_required
 def show_location_tables(selected_location):
 
     location = Location.query.filter_by(id=selected_location).first()
@@ -226,6 +253,7 @@ def show_location_tables(selected_location):
 
 
 @main.route('/tables')
+@login_required
 def show_tables():
 
     tables = Table.query.all()
@@ -235,6 +263,7 @@ def show_tables():
 
 @main.route('/table/<selected_table>')
 @main.route('/table/<selected_table>/details')
+@login_required
 def show_table_details(selected_table):
 
     table = Table.query.filter_by(id=selected_table).first()
@@ -244,6 +273,7 @@ def show_table_details(selected_table):
 
 
 @main.route('/table/<selected_table>/columns')
+@login_required
 def show_table_columns(selected_table):
 
     table = Table.query.filter_by(id=selected_table).first()
@@ -253,6 +283,7 @@ def show_table_columns(selected_table):
 
 
 @main.route('/search', methods=['GET', 'POST'])
+@login_required
 def search():
     if request.method == "POST":
         search = request.form['search']
@@ -274,9 +305,54 @@ def search():
 
 
 @main.route('/full_glossary')
+@login_required
 def full_glossary():
     '''
     Produce a PDF of the full glossary.
     '''
     terms = Term.query.order_by(Term.name).all()
     return render_template('print/full_glossary.html', terms=terms)
+
+
+@main.route('/admin/users/')
+@login_required
+def show_users():
+    users = User.query.all()
+    return render_template('users/users.html', users=users)
+
+
+@main.route('/user/<int:selected_user>')
+@login_required
+def show_user(selected_user):
+    user = User.query.filter_by(id=selected_user).first()
+    return render_template('users/user.html', user=user)
+
+
+@main.route('/admin/user/create', methods=['GET', 'POST'])
+@roles_required('admin')
+def admin_create_user():
+    form = RegistrationForm(request.form)
+    if request.method == 'POST' and form.validate_on_submit():
+        name = form.name.data
+        email = form.email.data
+        password = form.password.data
+        user_exists = User.query.filter_by(email=email).first()
+        if user_exists:
+            form.email.errors.append(email + ' is already associated with another user')
+            form.email.data = email
+            email = ''
+            return render_template('users/user_create.html', form=form)
+        else:
+            security = app.extensions.get('security')
+            password = encrypt_password('password')
+            security.datastore.create_user(name=name,
+                                           email=email,
+                                           password=password)
+            db.session.commit()
+            # register_user(email=email, password=password)
+            from flask_security.confirmable import send_confirmation_instructions
+            user = security.datastore.get_user(email)
+            send_confirmation_instructions(user)
+            flash('User added successfully and confirmation email sent.')
+            return redirect(url_for('main.show_users'))
+    return render_template('users/user_create.html', form=form)

@@ -70,6 +70,7 @@ class RuleView(ProtectedModelView):
         }
     }
 
+
 class TermView(ProtectedModelView):
     '''Set the view options with displaying a Term in the admin view'''
     form_create_rules = ('name', 'short_description', 'long_description', 'abbreviation', 'owner',
@@ -86,21 +87,18 @@ class TermView(ProtectedModelView):
         }
     }
 
+
 class TableView(ProtectedModelView):
     '''Set the view options with displaying a Table in the admin view'''
     column_default_sort = 'name'
     column_filters = ['location', 'name']
     form_excluded_columns = ('columns')
 
+
 class ColumnView(ProtectedModelView):
     '''Set the view options with displaying a Column in the admin view'''
     column_filters = ['table', 'name']
 
-class BackupView(BaseView):
-    '''Add backup option to admin menu'''
-    @expose('/')
-    def index(self):
-        return self.render('backup/backup_restore.html')
 
 class PrintView(BaseView):
     '''Add print option to admin menu'''

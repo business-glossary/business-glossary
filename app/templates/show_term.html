@@ -1,3 +1,4 @@
+{% set active_page = "glossary" %}
 {% extends "layout.html" %}
 {% block head %}
 <script type="text/javascript">
@@ -25,7 +26,7 @@ $(document).ready(function() {
     <p class="lead">{{ term.short_description }}</p>
     {% for c in term.categories %}
         <span class="label label-default">{{ c.name }}</span>
-    {% endfor %}    
+    {% endfor %}
     {% if term.status.status == 'Approved' %}
         <span class="label label-success">{{ term.status.status }}</span>
     {% elif term.status.status == 'Draft' %}
@@ -56,10 +57,10 @@ $(document).ready(function() {
             <div class="panel-body">
                 {% for rt in term.related_terms %}
                     <a href="{{ url_for('main.show_term', selected_term=rt.id) }}">{{ rt.name }}</a>{% if not loop.last %},{% endif %}
-                {% endfor %}                
+                {% endfor %}
             </div>
         </div>
-    </div>    
+    </div>
     {% endif %}
 
     <div class="panel panel-default">
@@ -150,8 +151,8 @@ $(document).ready(function() {
                 </table>
                 <!--
                 <div class='pull-right'>
-                    <a href="{{ url_for('term_bp.upload_document', term_id=term.id) }}" role="button"><i class="glyphicon glyphicon-lg glyphicon-plus-sign"></i></a> 
-                </div>     
+                    <a href="{{ url_for('term_bp.upload_document', term_id=term.id) }}" role="button"><i class="glyphicon glyphicon-lg glyphicon-plus-sign"></i></a>
+                </div>
                 -->
             </div>
         </div>
@@ -216,7 +217,7 @@ $(document).ready(function() {
                                 <i class="fas fa-long-arrow-alt-right" aria-hidden="true"></i>
                                 {% if a.type == "num" %}
                                 <img src="{{ url_for('static', filename='images/number_icon.png') }}" style="height: 16px; width: 16px">
-                                {% else %}                                
+                                {% else %}
                                 <img src="{{ url_for('static', filename='images/string_icon.png') }}" style="height: 16px; width: 16px">
                                 {% endif %}
                                 <a href="{{ url_for('main.show_table_columns', selected_table=a.table.id) }}">{{ a.name }}</a>
@@ -232,13 +233,13 @@ $(document).ready(function() {
                     <tbody>
                         {% for a in term.columns %}
                         <tr>
-                            
+
                             <td><i class="fas fa-database" aria-hidden="true"></i><a href="{{ url_for('main.show_location_details', selected_location=a.table.location.id) }}">{{ a.table.location.name }}</a></td>
                             <td><i class="fas fa-table" aria-hidden="true"></i><a href="{{ url_for('main.show_table_details', selected_table=a.table.id) }}">{{ a.table.name }}</a></td>
                             <td>
                             {% if a.type == "num" %}
                             <img src="{{ url_for('static', filename='images/number_icon.png') }}" style="height: 16px; width: 16px">
-                            {% else %}                                
+                            {% else %}
                             <img src="{{ url_for('static', filename='images/string_icon.png') }}" style="height: 16px; width: 16px">
                             {% endif %}
                             <a href="{{ url_for('main.show_table_columns', selected_table=a.table.id) }}">{{ a.name }}</a>
@@ -256,7 +257,7 @@ $(document).ready(function() {
     <small>Created: {{ moment(term.created_on).calendar() }}, Updated: {{ moment(term.updated_on).calendar() }}</small>
     <div class='btn-toolbar pull-right'>
         <a href="{{ url_for('term_bp.print_report', term_id=term.id) }}" class="btn btn-sm btn-default" role="button">Print Term</a>
-        {% if current_user.is_active %}   
+        {% if current_user.is_active %}
         <a href="{{ url_for('term_bp.create_rule', term_id=term.id) }}" class="btn btn-sm btn-default" role="button">Add Rule</a>
         <a href="{{ url_for('term_bp.add_related_term', term_id=term.id) }}" class="btn btn-sm btn-default" role="button">Relate Term</a>
         <a href="{{ url_for('term_bp.add_assets_v4', term_id=term.id) }}" class="btn btn-sm btn-default" role="button">Relate Asset</a>
@@ -315,7 +316,7 @@ $(document).ready(function() {
           });
         })
       });
-    });    
+    });
   });
 </script>
 {% endblock %}

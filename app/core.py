@@ -38,7 +38,6 @@ from flask_admin import Admin
 from app.models import Term, Rule, Note, Link, Table, Document, Location, Column, DocumentType, \
     TermStatus, Category, Person
 
-
 moment = Moment()
 csrf = CSRFProtect()
 
@@ -55,7 +54,7 @@ def alert_class_filter(category):
 def create_app(config_name):
     """An application factory, as explained here:
         http://flask.pocoo.org/docs/patterns/appfactories/
-        
+
     :param config_object: The configuration object to use.
     """
     app = Flask(__name__)
@@ -68,13 +67,13 @@ def create_app(config_name):
 
     # Setup Flask-Security
     user_datastore = SQLAlchemyUserDatastore(db, User, Role)
-    security.init_app(app, user_datastore)
-
+    from app.users.forms import ExtendedRegisterForm
+    security.init_app(app, user_datastore, register_form=ExtendedRegisterForm)
 
     bootstrap.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
-    
+
     # Flask-Markdown markdown parser
     md = Markdown(app, output_format='html5', extensions=['fenced_code', 'tables', 'abbr', 'footnotes'])
     #markdown = Markdown()
@@ -82,14 +81,14 @@ def create_app(config_name):
 
     pages.init_app(app)
     csrf.init_app(app)
-    
+
     admin = Admin(app,
                 name='BUSINESS GLOSSARY',
                 template_mode='bootstrap3',
                 base_template='/admin/new_master.html')
 
     # Setup admin view - should find a better place for this
-    from app.main.admin import RuleView, FileView, TableView, ColumnView, ProtectedModelView, BackupView, TermView, PrintView
+    from app.main.admin import RuleView, FileView, TableView, ColumnView, ProtectedModelView, TermView, PrintView
 
     with warnings.catch_warnings():
         warnings.filterwarnings('ignore', 'Fields missing from ruleset', UserWarning)
@@ -106,7 +105,6 @@ def create_app(config_name):
     admin.add_view(ProtectedModelView(TermStatus, db.session, category="Lookups"))
     admin.add_view(ProtectedModelView(Category, db.session, category="Lookups"))
     admin.add_view(ProtectedModelView(Person, db.session, category="Lookups"))
-    admin.add_view(BackupView(name='Backup & Restore', endpoint='backup'))
     admin.add_view(PrintView(name='Print Glossary', endpoint='print'))
 
     app.jinja_env.filters['alert_class'] = alert_class_filter
@@ -135,6 +133,7 @@ def create_app(config_name):
         if not User.query.first():
             # Create a default admin user if there is no user in the database
             user_datastore.create_user(
+                name='Administration Account',
                 email='admin@example.com',
                 password=encrypt_password('password')
             )
@@ -157,7 +156,7 @@ def create_app(config_name):
 def send_mail(destination, subject, template, **template_kwargs):
     """
     Send templatised emails.
-        
+
     :param destination: The destination email address.
     :param subject: The email subject line.
     :param template: The template email.
@@ -167,7 +166,7 @@ def send_mail(destination, subject, template, **template_kwargs):
 
     logging.info("Sending email to %s. Body is: %s", destination, repr(text)[:50])
 
-    msg = Message(subject, recipients=[destination])
+    msg = Message(subject, sender=_security.email_sender, recipients=[destination])
 
     msg.body = text
     msg.html = flask.render_template("{0}.html".format(template),

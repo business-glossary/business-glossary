@@ -25,7 +25,11 @@ body {
 .badge {
     font-weight: 300;
     font-size: 10px;
-}    
+}
+
+.text-large {
+  font-size: 130%;
+}
 
 /*
 .container {
@@ -169,7 +173,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
   font-size: 12px;
   line-height: 1.428571429;
   border-radius: 15px;
-  margin: 0 auto;  
+  margin: 0 auto;
 }
 .btn-circle.btn-lg {
   width: 50px;
@@ -197,7 +201,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
   display: inline-table;
   text-align: center;
   height:60px;
-  font-size: 20px;  
+  font-size: 20px;
   line-height: 20px
 }
 
@@ -346,7 +350,7 @@ body {
 ********************************************************************/
 
 .wiki-page table, .wiki-page td, .wiki-page th,
-.term-page table, .term-page td, .term-page th {    
+.term-page table, .term-page td, .term-page th {
     border: 1px solid #ddd;
 }
 
@@ -365,7 +369,7 @@ body {
     padding: 6px;
 }
 
-.table-no-width table, .table-no-width td, .table-no-width th {    
+.table-no-width table, .table-no-width td, .table-no-width th {
     border: 1px solid #ddd;
 }
 

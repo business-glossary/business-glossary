@@ -15,6 +15,7 @@ class Config(object):
     MAIL_USE_SSL = False
     MAIL_USERNAME = ''
     MAIL_PASSWORD = ''
+    MAIL_DEFAULT_SENDER = MAIL_USERNAME
 
     ADMINS_EMAIL = ['admin@example.com']
     ADMINS_FROM_EMAIL = ['admin@example.com']
@@ -22,8 +23,8 @@ class Config(object):
     APPLICATION_NAME = 'Business Glossary'
 
     # Flask-Security flags
-    SECURITY_CONFIRMABLE = False
-    SECURITY_REGISTERABLE = False
+    SECURITY_CONFIRMABLE = True
+    SECURITY_REGISTERABLE = True
     SECURITY_RECOVERABLE = True
     SECURITY_TRACKABLE = True
     SECURITY_CHANGEABLE = True

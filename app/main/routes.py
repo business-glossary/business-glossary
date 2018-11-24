@@ -377,7 +377,6 @@ def admin_documents():
         doc = {
             'name': document.name,
             'path': document.path,
-            'term': document.term.name,
             'exists': isfile(join(BASE_DIR, 'app', 'static', 'files', document.path))
         }
         document_check.append(doc)

@@ -72,7 +72,9 @@ web.config
 app/static/files/
 app/static/source_code/
 
+# Ignore any configuration files
 instance/
+.flaskenv
 
 # Exclude markdown pages
 app/pages/*.md

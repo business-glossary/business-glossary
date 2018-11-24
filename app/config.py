@@ -2,7 +2,6 @@ import os
 from app.extensions import tables, fenced_code, wikilinks, footnotes
 
 BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-print(">> BASE_DIR=" + BASE_DIR)
 
 class Config(object):
     '''Define the base configuration object'''

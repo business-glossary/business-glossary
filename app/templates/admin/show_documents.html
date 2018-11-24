@@ -1,0 +1,31 @@
+{% set active_page = "admin" %}
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-header">
+    <h1>Documents Uploaded</h1>
+</div>
+
+<p class="lead">The following is a list of documents that are defined as being uploaded.</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Document Name</th>
+            <th>File Name</th>
+            <th>Exists</th>
+        </tr>
+    </thead>
+    {% for document in documents %}
+    <tr>
+        <td>{{ document.name }}</td>
+        <td>{{ document.path }}</td>
+        <td>{{ document.exists }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="row">
+  <br/>
+  <a class='' href="{{ url_for('main.show_users') }}"><span class="glyphicon glyphicon-menu-left"></span>Back to Users</a>
+</div>
+{% endblock %}

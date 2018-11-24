@@ -13,7 +13,7 @@
 #   under the License.
 
 from os import mkdir, getenv
-from os.path import dirname, join
+from os.path import dirname, join, isfile
 from datetime import datetime
 
 from flask import flash, redirect, url_for, render_template, request, \
@@ -364,3 +364,23 @@ def admin_create_user():
 @login_required
 def show_settings():
     return render_template('admin_settings.html')
+
+
+@main.route('/admin/documents/')
+@login_required
+def admin_documents():
+    documents = Document.query.all()
+    document_check = []
+    for document in documents:
+        dp = join(BASE_DIR, 'app', 'static', 'files', document.path)
+        print(" ***** File {}: {}".format(dp, isfile(dp)))
+        doc = {
+            'name': document.name,
+            'path': document.path,
+            'term': document.term.name,
+            'exists': isfile(join(BASE_DIR, 'app', 'static', 'files', document.path))
+        }
+        document_check.append(doc)
+        print(document_check)
+
+    return render_template('admin/show_documents.html', documents=document_check)

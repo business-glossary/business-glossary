@@ -49,5 +49,11 @@ The user can be activated again with this command:
 flask users activate jamestindale@outlook.com
 ```
 
+## Printing to PDF
+
+To print glossary content to PDF `wkhtmltopdf` should be installed and available in the PATH. If it is not in the path the it will be searched for at `C:\Program Files\wkhtmltopdf\bin`.
+
+The generated PDF are placed in a directory named `bg_interface` that is created alongside the application directory. So if the Business Glossary is installed under `/srv/business-glossary` the generated PDFs will be created at `/src/bg_interface`.
+
 
 Copyright 2016 Alan Tindale

@@ -5,7 +5,7 @@
     <h1>Print Glossary Content</h1>
 </div>
 
-<p>Output file <strong>{{ filename }}</strong> successfully created.</p>
-<a href="{{ url_for('main.download', selected_filename=filename) }}" class="btn btn-default">Download</a>
+<p class="lead">Output file <strong>{{ filename }}</strong> successfully created.</p>
+<a href="{{ url_for('main.download', selected_filename=filename) }}" class="btn btn-primary btn-sm">Download</a>
     
 {% endblock %}

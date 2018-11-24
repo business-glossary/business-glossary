@@ -6,6 +6,14 @@
     <base href="http://localhost/">
 </head>
 <body>
+    <h1>Overview</h1>
+    This report consists of the categories
+    {% for category in categories %}
+        {% if loop.index == loop.length and loop.length != 1 %}and {% endif %}
+        <strong>{{ category.name }}</strong>{% if loop.index < loop.length - 1 %}, {% endif %}{{ "." if loop.last }}
+    {% endfor %}
+    It was printed by {% if current_user.name %}{{ current_user.name }}{% else %}{{ current_user.email }}{% endif %}.
+
     {% for term in terms %}
     <h1>{{ term.name }}</h1>
     <h2 class="short-desc">{{ term.short_description }}</h2>

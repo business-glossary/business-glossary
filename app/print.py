@@ -80,12 +80,13 @@ def generate_pdf(filename, categories):
     if categories:
         print("Categories requested: %s" % categories)
         terms = Term.query.join(Term.categories).filter(Category.id.in_(categories)).order_by(Term.name).all()
+        cats = Category.query.filter(Category.id.in_(categories)).all()
         print(terms)
     else:
         #terms = Term.query.order_by(Term.name).limit(10).all()
         terms = Term.query.order_by(Term.name).all()
 
-    html_text = render_template('print/glossary_print.html', terms=terms)
+    html_text = render_template('print/glossary_print.html', terms=terms, categories=cats)
 
     options = {
         'page-size': 'A4',
@@ -111,8 +112,13 @@ def generate_pdf(filename, categories):
     css = os.path.join(BASE_DIR, 'app', 'static', 'css', 'print_style.css')
     cover = os.path.join(BASE_DIR, 'app', 'templates', 'print', 'cover_page.html')
 
+    directory = os.path.join(os.path.dirname(BASE_DIR), 'bg_interface')
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
     pdfkit.from_string(html_text, \
-                       os.path.join(os.path.dirname(BASE_DIR), 'bg_interface', filename), \
+                       os.path.join(directory, filename), \
                        options=options, \
                        css=css, \
                        cover=cover)

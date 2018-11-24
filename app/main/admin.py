@@ -120,5 +120,6 @@ class PrintView(BaseView):
     '''Add print option to admin menu'''
     @expose('/')
     def index(self):
+        blank_count = Term.query.filter_by(categories=None).count()
         categories = Category.query.all()
-        return self.render('print/print_admin_menu.html', categories=categories)
+        return self.render('print/print_admin_menu.html', categories=categories, blank_count=blank_count)

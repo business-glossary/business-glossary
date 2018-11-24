@@ -7,18 +7,25 @@
 
 <form class="form-horizontal" action="{{ url_for('main.do_print') }}" method="post">
     <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
-    <p class="lead">Generate PDF of glossary content.<p>
-    <div class="alert alert-warning">
-        <strong>Warning!</strong> It may take some time to generate the full glossary PDF document. This operation will currently block 
-        other users of the glossary.
-    </div>        
-    <p class="lead">Select a category to print</p>
-    {% for category in categories %}
-    <div class="checkbox">
-        <label class="checkbox-inline col-sm-2"><input type="checkbox" name="category" id="category{{ category.id }}" value="{{ category.id }}">{{ category.name }}</label>
+    <p class="lead">Generate PDF of glossary content. Select a categories to print.</p>
+    <div class="row">
+        {% for category in categories %}
+        <div class="col-xs-4">
+            <div class="checkbox">
+                <label><input type="checkbox" name="category" id="category{{ category.id }}" value="{{ category.id }}">{{- category.name -}}</label>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
+      
+    <p class="lead">Note there are {{ blank_count }} terms without an assigned category.</p>
+    <br/>
+
     <hr/>
-    <button type="submit" class="btn btn-primary btn-sm">Generate PDF</button>
+    <div class="alert alert-warning">
+            <strong>Warning!</strong> It may take some time to generate the full glossary PDF document. This operation will currently block 
+            other users of the glossary.
+        </div>        
+        <button type="submit" class="btn btn-primary btn-sm">Generate PDF</button>
 </form>
 {% endblock %}

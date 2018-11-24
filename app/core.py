@@ -77,18 +77,16 @@ def create_app(config_name):
     pages.init_app(app)
     csrf.init_app(app)
 
+    # Setup admin view - should find a better place for this
+    from app.main.admin import MyHomeView, RuleView, FileView, TableView, ColumnView, ProtectedModelView, TermView, PrintView
+
     admin = Admin(app,
                   name='BUSINESS GLOSSARY',
                   template_mode='bootstrap3',
-                  base_template='/admin/new_master.html')
+                  base_template='/admin/new_master.html',
+                  index_view=MyHomeView())
 
-    # Setup admin view - should find a better place for this
-    from app.main.admin import RuleView, FileView, TableView, ColumnView, ProtectedModelView, TermView, PrintView
-
-    with warnings.catch_warnings():
-        warnings.filterwarnings('ignore', 'Fields missing from ruleset', UserWarning)
-        admin.add_view(TermView(Term, db.session))
-
+    admin.add_view(TermView(Term, db.session))
     admin.add_view(RuleView(Rule, db.session))
     admin.add_view(ProtectedModelView(Note, db.session))
     admin.add_view(ProtectedModelView(Link, db.session))
@@ -126,12 +124,15 @@ def create_app(config_name):
         db.create_all()
         if not User.query.first():
             # Create a default admin user if there is no user in the database
+            user_datastore.create_role(name='admin')
             user_datastore.create_user(
                 name='Administration Account',
                 email='admin@example.com',
-                password=encrypt_password('password')
+                password=encrypt_password('password'),
+                roles=['admin']
             )
             db.session.commit()
+            app.logger.info('Created admin user admin@example.com')
 
     return app
 

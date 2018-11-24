@@ -14,7 +14,7 @@ virtualenv venv
 . venv/bin/activate
 pip install -r requirements.txt
 python create_db.py
-python manage.py runserver
+flask run
 ```
 
 ## Setup
@@ -24,10 +24,30 @@ Running the above commands will create an application using the development conf
 You can also define two environment variables to control the configuration and database it should use.
 
 ```
-DEV_DATABASE_URL=mysql://username:password@localhost/db_name
-BG_CONFIG=config.TestingConfig
+export BG_DATABASE_URL=mysql://username:password@localhost/db_name
+export BG_CONFIG=test
+flask run
 ```
 
-You can set `DEV_DATABASE_URL`, `TEST_DATABASE_URL` or `PROD_DATABASE_URL` or all three and set the required configuration to use with `BG_CONFIG`
+## Managing Users
+
+To add a user to the glossary with following command. You will be prompted for a password.
+
+```
+flask users create --active user@example.com
+```
+
+You can deactivate a user like this:
+
+```
+flask users deactivate jamestindale@outlook.com
+```
+
+The user can be activated again with this command:
+
+```
+flask users activate jamestindale@outlook.com
+```
+
 
 Copyright 2016 Alan Tindale

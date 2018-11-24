@@ -50,20 +50,20 @@ class Config(object):
 class DevelopmentConfig(Config):
     '''Define the development configuration object'''
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
+    SQLALCHEMY_DATABASE_URI = os.environ.get('BG_DATABASE_URL') or \
         'sqlite:///' + os.path.join(BASE_DIR, 'glossary_dev.db')
     SQLALCHEMY_ECHO = True
 
 class TestingConfig(Config):
     '''Define the test configuration object'''
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
+    SQLALCHEMY_DATABASE_URI = os.environ.get('BG_DATABASE_URL') or \
         'sqlite:///' + os.path.join(BASE_DIR, 'glossary_test.db')
     SQLALCHEMY_ECHO = False
 
 class ProductionConfig(Config):
     '''Define the production configuration object'''
-    SQLALCHEMY_DATABASE_URI = os.environ.get('PROD_DATABASE_URL') or \
+    SQLALCHEMY_DATABASE_URI = os.environ.get('BG_DATABASE_URL') or \
         'sqlite:///' + os.path.join(BASE_DIR, 'glossary.db')
 
 config = {

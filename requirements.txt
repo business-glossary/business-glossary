@@ -9,6 +9,7 @@ Flask-Moment==0.6.0
 Flask-Script==2.0.6
 Flask-Security==3.0.0
 Flask-SQLAlchemy==2.2
+Markdown==3.0.1
 pytz==2018.7
 SQLAlchemy==1.1.9
 pdfkit==0.6.1

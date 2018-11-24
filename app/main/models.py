@@ -5,7 +5,6 @@ from sqlalchemy.event import listens_for
 from sqlalchemy.sql import expression
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.types import DateTime
-#from flask import current_app
 from flask_sqlalchemy import SQLAlchemy
 
 from app.extensions import db

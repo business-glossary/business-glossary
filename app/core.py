@@ -16,35 +16,33 @@
 import os
 import warnings
 
-from .config import config
-from .extensions import db, security, bootstrap, mail, pages
+from app.extensions import db, security, bootstrap, mail, pages, moment, csrf
+from app.config import config
 
-from .users.models import User, Role
+from app.users.models import User, Role
 
-from .main import main as main_blueprint
-from .term_bp import term_bp as term_bp_blueprint
-
+from app.main import main as main_blueprint
+from app.term_bp import term_bp as term_bp_blueprint
 
 from flask import Flask
 from flaskext.markdown import Markdown
-from flask_moment import Moment
 
 from flask_security import SQLAlchemyUserDatastore
 from flask_security.utils import encrypt_password
 
-from flask_wtf.csrf import CSRFProtect
 from flask_admin import Admin
 
 from app.models import Term, Rule, Note, Link, Table, Document, Location, Column, DocumentType, \
-    TermStatus, Category, Person
-
-moment = Moment()
-csrf = CSRFProtect()
+                       TermStatus, Category, Person
 
 
 # Bootstrap helpers
 def alert_class_filter(category):
-    # Map different message types to Bootstrap alert classes
+    """
+    Map different message types to Bootstrap alert classes
+
+    @param category:          string - a message type
+    """
     categories = {
         "message": "warning"
     }
@@ -55,7 +53,7 @@ def create_app(config_name):
     """An application factory, as explained here:
         http://flask.pocoo.org/docs/patterns/appfactories/
 
-    :param config_object: The configuration object to use.
+    @param config_name:    The configuration object to use.
     """
     app = Flask(__name__)
 
@@ -74,18 +72,15 @@ def create_app(config_name):
     mail.init_app(app)
     moment.init_app(app)
 
-    # Flask-Markdown markdown parser
     md = Markdown(app, output_format='html5', extensions=['fenced_code', 'tables', 'abbr', 'footnotes'])
-    #markdown = Markdown()
-    #markdown.init_app(app, extensions=['fenced_code', 'tables', 'abbr'])
 
     pages.init_app(app)
     csrf.init_app(app)
 
     admin = Admin(app,
-                name='BUSINESS GLOSSARY',
-                template_mode='bootstrap3',
-                base_template='/admin/new_master.html')
+                  name='BUSINESS GLOSSARY',
+                  template_mode='bootstrap3',
+                  base_template='/admin/new_master.html')
 
     # Setup admin view - should find a better place for this
     from app.main.admin import RuleView, FileView, TableView, ColumnView, ProtectedModelView, TermView, PrintView
@@ -122,7 +117,6 @@ def create_app(config_name):
                                 subject='Application Error Occurred')
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
-
 
     # Register blueprints
     app.register_blueprint(main_blueprint)

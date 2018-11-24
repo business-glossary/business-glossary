@@ -72,6 +72,7 @@ web.config
 app/static/files/
 app/static/source_code/
 
+instance/
 
 # Exclude markdown pages
 app/pages/*.md

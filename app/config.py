@@ -1,4 +1,5 @@
 import os
+from app.extensions import tables, fenced_code, wikilinks, footnotes
 
 BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 print(">> BASE_DIR=" + BASE_DIR)
@@ -39,7 +40,7 @@ class Config(object):
     # FlatPages configuration
     FLATPAGES_AUTO_RELOAD = True
     FLATPAGES_EXTENSION = '.md'
-    FLATPAGES_MARKDOWN_EXTENSIONS = ['codehilite', 'tables', 'fenced_code', 'wikilinks']
+    FLATPAGES_MARKDOWN_EXTENSIONS = ['codehilite', tables, footnotes, fenced_code, wikilinks]
 
     @staticmethod
     def init_app(app):

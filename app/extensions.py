@@ -17,10 +17,23 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_bootstrap import Bootstrap
 from flask_flatpages import FlatPages
+from flask_moment import Moment
+from flask_wtf.csrf import CSRFProtect
 
+from markdown.extensions.tables import TableExtension
+from markdown.extensions.footnotes import FootnoteExtension
+from markdown.extensions.fenced_code import FencedCodeExtension
+from markdown.extensions.wikilinks import WikiLinkExtension
 
 db = SQLAlchemy()
 security = Security()
 bootstrap = Bootstrap()
 mail = Mail()
 pages = FlatPages()
+moment = Moment()
+csrf = CSRFProtect()
+
+tables = TableExtension()
+footnotes = FootnoteExtension()
+fenced_code = FencedCodeExtension()
+wikilinks = WikiLinkExtension()

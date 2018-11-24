@@ -17,7 +17,7 @@ from os.path import dirname, join
 from datetime import datetime
 
 from flask import flash, redirect, url_for, render_template, request, \
-    send_from_directory, send_file
+     send_from_directory, send_file
 from flask import current_app
 
 from flask_flatpages import pygments_style_defs
@@ -28,7 +28,7 @@ from sqlalchemy import func
 from app import models
 from app.config import BASE_DIR
 from app.main.forms import RegistrationForm
-from app.extensions import db
+from app.extensions import db, pages
 from . import main
 
 from app.main.models import Document, DocumentType, Term, TermStatus, \
@@ -37,32 +37,29 @@ from app.main.models import Document, DocumentType, Term, TermStatus, \
 
 from app.users.models import User
 
-from flask import current_app as app
 
-pages = FlatPages(app)
-
+###############################################################################
+# Filters
 
 @main.app_template_filter('env')
 def env(value, key):
+    '''Return environment variables for use on the admin settings page'''
     return getenv(key, value)
 
 
+###############################################################################
+# Context processors
+
 @main.context_processor
 def inject_pages():
-    """
-    Returns pages that will be avaiables in every template view
-    """
-    from app.extensions import pages
+    '''Returns pages that will be avaiables in every template view'''
     tagged = [p for p in pages if 'index' in p.meta.get('tags', [])]
-
     ordered = sorted(tagged, key=lambda p: p.meta['title'])
-
     return dict(tagged=ordered)
 
 
-###########################
-#### define the routes ####
-###########################
+###############################################################################
+# Routes
 
 @main.route('/about')
 def about():

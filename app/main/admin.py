@@ -13,13 +13,13 @@
 #   under the License.
 
 import os
-from flask_admin import Admin, BaseView, form, expose
+from flask_admin import Admin, BaseView, form, expose, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 from flask_security import current_user
 
 #from app.term_bp.forms import PrintForm
 from app.extensions import db
-from app.models import Category
+from app.models import Category, Term, Rule, Document, Link
 
 from app.config import BASE_DIR
 
@@ -35,10 +35,24 @@ except OSError:
 ## Admin views
 ######################
 
+class MyHomeView(AdminIndexView):
+    '''Add a custom home view'''
+    @expose('/')
+    def index(self):
+        stats = {
+            'terms': Term.query.count(),
+            'rules': Rule.query.count(),
+            'documents': Document.query.count(),
+            'links': Link.query.count()
+        }
+        return self.render('admin/index.html', stats=stats)
+
+
 class ProtectedModelView(ModelView):
     '''Check user has logged in for each admin view'''
     def is_accessible(self):
         return current_user.has_role('admin')
+
 
 class FileView(ProtectedModelView):
     '''Override form field to use Flask-Admin FileUploadField'''
@@ -55,10 +69,12 @@ class FileView(ProtectedModelView):
         }
     }
 
+
 class RuleView(ProtectedModelView):
     '''Set the view options with displaying a Rule in the admin view'''
     form_excluded_columns = ('created_on', 'updated_on')
-    form_columns = ('identifier', 'name', 'description', 'notes', 'terms', 'comments', 'documents')
+    column_list = ('identifier', 'name', 'description', 'notes')
+    #form_columns = ('identifier', 'name', 'description', 'notes', 'terms')
     column_searchable_list = ['identifier', 'name', 'description']
     column_default_sort = 'identifier'
     form_widget_args = {
@@ -73,12 +89,12 @@ class RuleView(ProtectedModelView):
 
 class TermView(ProtectedModelView):
     '''Set the view options with displaying a Term in the admin view'''
-    form_create_rules = ('name', 'short_description', 'long_description', 'abbreviation', 'owner',
+    form_create_columns = ('name', 'short_description', 'long_description', 'abbreviation', 'owner',
                          'steward', 'status', 'categories', 'links', 'rules', 'documents')
-    form_edit_rules = ('name', 'short_description', 'long_description', 'abbreviation', 'owner',
+    form_edit_columns = ('name', 'short_description', 'long_description', 'abbreviation', 'owner',
                        'steward', 'status', 'categories', 'links', 'rules', 'related_terms',
                        'documents', 'columns')
-    column_list = ['name', 'short_description', 'abbreviation', 'status']
+    column_list = ['name', 'short_description', 'abbreviation', 'status', ]
     form_excluded_columns = ('created_on', 'updated_on')
     column_searchable_list = ['name']
     form_widget_args = {

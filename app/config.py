@@ -23,8 +23,8 @@ class Config(object):
     APPLICATION_NAME = 'Business Glossary'
 
     # Flask-Security flags
-    SECURITY_CONFIRMABLE = True
-    SECURITY_REGISTERABLE = True
+    SECURITY_CONFIRMABLE = False
+    SECURITY_REGISTERABLE = False
     SECURITY_RECOVERABLE = True
     SECURITY_TRACKABLE = True
     SECURITY_CHANGEABLE = True

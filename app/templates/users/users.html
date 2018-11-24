@@ -21,7 +21,7 @@
         <tr>
             <td>{{ user.name }}</td>
             <td><a href="{{ url_for('main.show_user', selected_user=user.id) }}">{{ user.email }}</a></td>
-            <td>{{ user.last_login_at }}</td>
+            <td>{{ moment(user.last_login_at).format('DD/MM/YYYY h:mm:ss a') }}</td>
             <td>
             {% for role in user.roles %}
                 {{ role.name }}

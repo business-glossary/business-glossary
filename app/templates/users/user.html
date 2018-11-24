@@ -12,14 +12,16 @@
     <div class="col-md-10"><span class="text-large">{{ user.name }}</span></div>
     <div class="col-md-2"><span class="text-large">Email Address</span></div>
     <div class="col-md-10"><span class="text-large">{{ user.email }}</span></div>
+    <div class="col-md-2"><span class="text-large">Active</span></div>
+    <div class="col-md-10"><span class="text-large">{{ user.active }}</span></div>
     <div class="col-md-2"><span class="text-large">Confirmed At</span></div>
-    <div class="col-md-10"><span class="text-large">{{ user.confirmed_at }}</span></div>
+    <div class="col-md-10"><span class="text-large">{{ moment(user.confirmed_at).format('LLL') }}</span></div>
     <div class="col-md-2"><span class="text-large">Last Login At</span></div>
-    <div class="col-md-10"><span class="text-large">{{ user.last_login_at }}</span></div>
+    <div class="col-md-10"><span class="text-large">{{ moment(user.last_login_at).format('LLL') }}</span></div>
     <div class="col-md-2"><span class="text-large">Last Login IP</span></div>
     <div class="col-md-10"><span class="text-large">{{ user.last_login_ip }}</span></div>
     <div class="col-md-2"><span class="text-large">Current Login At</span></div>
-    <div class="col-md-10"><span class="text-large">{{ user.current_login_at }}</span></div>
+    <div class="col-md-10"><span class="text-large">{{ moment(user.current_login_at).format('LLL') }}</span></div>
     <div class="col-md-2"><span class="text-large">Current Login IP</span></div>
     <div class="col-md-10"><span class="text-large">{{ user.current_login_ip }}</span></div>
     <div class="col-md-2"><span class="text-large">Login Count</span></div>

@@ -159,7 +159,7 @@ def download(selected_filename):
 @login_required
 def profile():
     '''Present the user profile'''
-    return render_template('show_profile.html')
+    return render_template('users/show_profile.html')
 
 
 @main.route('/term/<int:selected_term>')

@@ -9,7 +9,7 @@
 <form action="{{ url_for('main.do_backup') }}" method="post">
     <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
     <p class="lead">Export the Business Glossary data to a YAML file.<p>
-    <button type="submit" class="btn btn-primary">Backup</button>
+    <button type="submit" class="btn btn-primary btn-sm">Backup</button>
 </form>
 
 <h2>Restore Business Glossary</h2>

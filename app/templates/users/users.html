@@ -13,6 +13,7 @@
             <th>Name</th>
             <th>Email Address</th>
             <th>Last Logged On</th>
+            <th>Active</th>
             <th>Roles</th>
         </tr>
     </thead>
@@ -22,12 +23,12 @@
             <td>{{ user.name }}</td>
             <td><a href="{{ url_for('main.show_user', selected_user=user.id) }}">{{ user.email }}</a></td>
             <td>{{ moment(user.last_login_at).format('DD/MM/YYYY h:mm:ss a') }}</td>
+            <td>{{ user.active }}</td>
             <td>
             {% for role in user.roles %}
                 {{ role.name }}
             {% endfor %}
             </td>
-
         </tr>
         {% endfor %}
     </tbody>

@@ -12,7 +12,7 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 
-from os import mkdir
+from os import mkdir, getenv
 from os.path import dirname, join
 
 from flask import flash, redirect, url_for, render_template, request, \
@@ -40,6 +40,12 @@ from flask import current_app as app
 
 pages = FlatPages(app)
 
+
+@main.app_template_filter('env')
+def env(value, key):
+    return getenv(key, value)
+
+
 @main.context_processor
 def inject_pages():
     """
@@ -51,6 +57,7 @@ def inject_pages():
     ordered = sorted(tagged, key=lambda p: p.meta['title'])
 
     return dict(tagged=ordered)
+
 
 ###########################
 #### define the routes ####
@@ -356,3 +363,9 @@ def admin_create_user():
             flash('User added successfully and confirmation email sent.')
             return redirect(url_for('main.show_users'))
     return render_template('users/user_create.html', form=form)
+
+
+@main.route('/admin/settings/')
+@login_required
+def show_settings():
+    return render_template('admin_settings.html')

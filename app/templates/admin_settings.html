@@ -1,0 +1,29 @@
+{% set active_page = "admin" %}
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-header">
+    <h1>Settings</h1>
+</div>
+
+<p class="lead"/>
+
+<h2>Environment Variables</h2>
+<table class="table">
+    <tr><td>BG_SETTINGS</td><td>{{ 'None' | env('BG_SETTINGS') }}</td></tr>
+    <tr><td>BG_CONFIG</td><td>{{ 'None' | env('BG_CONFIG') }}</td></tr>
+</table>
+<h2>Coniguration Variables</h2>
+<table class="table">
+    {% for key, value in config.items() %}
+    <tr>
+        <td>{{ key }}</td>
+        <td>{{ value }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="row">
+  <br/>
+  <a class='' href="{{ url_for('main.show_users') }}"><span class="glyphicon glyphicon-menu-left"></span>Back to Users</a>
+</div>
+{% endblock %}

@@ -14,6 +14,7 @@
 
 from os import mkdir
 from os.path import dirname, join
+from datetime import datetime
 
 from flask import flash, redirect, url_for, render_template, request, \
     send_from_directory, send_file
@@ -335,7 +336,7 @@ def admin_create_user():
     if request.method == 'POST' and form.validate_on_submit():
         name = form.name.data
         email = form.email.data
-        password = form.password.data
+        password = encrypt_password(form.password.data)
         user_exists = User.query.filter_by(email=email).first()
         if user_exists:
             form.email.errors.append(email + ' is already associated with another user')
@@ -344,15 +345,12 @@ def admin_create_user():
             return render_template('users/user_create.html', form=form)
         else:
             security = app.extensions.get('security')
-            password = encrypt_password('password')
             security.datastore.create_user(name=name,
                                            email=email,
-                                           password=password)
+                                           password=password,
+                                           confirmed_at=datetime.now())
             db.session.commit()
-            # register_user(email=email, password=password)
-            from flask_security.confirmable import send_confirmation_instructions
             user = security.datastore.get_user(email)
-            send_confirmation_instructions(user)
-            flash('User added successfully and confirmation email sent.')
+            flash('User added successfully.')
             return redirect(url_for('main.show_users'))
     return render_template('users/user_create.html', form=form)

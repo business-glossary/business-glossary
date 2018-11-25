@@ -31,10 +31,22 @@ flask run
 
 ## Managing Users
 
-To add a user to the glossary with following command. You will be prompted for a password.
+To add a user to the glossary, us the following command. You will be prompted for a password.
 
 ```
 flask users create --active user@example.com
+```
+
+A user can be assigned a role can be created like so:
+
+```
+flask roles add admin@example.com admin
+```
+
+You can remove a role from a user with:
+
+```
+flask roles remove admin@example.com admin
 ```
 
 You can deactivate a user like this:
@@ -51,9 +63,9 @@ flask users activate jamestindale@outlook.com
 
 ## Printing to PDF
 
-To print glossary content to PDF `wkhtmltopdf` should be installed and available in the PATH. If it is not in the path the it will be searched for at `C:\Program Files\wkhtmltopdf\bin`.
+To print glossary information to PDF `wkhtmltopdf` should be installed and available in your PATH. If it is not in the path it will be searched for at `C:\Program Files\wkhtmltopdf\bin`.
 
-The generated PDF are placed in a directory named `bg_interface` that is created alongside the application directory. So if the Business Glossary is installed under `/srv/business-glossary` the generated PDFs will be created at `/src/bg_interface`.
+The generated PDF documents are placed in a directory named `bg_interface` that is created alongside the application directory. So if the Business Glossary is installed under `/srv/business-glossary` the generated PDFs will be created at `/src/bg_interface`.
 
 
-Copyright 2016 Alan Tindale
+Copyright 2016-2018 Alan Tindale

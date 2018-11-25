@@ -125,7 +125,24 @@ def do_backup():
     timestr = time.strftime("%Y%m%d-%H%M%S")
     filename = "bg_export_" + timestr + ".yml"
     dump_yaml.dump(join(dirname(BASE_DIR), 'bg_interface', filename))
-    return render_template('backup/do_backup.html', filename=filename)
+    return render_template('backup/do_backup.html', 
+                           filename=filename,
+                           function='Backup',
+                           title='Backup Business Glossary Data')
+
+
+@main.route('/do_column_association_export/', methods=['POST'])
+@login_required
+def do_column_association_export():
+    from app.loader import export
+    import time
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    filename = "bg_column_associations_" + timestr + ".csv"
+    export.export(join(dirname(BASE_DIR), 'bg_interface', filename))
+    return render_template('backup/do_backup.html', 
+                           filename=filename,
+                           function='Export',
+                           title='Column Associations Export')
 
 
 @main.route('/generate_pdf/', methods=['POST'])

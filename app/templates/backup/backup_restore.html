@@ -12,6 +12,13 @@
     <button type="submit" class="btn btn-primary btn-sm">Backup</button>
 </form>
 
+<h2>Export Column Associations</h2>
+<form action="{{ url_for('main.do_column_association_export') }}" method="post">
+    <input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+    <p class="lead">Export all term to column associations to CSV file.<p>
+    <button type="submit" class="btn btn-primary btn-sm">Export</button>
+</form>
+
 <h2>Restore Business Glossary</h2>
 <p class="lead">To restore or import glossary data from a YAML format you should use the command line interface.</p>
 <pre>

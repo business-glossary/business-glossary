@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# 
 #   Copyright 2017 Alan Tindale, All Rights Reserved.
 #
 #   Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -12,12 +14,13 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 
-
 import os
 import warnings
 
 from app.extensions import db, security, bootstrap, mail, pages, moment, csrf
-from app.config import config
+from app.config import config, BASE_DIR
+
+from app import commands
 
 from app.users.models import User, Role
 
@@ -77,28 +80,7 @@ def create_app(config_name):
     pages.init_app(app)
     csrf.init_app(app)
 
-    # Setup admin view - should find a better place for this
-    from app.main.admin import MyHomeView, RuleView, FileView, TableView, ColumnView, ProtectedModelView, TermView, PrintView
-
-    admin = Admin(app,
-                  name='BUSINESS GLOSSARY',
-                  template_mode='bootstrap3',
-                  base_template='/admin/new_master.html',
-                  index_view=MyHomeView())
-
-    admin.add_view(TermView(Term, db.session))
-    admin.add_view(RuleView(Rule, db.session))
-    admin.add_view(ProtectedModelView(Note, db.session))
-    admin.add_view(ProtectedModelView(Link, db.session))
-    admin.add_view(FileView(Document, db.session))
-    admin.add_view(ProtectedModelView(Location, db.session, category="Assets"))
-    admin.add_view(TableView(Table, db.session, category="Assets"))
-    admin.add_view(ColumnView(Column, db.session, category="Assets"))
-    admin.add_view(ProtectedModelView(DocumentType, db.session, category="Lookups"))
-    admin.add_view(ProtectedModelView(TermStatus, db.session, category="Lookups"))
-    admin.add_view(ProtectedModelView(Category, db.session, category="Lookups"))
-    admin.add_view(ProtectedModelView(Person, db.session, category="Lookups"))
-    admin.add_view(PrintView(name='Print Glossary', endpoint='print'))
+    register_adminviews(app)
 
     app.jinja_env.filters['alert_class'] = alert_class_filter
 
@@ -116,9 +98,14 @@ def create_app(config_name):
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
 
-    # Register blueprints
-    app.register_blueprint(main_blueprint)
-    app.register_blueprint(term_bp_blueprint)
+    register_blueprints(app)
+    register_commands(app)
+
+    # Create the bg_interface directory if it does not exist    
+    directory = os.path.join(os.path.dirname(BASE_DIR), 'bg_interface')
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
     with app.app_context():
         db.create_all()
@@ -146,16 +133,51 @@ def create_app(config_name):
 #print("SQLALCHEMY_ECHO=" + str(app.config['SQLALCHEMY_ECHO']))
 #print
 
+def register_adminviews(app):
+    '''Register Flask-Admin views.'''
 
-# Send templated emails
+    from app.main.admin import MyHomeView, RuleView, FileView, TableView, ColumnView, ProtectedModelView, TermView, PrintView
+
+    admin = Admin(app,
+                  name='BUSINESS GLOSSARY',
+                  template_mode='bootstrap3',
+                  base_template='/admin/new_master.html',
+                  index_view=MyHomeView())
+
+    admin.add_view(TermView(Term, db.session))
+    admin.add_view(RuleView(Rule, db.session))
+    admin.add_view(ProtectedModelView(Note, db.session))
+    admin.add_view(ProtectedModelView(Link, db.session))
+    admin.add_view(FileView(Document, db.session))
+    admin.add_view(ProtectedModelView(Location, db.session, category="Assets"))
+    admin.add_view(TableView(Table, db.session, category="Assets"))
+    admin.add_view(ColumnView(Column, db.session, category="Assets"))
+    admin.add_view(ProtectedModelView(DocumentType, db.session, category="Lookups"))
+    admin.add_view(ProtectedModelView(TermStatus, db.session, category="Lookups"))
+    admin.add_view(ProtectedModelView(Category, db.session, category="Lookups"))
+    admin.add_view(ProtectedModelView(Person, db.session, category="Lookups"))
+    admin.add_view(PrintView(name='Print Glossary', endpoint='print'))
+
+
+def register_blueprints(app):
+    '''Register Flask blueprints.'''
+    app.register_blueprint(main_blueprint)
+    app.register_blueprint(term_bp_blueprint)
+
+
+def register_commands(app):
+    '''Register Click commands.'''
+    app.cli.add_command(commands.data)
+
+
 def send_mail(destination, subject, template, **template_kwargs):
     """
     Send templatised emails.
 
-    :param destination: The destination email address.
-    :param subject: The email subject line.
-    :param template: The template email.
-    :param template_kwargs: Any parameters to substitute in the email.
+    @param destination:       string - the destination email address.
+    @param subject:           string - the email subject line.
+    @param template:          string - the template email.
+    @param template_kwargs:   kwargs - any parameters to substitute in the email.
     """
     text = flask.render_template("{0}.txt".format(template), **template_kwargs)
 

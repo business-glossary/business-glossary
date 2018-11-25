@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+#
 #   Copyright 2017 Alan Tindale, All Rights Reserved.
 #
 #   Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -113,9 +115,6 @@ def generate_pdf(filename, categories):
     cover = os.path.join(BASE_DIR, 'app', 'templates', 'print', 'cover_page.html')
 
     directory = os.path.join(os.path.dirname(BASE_DIR), 'bg_interface')
-
-    if not os.path.exists(directory):
-        os.makedirs(directory)
 
     pdfkit.from_string(html_text, \
                        os.path.join(directory, filename), \

@@ -1,4 +1,19 @@
 # -*- coding: utf-8 -*-
+#
+#   Copyright 2017 Alan Tindale, All Rights Reserved.
+#
+#   Licensed under the Apache License, Version 2.0 (the "License"); you may
+#   not use this file except in compliance with the License. You may obtain
+#   a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#   License for the specific language governing permissions and limitations
+#   under the License.
+
 '''Script to load data to the application database'''
 
 import logging
@@ -10,7 +25,6 @@ from os.path import dirname, join, isfile
 from flask import current_app as app
 
 from app import models
-#from app import db, app
 from app.extensions import db
 
 from app.main.models import Term, TermStatus, Person, Category, Link, \
@@ -24,8 +38,6 @@ from app.config import BASE_DIR
 
 LOGGER = logging.getLogger("business-glossary.load_data")
 
-#file_path = join(dirname(BASE_DIR), 'bg_interface')
-#file_name = os.path.join(file_path, "rules.yaml")
 
 def remove_key(source_dict, *keys):
     '''Remove element(s) from a dictionary'''
@@ -236,7 +248,6 @@ def add_column(column):
     db.session.commit()
 
 
-
 def add_document(document):
     '''Add a document from a dict'''
 
@@ -362,14 +373,9 @@ def load(file_name):
     if not isfile(file_name):
         LOGGER.error("The file does not exist")
     else:
-        print("b4 open")
         with open(file_name, 'r') as stream:
-            print("after open")
             try:
-                print("b4 load")
-                print(stream)
                 objects = yaml.load(stream)
-                print("after load")
 
                 # Should be a dict of lists of dicts
                 # If missing the record type then it will just be a list of dicts
@@ -445,6 +451,7 @@ def load(file_name):
                     for obj in objects['notes']:
                         add_notes(obj)
 
+                LOGGER.info("Import process ended.")
 
             except yaml.YAMLError as ex:
                 print(ex)

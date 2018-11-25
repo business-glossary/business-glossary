@@ -1,3 +1,19 @@
+# -*- coding: utf-8 -*-
+# 
+#   Copyright 2017 Alan Tindale, All Rights Reserved.
+#
+#   Licensed under the Apache License, Version 2.0 (the "License"); you may
+#   not use this file except in compliance with the License. You may obtain
+#   a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#   License for the specific language governing permissions and limitations
+#   under the License.
+
 """
 This is the main manage.py script.
 
@@ -19,8 +35,6 @@ if os.environ.get('FLASK_COVERAGE'):
 from app.extensions import db
 
 from flask_script import Manager
-from flask_migrate import Migrate
-from flask_migrate import MigrateCommand
 
 from app.core import create_app
 
@@ -30,52 +44,6 @@ from app.config import BASE_DIR
 app = create_app(os.getenv('BG_CONFIG') or 'default')
 
 manager = Manager(app)
-migrate = Migrate(app, db)
-
-manager.add_command('db', MigrateCommand)
-
-
-@manager.command
-def clear_db():
-    '''Clear the database'''
-    db.drop_all()
-    db.create_all()
-
-
-@manager.command
-def load_data(filename):
-    '''Load data into application'''
-    from app.loader import load_yaml
-    load_yaml.load(filename)
-
-
-@manager.option('-y', '--yaml', help='Dump to yaml format', dest='yaml', default=False, action="store_true")
-@manager.option('-j', '--json', help='Dump to json format', dest='json', default=False, action="store_true")
-@manager.option('-d', '--dir', help='Specify a directory where the export file will be created', dest='dir', default='None')
-def dump(yaml, json, dir):
-    '''Dump data from application'''
-
-    import time
-    timestr = time.strftime("%Y%m%d-%H%M%S")
-
-    if dir == "None":
-        file_path = os.path.join(os.path.dirname(BASE_DIR), 'bg_interface')
-    else:
-        file_path = dir
-
-    if not os.path.isdir(file_path):
-        print("The directory %s does not exist" % file_path)
-        return
-
-    file_name = os.path.join(file_path, "bg_export_" + timestr)
-
-    if yaml:
-        from app.loader import dump_yaml
-        dump_yaml.dump(file_name + ".yaml")
-
-    if json:
-        from app.loader import dump_json
-        dump_json.dump(file_name + ".json")
 
 
 @manager.command

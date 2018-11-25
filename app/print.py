@@ -15,6 +15,8 @@
 #   under the License.
 
 import os
+import time
+import pdfkit
 from flask import render_template, Response, send_from_directory
 from app.config import BASE_DIR
 from app.main.models import Term, Category
@@ -25,52 +27,10 @@ from app.main.models import Term, Category
 ##                                                                                     ##
 #########################################################################################
 
-def old_print_report():
-
-    from markdown import markdown
-    import pdfkit
-    import flask
-
-    output_filename = 'glossary.pdf'
-
-    terms = Term.query.order_by(Term.name).all()
-
-    html_text = flask.render_template('print/glossary_print.html', terms=terms)
-
-    options = {
-        'page-size': 'A4',
-        'dpi': 300,
-        'margin-top': '20mm',
-        'margin-right': '20mm',
-        'margin-bottom': '20mm',
-        'margin-left': '20mm',
-        'encoding': "UTF-8",
-        'header-left': "BOQ Credit Risk",
-        'header-right': "Full Glossary",
-        'header-font-name': 'Roboto',
-        'header-font-size': '8',
-        'header-spacing': '10',
-        'footer-left': '[date], [time]',
-        'footer-right': 'Page [page] of [topage]',
-        'footer-font-name': 'Roboto',
-        'footer-font-size': '8',
-        'footer-spacing': '10',
-        'no-outline': None
-    }
-
-    css = 'C:/Users/Alan/Projects/glossary/print-test/style.css'
-
-    print(html_text)
-
-    pdfkit.from_string(html_text, output_filename, options=options, css=css)
-
-
 def generate_pdf(filename, categories):
     '''
     Dump all glossary content
     '''
-
-    import pdfkit
 
     pdf_directory = os.path.join(BASE_DIR, 'app', 'static', 'files')
 
@@ -103,7 +63,7 @@ def generate_pdf(filename, categories):
         'header-font-name': 'Roboto',
         'header-font-size': '8',
         'header-spacing': '10',
-        'footer-left': '[date], [time]',
+        'footer-left': '{}'.format(time.strftime("%d/%m/%Y %I:%M %p").lower()),
         'footer-right': 'Page [page] of [topage]',
         'footer-font-name': 'Roboto',
         'footer-font-size': '8',

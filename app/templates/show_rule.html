@@ -29,7 +29,7 @@ $(document).ready(function() {
         </div>
         <div class="panel-body">
             {% for term in rule.terms %}
-                <a href="{{ url_for('main.show_term', selected_term=term.id) }}">{{ term.name }}</a>
+                <a href="{{ url_for('main.show_term', selected_term=term.id) }}">{{ term.name }}</a>{% if not loop.last %},{% endif %}
             {% endfor %}
         </div><!-- panel body -->
     </div><!-- panel -->
@@ -59,9 +59,9 @@ $(document).ready(function() {
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
-                <i class="fas fa-paperclip"></i>
+                <i class="fas fa-paperclip"></i>&nbsp;
                 <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseDocuments">
-                    &nbsp;&nbsp;Documents <small>{{ rule.documents|length }}</small>
+                    Documents <small>{{ rule.documents|length }}</small>
                 </a>
             </h4>
         </div>

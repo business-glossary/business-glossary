@@ -46,6 +46,7 @@ def generate_pdf(filename, categories):
         print(terms)
     else:
         #terms = Term.query.order_by(Term.name).limit(10).all()
+        cats = None
         terms = Term.query.order_by(Term.name).all()
 
     html_text = render_template('print/glossary_print.html', terms=terms, categories=cats)

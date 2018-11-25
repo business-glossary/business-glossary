@@ -167,7 +167,7 @@ def print_report(term_id):
         'header-font-name': 'Roboto',
         'header-font-size': '8',
         'header-spacing': '10',
-        'footer-left': '[date], [time]',
+        'footer-left': '{}'.format(time.strftime("%d/%m/%Y %I:%M %p").lower()),
         'footer-right': 'Page [page] of [topage]',
         'footer-font-name': 'Roboto',
         'footer-font-size': '8',

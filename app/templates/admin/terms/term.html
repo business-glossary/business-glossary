@@ -83,7 +83,10 @@
 <script src="/admin/static/admin/js/form.js?v=1.0.1"></script>
 <script src="{{ url_for('static', filename='js/simplemde.min.js') }}"></script>
 <script>
-var mde = new SimpleMDE({ element: $("#long_description")[0] });
+var mde = new SimpleMDE({ 
+    element: $("#long_description")[0],
+    status: false
+});
 /*
 mde.codemirror.on('refresh', function() {
     if (mde.isFullscreenActive()) {

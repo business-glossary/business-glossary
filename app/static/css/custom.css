@@ -31,6 +31,14 @@ body {
   font-size: 130%;
 }
 
+.admin-heading {
+    background-color: #e4e5e5;
+    font-size: 20px;
+    color: #383838;
+    padding: 10px 5px;
+    border-radius: 2px;
+}
+
 /*
 .container {
     padding-bottom: 10px;

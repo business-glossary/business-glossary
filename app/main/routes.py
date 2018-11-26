@@ -44,7 +44,14 @@ from app.users.models import User
 @main.app_template_filter('env')
 def env(value, key):
     '''Return environment variables for use on the admin settings page'''
-    return getenv(key, value)
+    if key == 'BG_DATABASE_URL':
+        # Obfuscate the password from the database URL.
+        from urllib.parse import urlparse
+        parsed = urlparse(getenv(key))
+        replaced = parsed._replace(netloc="{}:{}@{}".format(parsed.username, "#######", parsed.hostname))
+        return replaced.geturl()
+    else:
+        return getenv(key, value)
 
 
 ###############################################################################

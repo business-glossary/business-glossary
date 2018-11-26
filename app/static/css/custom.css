@@ -6,7 +6,8 @@ body {
     line-height: 1.846;
     color: #666666;
     background-color: #ffffff;
-    padding-top: 50px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+    /*
+    padding-top: 50px; Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
 }
 
 .page-header h1 {
@@ -409,4 +410,15 @@ body {
 
 code, kbd, pre, samp {
     font-family: Consolas, "Courier New", monospace
+}
+
+.simplemde-fullscreen {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
 }

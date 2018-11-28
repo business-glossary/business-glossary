@@ -376,7 +376,7 @@ def admin_create_user():
             email = ''
             return render_template('users/user_create.html', form=form)
         else:
-            security = app.extensions.get('security')
+            security = current_app.extensions.get('security')
             security.datastore.create_user(name=name,
                                            email=email,
                                            password=password,

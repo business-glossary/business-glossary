@@ -19,6 +19,7 @@ from flask_bootstrap import Bootstrap
 from flask_flatpages import FlatPages
 from flask_moment import Moment
 from flask_wtf.csrf import CSRFProtect
+from flask_migrate import Migrate
 
 from markdown.extensions.tables import TableExtension
 from markdown.extensions.footnotes import FootnoteExtension
@@ -32,6 +33,7 @@ mail = Mail()
 pages = FlatPages()
 moment = Moment()
 csrf = CSRFProtect()
+migrate = Migrate()
 
 tables = TableExtension()
 footnotes = FootnoteExtension()

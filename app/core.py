@@ -17,7 +17,7 @@
 import os
 import warnings
 
-from app.extensions import db, security, bootstrap, mail, pages, moment, csrf
+from app.extensions import db, security, bootstrap, mail, pages, moment, csrf, migrate
 from app.config import config, BASE_DIR
 
 from app import commands
@@ -74,6 +74,7 @@ def create_app(config_name):
     bootstrap.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
+    migrate.init_app(app, db)
 
     md = Markdown(app, output_format='html5', extensions=['fenced_code', 'tables', 'abbr', 'footnotes'])
 

@@ -256,7 +256,7 @@ class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
     host = db.Column(db.String(50))
-    description = db.Column(db.String(100))
+    description = db.Column(db.String(200))
     path = db.Column(db.String(100))
     notes = db.Column(db.String(100))
 
@@ -267,7 +267,7 @@ class Location(db.Model):
 class Table(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
-    description = db.Column(db.String(length=100))
+    description = db.Column(db.String(length=200))
     location_id = db.Column(db.Integer, db.ForeignKey('location.id'))
     location = db.relationship("Location", backref=db.backref('tables', lazy='dynamic'))
 

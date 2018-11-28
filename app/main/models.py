@@ -293,7 +293,7 @@ class Column(db.Model):
     format = db.Column(db.String(50))
 
     table_id = db.Column(db.Integer, db.ForeignKey('table.id'))
-    table = db.relationship("Table", backref=db.backref('columns', lazy='dynamic'))
+    table = db.relationship("Table", backref=db.backref('columns', lazy='dynamic', cascade="all,delete"))
 
     def __repr__(self):
         return self.name

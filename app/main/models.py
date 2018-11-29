@@ -258,7 +258,7 @@ class Location(db.Model):
     host = db.Column(db.String(50))
     description = db.Column(db.String(200))
     path = db.Column(db.String(100))
-    notes = db.Column(db.String(100))
+    notes = db.Column(db.String(300))
 
     def __repr__(self):
         return self.name

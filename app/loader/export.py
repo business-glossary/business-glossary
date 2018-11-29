@@ -52,7 +52,9 @@ def export(file_name):
 
     rows = get_column_associations()
     keys = rows[0].keys()
-    with open(file_name, 'w') as output_file:
+
+    print(rows)
+    with open(file_name, 'w', newline='') as output_file:
         dict_writer = csv.DictWriter(output_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(rows)

@@ -25,12 +25,12 @@ $(document).ready(function() {
     <h1>{{ term.name }}</h1>
     <p class="lead">{{ term.short_description }}</p>
     {% for c in term.categories %}
-        <span class="label label-default">{{ c.name }}</span>
+        <span class="label label-default"><a href="{{ url_for('main.show_terms', selected_category=c.id) }}">{{ c.name }}</a></span>
     {% endfor %}
     {% if term.status.status == 'Approved' %}
-        <span class="label label-success">{{ term.status.status }}</span>
+        <span class="label label-success"><a href="{{ url_for('main.show_terms', selected_status=term.status.id) }}">{{ term.status.status }}</a></span>
     {% elif term.status.status == 'Draft' %}
-        <span class="label label-warning">{{ term.status.status }}</span>
+        <span class="label label-warning"><a href="{{ url_for('main.show_terms', selected_status=term.status.id) }}">{{ term.status.status }}</a></span>
     {% endif %}
     {% if term.abbreviation %}
     <span class="pull-right abbreviation">{{ term.abbreviation }}</span>

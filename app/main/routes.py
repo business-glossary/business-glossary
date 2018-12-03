@@ -190,6 +190,18 @@ def profile():
     return render_template('users/show_profile.html')
 
 
+@main.route('/terms/cat/<int:selected_category>')
+@main.route('/terms/status/<int:selected_status>')
+@login_required
+def show_terms(selected_category=None, selected_status=None):
+    '''List of terms queryable by category'''
+    if selected_category:
+        terms = Term.query.join(Term.categories).filter(Category.id == selected_category).order_by(Term.name).all()
+    if selected_status:        
+        terms = Term.query.join(Term.status).filter(TermStatus.id == selected_status).order_by(Term.name).all()
+    return render_template('show_terms.html', terms=terms)
+
+
 @main.route('/term/<int:selected_term>')
 @main.route('/term/<string:selected_term_name>')
 @login_required

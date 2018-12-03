@@ -36,7 +36,7 @@ $(document).ready(function() {
             </tr>
         </thead>
         <tbody>
-            {% for term in glossary %}
+            {% for term in terms %}
             <tr>
                 <td><a href="{{ url_for('main.show_term', selected_term=term.id) }}">{{ term.name }}</a></td>
                 <td>{{ term.short_description }}</td>

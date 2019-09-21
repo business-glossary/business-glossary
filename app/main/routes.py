@@ -15,12 +15,13 @@
 from os import getenv
 from os.path import dirname, join, isfile
 
-from flask import flash, redirect, url_for, render_template, request, send_file
-#from flask import current_app
+from urllib.parse import urlparse
 
-#from flask_flatpages import pygments_style_defs
+from flask import current_app as app
+from flask import flash, redirect, url_for, render_template, request, send_file
+
 from flask_login import login_required
-#from flask_flatpages import FlatPages
+
 from sqlalchemy import func
 
 from app import models
@@ -37,11 +38,6 @@ from app.auth.models import User
 
 from . import main
 
-#from app.app import app
-
-#from flask import current_app
-
-#print(app.config)
 
 ###############################################################################
 # Filters
@@ -49,18 +45,27 @@ from . import main
 @main.app_template_filter('env')
 def env(value, key):
     """Return environment variables for use on the admin settings page"""
-    if key == 'BG_DATABASE_URL' and value != 'None':
+    if key == 'BG_DATABASE_URL':
         # Obfuscate the password from the database URL.
-        from urllib.parse import urlparse
-        print(type(value))
         parsed = urlparse(getenv(key))
-        replaced = parsed._replace(netloc="{}:{}@{}".format(parsed.username, "#######", parsed.hostname))
-        print("KEY={}".format(key))
-        print("VALUE={}".format(value))
-        print("parsed={}".format(parsed))
-        print("replaced={}".format(replaced.geturl()))
+        replaced = parsed._replace(netloc="{}:{}@{}".format(parsed.username,
+                                                            "#######", 
+                                                            parsed.hostname))
         return replaced.geturl()
     return getenv(key, value)
+
+
+@main.app_template_filter('obconfig')
+def obconfig(value, key):
+    """Return config parameters for use on the admin settings page"""
+    if key == 'SQLALCHEMY_DATABASE_URI':
+        # Obfuscate the password from the database URL.
+        parsed = urlparse(app.config[key])
+        replaced = parsed._replace(netloc="{}:{}@{}".format(parsed.username, 
+                                                            "#######",
+                                                            parsed.hostname))
+        return replaced.geturl()
+    return app.config[key]
 
 
 ###############################################################################

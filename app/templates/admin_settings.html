@@ -18,7 +18,7 @@
     {% for key, value in config.items() %}
     <tr>
         <td>{{ key }}</td>
-        <td>{{ value }}</td>
+        <td>{{ 'None' | obconfig(key) }}</td>
     </tr>
     {% endfor %}
 </table>

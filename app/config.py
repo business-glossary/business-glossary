@@ -39,20 +39,6 @@ class Config(object):
     LDAP_USER_DN = ''
     LDAP_BASE_DN = ''
 
-    # Flask-Security flags
-    SECURITY_CONFIRMABLE = False
-    SECURITY_REGISTERABLE = False
-    SECURITY_RECOVERABLE = True
-    SECURITY_TRACKABLE = True
-    SECURITY_CHANGEABLE = True
-
-    SECURITY_PASSWORD_HASH = "bcrypt"
-
-    SECURITY_PASSWORD_SALT = "$2a$12$sSoMBQ9V4hxNba5E0Xl3Fe"
-    SECURITY_CONFIRM_SALT = "$2a$12$QyCM19UPUNLMq8n225V7qu"
-    SECURITY_RESET_SALT = "$2a$12$GrrU0tYteKw45b5VfON5p."
-    SECURITY_REMEMBER_SALT = "$2a$12$unlKF.sL4gnm4icbk0tvVe"
-
     # FlatPages configuration
     FLATPAGES_AUTO_RELOAD = True
     FLATPAGES_EXTENSION = '.md'

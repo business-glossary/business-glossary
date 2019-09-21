@@ -75,7 +75,7 @@ $(document).ready(function() {
                             <th>Type</th>
                             <th class="actions">
                                 {% if current_user.is_active %}
-                                <a href="{{ url_for('term_bp.upload_document', term_id=rule.id) }}"><i class="fas fa-lg fa-plus-circle" aria-hidden="true"></i></a>
+                                <a href="{{ url_for('term.upload_document', term_id=rule.id) }}"><i class="fas fa-lg fa-plus-circle" aria-hidden="true"></i></a>
                                 {% endif %}
                             </th>
                         </tr>
@@ -92,7 +92,7 @@ $(document).ready(function() {
                             </td>
                             <td class="actions-danger" data-th="">
                                 {% if current_user.is_active %}
-                                <a href="#" data-href="{{ url_for('term_bp.delete_document', document_id=document.id) }}" data-toggle="modal" data-target="#confirmDelete" data-title="Delete Document" data-message="Are you sure you want to delete this document?">
+                                <a href="#" data-href="{{ url_for('term.delete_document', document_id=document.id) }}" data-toggle="modal" data-target="#confirmDelete" data-title="Delete Document" data-message="Are you sure you want to delete this document?">
                                     <i class="fas fa-lg fa-minus-circle" aria-hidden="true"></i>
                                 </a>
                                 {% endif %}

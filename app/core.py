@@ -29,7 +29,7 @@ from app import commands
 from app.auth.models import Role, User
 
 from app.main import main as main_blueprint
-from app.term_bp import term_bp as term_bp_blueprint
+from app.term import term as term_blueprint
 from app.auth.views import auth
 
 from app.models import Term, Rule, Note, Link, Table, Document, Location, Column, DocumentType, \
@@ -157,7 +157,7 @@ def register_adminviews(app):
                   base_template='/admin/new_master.html',
                   index_view=MyHomeView())
 
-    admin.add_view(TermView(Term, db.session))
+    admin.add_view(TermView(Term, db.session, endpoint="termadmin", name="Term"))
     admin.add_view(RuleView(Rule, db.session))
     admin.add_view(ProtectedModelView(Note, db.session))
     admin.add_view(ProtectedModelView(Link, db.session))
@@ -174,8 +174,9 @@ def register_adminviews(app):
 
 def register_blueprints(app):
     '''Register Flask blueprints.'''
-    app.register_blueprint(main_blueprint)
-    app.register_blueprint(term_bp_blueprint)
+    
+    app.register_blueprint(main_blueprint)   
+    app.register_blueprint(term_blueprint)
     app.register_blueprint(auth)
 
 

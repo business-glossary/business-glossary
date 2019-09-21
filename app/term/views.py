@@ -17,13 +17,13 @@ from flask_login import current_user, login_required
 
 from sqlalchemy import exc
 
-from app.term_bp.forms import TermForm, DocumentForm, RuleForm, LinkForm, RelatedTermForm, \
+from app.term.forms import TermForm, DocumentForm, RuleForm, LinkForm, RelatedTermForm, \
                               AssetForm, DemoForm
 from app.config import BASE_DIR
 from app.extensions import db
 from app.models import Term, Document, Rule, Link, Table, Column
 
-from . import term_bp
+from . import term
 
 
 def check_admin():
@@ -40,7 +40,7 @@ def check_admin():
 ##
 #########################################################################################
 
-@term_bp.route('/term/add', methods=['GET', 'POST'])
+@term.route('/term/add', methods=['GET', 'POST'])
 @login_required
 def add_term():
     '''
@@ -79,7 +79,7 @@ def add_term():
                            form=form)
 
 
-@term_bp.route('/term/edit/<int:id>', methods=['GET', 'POST'])
+@term.route('/term/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_term(id):
     '''
@@ -121,7 +121,7 @@ def edit_term(id):
                            term=term)
 
 
-@term_bp.route('/term/delete/<int:id>', methods=['GET', 'POST'])
+@term.route('/term/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def delete_term(id):
     '''
@@ -145,7 +145,7 @@ def delete_term(id):
 ##                                                                                     ##
 #########################################################################################
 
-@term_bp.route('/term/print/<int:term_id>')
+@term.route('/term/print/<int:term_id>')
 def print_report(term_id):
 
     import pdfkit
@@ -222,7 +222,7 @@ def print_report(term_id):
 ##
 #########################################################################################
 
-@term_bp.route('/term/<int:term_id>/document/upload', methods=['GET', 'POST'])
+@term.route('/term/<int:term_id>/document/upload', methods=['GET', 'POST'])
 @login_required
 def upload_document(term_id):
     '''Upload a document to a term'''
@@ -266,7 +266,7 @@ def upload_document(term_id):
                            term_id=term_id)
 
 
-@term_bp.route('/document/delete/<int:document_id>')
+@term.route('/document/delete/<int:document_id>')
 @login_required
 def delete_document(document_id):
     '''
@@ -297,7 +297,7 @@ def delete_document(document_id):
 ##
 #########################################################################################
 
-@term_bp.route('/term/<int:term_id>/rules/create', methods=['GET', 'POST'])
+@term.route('/term/<int:term_id>/rules/create', methods=['GET', 'POST'])
 @login_required
 def create_rule(term_id):
     '''
@@ -338,7 +338,7 @@ def redirect_url(default='index'):
            url_for(default)
 
 
-@term_bp.route('/term/<int:term_id>/rule/<int:rule_id>/edit', methods=['GET', 'POST'])
+@term.route('/term/<int:term_id>/rule/<int:rule_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_rule(term_id, rule_id):
     '''
@@ -384,7 +384,7 @@ def edit_rule(term_id, rule_id):
 ##
 #########################################################################################
 
-@term_bp.route('/term/<int:term_id>/link/add/', methods=['GET', 'POST'])
+@term.route('/term/<int:term_id>/link/add/', methods=['GET', 'POST'])
 @login_required
 def add_link(term_id):
     '''
@@ -432,7 +432,7 @@ def add_link(term_id):
                            form=form)
 
 
-@term_bp.route('/link/delete/<int:link_id>/', methods=['GET', 'POST'])
+@term.route('/link/delete/<int:link_id>/', methods=['GET', 'POST'])
 @login_required
 def delete_link(link_id):
     '''
@@ -456,7 +456,7 @@ def delete_link(link_id):
 ##
 #########################################################################################
 
-@term_bp.route('/term/<int:term_id>/related/add/', methods=['GET', 'POST'])
+@term.route('/term/<int:term_id>/related/add/', methods=['GET', 'POST'])
 @login_required
 def add_related_term(term_id):
     '''
@@ -544,7 +544,7 @@ def add_related_term(term_id):
 ##
 #########################################################################################
 
-@term_bp.route('/term/<int:term_id>/assets/v1/', methods=['GET', 'POST'])
+@term.route('/term/<int:term_id>/assets/v1/', methods=['GET', 'POST'])
 @login_required
 def add_asset_v1(term_id):
     '''
@@ -560,7 +560,7 @@ def add_asset_v1(term_id):
                            term=term)
 
 
-@term_bp.route('/assets/list/')
+@term.route('/assets/list/')
 @login_required
 def list_assets():
     '''
@@ -596,13 +596,13 @@ def list_assets():
     return jsonify(results)
 
 
-@term_bp.route('/term/<int:term_id>/assets/v2')
+@term.route('/term/<int:term_id>/assets/v2')
 def add_assets_v2(term_id):
     term = Term.query.get_or_404(term_id)
     return render_template('admin/terms/assets_v2.html', term=term)
 
 
-@term_bp.route('/autocomplete', methods=['GET'])
+@term.route('/autocomplete', methods=['GET'])
 def autocomplete():
     #current_app.config['SQLALCHEMY_ECHO'] = False
 
@@ -632,7 +632,7 @@ def autocomplete():
     return jsonify(matching_results=my_results)
 
 
-@term_bp.route("/term/<int:term_id>/assets/v3", methods=["GET", "POST"])
+@term.route("/term/<int:term_id>/assets/v3", methods=["GET", "POST"])
 def add_assets_v3(term_id):
     '''Relate assets to a term'''
     term = Term.query.get_or_404(term_id)
@@ -652,7 +652,7 @@ def add_assets_v3(term_id):
     return render_template("admin/terms/assets_v3.html", form=form, term=term)
 
 
-@term_bp.route("/term/<int:term_id>/assets/v4", methods=["GET", "POST"])
+@term.route("/term/<int:term_id>/assets/v4", methods=["GET", "POST"])
 def add_assets_v4(term_id):
     '''Relate assets to a term'''
 

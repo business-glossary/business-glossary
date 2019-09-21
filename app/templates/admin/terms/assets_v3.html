@@ -56,7 +56,7 @@ $(document).ready(function() {
     }
     $("#columns").select2({
         ajax: {
-            url: "{{ url_for('term_bp.autocomplete') }}",
+            url: "{{ url_for('term.autocomplete') }}",
             dataType: 'json',
             delay: 100,
             data: function (params) {

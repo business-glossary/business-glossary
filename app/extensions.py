@@ -12,7 +12,6 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 
-from flask_security import Security
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_bootstrap import Bootstrap
@@ -20,6 +19,7 @@ from flask_flatpages import FlatPages
 from flask_moment import Moment
 from flask_wtf.csrf import CSRFProtect
 from flask_migrate import Migrate
+from flask_login import LoginManager
 
 from markdown.extensions.tables import TableExtension
 from markdown.extensions.footnotes import FootnoteExtension
@@ -27,13 +27,13 @@ from markdown.extensions.fenced_code import FencedCodeExtension
 from markdown.extensions.wikilinks import WikiLinkExtension
 
 db = SQLAlchemy()
-security = Security()
 bootstrap = Bootstrap()
 mail = Mail()
 pages = FlatPages()
 moment = Moment()
 csrf = CSRFProtect()
 migrate = Migrate()
+login_manager = LoginManager()
 
 tables = TableExtension()
 footnotes = FootnoteExtension()

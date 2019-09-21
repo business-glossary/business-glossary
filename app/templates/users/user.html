@@ -14,14 +14,20 @@
     <div class="col-md-10"><span class="text-large">{{ user.email }}</span></div>
     <div class="col-md-2"><span class="text-large">Active</span></div>
     <div class="col-md-10"><span class="text-large">{{ user.active }}</span></div>
-    <div class="col-md-2"><span class="text-large">Confirmed At</span></div>
-    <div class="col-md-10"><span class="text-large">{{ moment(user.confirmed_at).format('LLL') }}</span></div>
     <div class="col-md-2"><span class="text-large">Last Login At</span></div>
-    <div class="col-md-10"><span class="text-large">{{ moment(user.last_login_at).format('LLL') }}</span></div>
+    {% if user.last_login_at %}
+        <div class="col-md-10"><span class="text-large">{{ moment(user.last_login_at).format('LLL') }}</span></div>
+    {% else %}
+        <div class="col-md-10"><span class="text-large">None</span></div>
+    {% endif %}
     <div class="col-md-2"><span class="text-large">Last Login IP</span></div>
     <div class="col-md-10"><span class="text-large">{{ user.last_login_ip }}</span></div>
     <div class="col-md-2"><span class="text-large">Current Login At</span></div>
-    <div class="col-md-10"><span class="text-large">{{ moment(user.current_login_at).format('LLL') }}</span></div>
+    {% if user.last_login_at %}
+        <div class="col-md-10"><span class="text-large">{{ moment(user.current_login_at).format('LLL') }}</span></div>
+    {% else %}
+        <div class="col-md-10"><span class="text-large">None</span></div>
+    {% endif %}
     <div class="col-md-2"><span class="text-large">Current Login IP</span></div>
     <div class="col-md-10"><span class="text-large">{{ user.current_login_ip }}</span></div>
     <div class="col-md-2"><span class="text-large">Login Count</span></div>
@@ -33,8 +39,6 @@
         {% endfor %}
     </div>
 </div>
-<div class="row">
-  <br/>
-  <a class='btn btn-primary btn-sm' href="{{ url_for('main.show_users') }}"><span class="glyphicon glyphicon-menu-left"></span>Back to Users</a>
-</div>
+<hr/>
+<a class='btn btn-default' href="{{ url_for('main.show_users') }}"><span class="glyphicon glyphicon-menu-left"></span>Back to Users</a>
 {% endblock %}

@@ -1,3 +1,13 @@
+"""
+    business_glossary.term.views
+    ~~~~~~~~~~~~~~~~~~~~~~~~
+
+    This module contains an views for term management.
+
+    :copyright: (c) 2017 by Alan Tindale.
+    :license: Apache, see LICENSE for more details.
+"""
+
 import os
 
 from werkzeug.utils import secure_filename
@@ -6,11 +16,14 @@ from flask import abort, flash, redirect, render_template, url_for, request, jso
 from flask_login import current_user, login_required
 
 from sqlalchemy import exc
-from app.term_bp.forms import TermForm, DocumentForm, RuleForm, LinkForm, RelatedTermForm, AssetForm, DemoForm
+
+from app.term_bp.forms import TermForm, DocumentForm, RuleForm, LinkForm, RelatedTermForm, \
+                              AssetForm, DemoForm
 from app.config import BASE_DIR
-from . import term_bp
 from app.extensions import db
 from app.models import Term, Document, Rule, Link, Table, Column
+
+from . import term_bp
 
 
 def check_admin():
@@ -121,7 +134,7 @@ def delete_term(id):
     db.session.commit()
 
     # redirect to the terms page
-    return redirect(url_for('main.glossary'))
+    return redirect(url_for('main.home'))
     # Redirect to term page
     #return redirect(url_for('main.show_term', selected_term=1))
 
@@ -177,12 +190,15 @@ def print_report(term_id):
 
     css = os.path.join(BASE_DIR, 'app', 'static', 'css', 'print_style.css')
     cover = os.path.join(BASE_DIR, 'app', 'templates', 'print', 'cover_page.html')
-    
+
     print("css=%s" % css)
     print("pdf_directory=%s" % pdf_directory)
 
     try:
-        pdfkit.from_string(html_text, os.path.join(pdf_directory, output_filename), options=options, css=css)
+        pdfkit.from_string(html_text, 
+                           os.path.join(pdf_directory, output_filename),
+                           options=options,
+                           css=css)
     except IOError as ex:
         print("An error has happened")
         print("Error %s occured." % ex)

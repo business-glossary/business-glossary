@@ -3,14 +3,10 @@ import logging
 import csv
 
 from app.core import create_app
-#from app.models import db
 
-#from app.users.models import db
 from app.models import db
 from app.main.models import Category, Term, Person, TermStatus, Link, DocumentType, Rule
 from config import BASE_DIR
-
-#app.config['SQLALCHEMY_ECHO'] = False
 
 LOGGER = logging.getLogger("business-glossary.load_data")
 

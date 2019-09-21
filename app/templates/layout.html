@@ -43,13 +43,13 @@
 {%- block body_inner%}
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-        <div class="container flash">
+        <div class="container">
             {# Categories: success (green), info (blue), warning (yellow), danger (red) #}
             {% for category, msg in messages %}
                 {% if loop.first %}
                     <br />
                 {% endif %}
-                <div class="alert alert-{{ category|alert_class }} alert-dismissable flash" role="alert">
+                <div class="alert alert-{{ category|alert_class }} alert-dismissable" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     {{ msg }}
                 </div>

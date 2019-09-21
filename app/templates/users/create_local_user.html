@@ -1,26 +1,29 @@
 {% extends "layout.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block head %}
-  <link href="/admin/static/vendor/select2/select2.css?v=3.5.2" rel="stylesheet">
-  <link href="/admin/static/vendor/select2/select2-bootstrap3.css?v=1.4.6" rel="stylesheet">
-  <link href="/admin/static/vendor/bootstrap-daterangepicker/daterangepicker-bs3.css?v=1.3.22" rel="stylesheet">
+    <link href="/admin/static/vendor/select2/select2.css?v=3.5.2" rel="stylesheet">
+    <link href="/admin/static/vendor/select2/select2-bootstrap3.css?v=1.4.6" rel="stylesheet">
+    <link href="/admin/static/vendor/bootstrap-daterangepicker/daterangepicker-bs3.css?v=1.3.22" rel="stylesheet">
 {% endblock head %}
 {% block title %}
 {{ action }} Term
 {% endblock %}
 {% block content %}
 <div class="page-header">
-    <h1>Create User</h1>
+    <h1>Create a Local User</h1>
 </div>
 <div class="form-area">
-    <form method="post" class="form" role="form" id="create_user_term_form">
+    <form method="post" class="form" role="form" id="create_user_form">
+        {{ wtf.form_field(form.username) }}
         {{ wtf.form_field(form.name) }}
         {{ wtf.form_field(form.email) }}
         {{ wtf.form_field(form.password) }}
+        {{ wtf.form_field(form.password2) }}
+        {{ wtf.form_field(form.roles) }}
         {{ form.csrf_token }}
+        <hr />
         {{ wtf.form_field(form.submit) }}
     </form>
-    <hr />
 </div>
 {% endblock %}
 {% block footer %}

@@ -15,25 +15,22 @@
 #   under the License.
 
 import os
-import warnings
-
-from app.extensions import db, security, bootstrap, mail, pages, moment, csrf, migrate
-from app.config import config, BASE_DIR
-
-from app import commands
-
-from app.users.models import User, Role
-
-from app.main import main as main_blueprint
-from app.term_bp import term_bp as term_bp_blueprint
 
 from flask import Flask
 from flaskext.markdown import Markdown
 
-from flask_security import SQLAlchemyUserDatastore
-from flask_security.utils import encrypt_password
-
 from flask_admin import Admin
+
+from app.extensions import db, bootstrap, mail, pages, moment, csrf, migrate, login_manager
+from app.config import config, BASE_DIR
+
+from app import commands
+
+from app.auth.models import Role, User
+
+from app.main import main as main_blueprint
+from app.term_bp import term_bp as term_bp_blueprint
+from app.auth.views import auth
 
 from app.models import Term, Rule, Note, Link, Table, Document, Location, Column, DocumentType, \
                        TermStatus, Category, Person
@@ -62,21 +59,24 @@ def create_app(config_name):
 
     app.config.from_object(config[config_name] or config[os.getenv('BG_CONFIG')])
     app.config.from_envvar('BG_SETTINGS', silent=True)
+
     config[config_name].init_app(app)
 
     db.init_app(app)
-
-    # Setup Flask-Security
-    user_datastore = SQLAlchemyUserDatastore(db, User, Role)
-    from app.users.forms import ExtendedRegisterForm
-    security.init_app(app, user_datastore, register_form=ExtendedRegisterForm)
 
     bootstrap.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
     migrate.init_app(app, db)
+    login_manager.init_app(app)
+    login_manager.login_view = 'auth.login'
 
-    md = Markdown(app, output_format='html5', extensions=['fenced_code', 'tables', 'abbr', 'footnotes'])
+    from app.auth.models import AnonymousUser
+    login_manager.anonymous_user = AnonymousUser
+
+    md = Markdown(app, 
+                  output_format='html5', 
+                  extensions=['fenced_code', 'tables', 'abbr', 'footnotes'])
 
     pages.init_app(app)
     csrf.init_app(app)
@@ -93,16 +93,16 @@ def create_app(config_name):
         import logging
         from logging.handlers import SMTPHandler
         mail_handler = SMTPHandler(mailhost=app.config['MAIL_SERVER'],
-                                fromaddr=app.config['ADMINS_FROM_EMAIL'],
-                                toaddrs=app.config['ADMINS_EMAIL'],
-                                subject='Application Error Occurred')
+                                   fromaddr=app.config['ADMINS_FROM_EMAIL'],
+                                   toaddrs=app.config['ADMINS_EMAIL'],
+                                   subject='Application Error Occurred')
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
 
     register_blueprints(app)
     register_commands(app)
 
-    # Create the bg_interface directory if it does not exist    
+    # Create the bg_interface directory if it does not exist.
     directory = os.path.join(os.path.dirname(BASE_DIR), 'bg_interface')
 
     if not os.path.exists(directory):
@@ -110,19 +110,30 @@ def create_app(config_name):
 
     with app.app_context():
         db.create_all()
+
+        role = Role.query.filter_by(name='admin').first()
+
+        if not role:
+            role = Role(name='admin', description='Administration Role')
+            db.session.add(role)
+            db.session.commit()
+
         if not User.query.first():
             # Create a default admin user if there is no user in the database
-            user_datastore.create_role(name='admin')
-            user_datastore.create_user(
-                name='Administration Account',
-                email='admin@example.com',
-                password=encrypt_password('password'),
-                roles=['admin']
-            )
+            user = User(username='admin',
+                        name='Administration Account',
+                        email='admin@example.com',
+                        roles=[role])
+
+            user.set_password('password')
+
+            db.session.add(user)
             db.session.commit()
-            app.logger.info('Created admin user admin@example.com')
+
+            app.logger.info('Created admin role and user (username=admin, email=admin@example.com)')
 
     return app
+
 
 #print
 #print("BG_SETTINGS=%s" % os.getenv('BG_SETTINGS'))
@@ -137,7 +148,8 @@ def create_app(config_name):
 def register_adminviews(app):
     '''Register Flask-Admin views.'''
 
-    from app.main.admin import MyHomeView, RuleView, FileView, TableView, ColumnView, ProtectedModelView, TermView, PrintView
+    from app.main.admin import MyHomeView, RuleView, FileView, TableView, ColumnView, \
+                               ProtectedModelView, TermView, PrintView
 
     admin = Admin(app,
                   name='BUSINESS GLOSSARY',
@@ -164,30 +176,9 @@ def register_blueprints(app):
     '''Register Flask blueprints.'''
     app.register_blueprint(main_blueprint)
     app.register_blueprint(term_bp_blueprint)
+    app.register_blueprint(auth)
 
 
 def register_commands(app):
     '''Register Click commands.'''
     app.cli.add_command(commands.data)
-
-
-def send_mail(destination, subject, template, **template_kwargs):
-    """
-    Send templatised emails.
-
-    @param destination:       string - the destination email address.
-    @param subject:           string - the email subject line.
-    @param template:          string - the template email.
-    @param template_kwargs:   kwargs - any parameters to substitute in the email.
-    """
-    text = flask.render_template("{0}.txt".format(template), **template_kwargs)
-
-    logging.info("Sending email to %s. Body is: %s", destination, repr(text)[:50])
-
-    msg = Message(subject, sender=_security.email_sender, recipients=[destination])
-
-    msg.body = text
-    msg.html = flask.render_template("{0}.html".format(template),
-                                     **template_kwargs)
-
-    mail.send(msg)

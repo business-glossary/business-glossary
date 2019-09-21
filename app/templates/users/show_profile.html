@@ -23,16 +23,16 @@
             <td>{% for role in current_user.roles %}{{ role.name }}{% endfor %}</td>
         </tr>
         <tr>
-            <th>Confirmed At</th>
-            <td>{{ moment(current_user.confirmed_at).calendar() }}</td>
-        </tr>
-        <tr>
             <th>Last Login</th>
-            <td>{{ moment(current_user.last_login_at).calendar() }}</td>
+            {% if current_user.last_login_at %}
+                <td>{{ moment(current_user.last_login_at).format('LLL') }}</td>
+            {% else %}
+                <td>None</td>
+            {% endif %}
         </tr>
         <tr>
             <th>Current Login</th>
-            <td>{{ moment(current_user.current_login_at).calendar() }}</td>
+            <td>{{ moment(current_user.current_login_at).format('LLL') }}</td>
         </tr>
         <tr>
             <th>Last Login IP</th>
@@ -48,6 +48,4 @@
         </tr>
     </tbody>
 </table>
-
-<a class="btn btn-primary btn-sm" href="{{ url_for_security('change_password') }}" role="button">Change Password</a>
 {% endblock %}

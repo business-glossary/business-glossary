@@ -12,38 +12,43 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 
-from os import mkdir, getenv
+from os import getenv
 from os.path import dirname, join, isfile
-from datetime import datetime
 
-from flask import flash, redirect, url_for, render_template, request, \
-     send_from_directory, send_file
-from flask import current_app
+from flask import flash, redirect, url_for, render_template, request, send_file
+#from flask import current_app
 
-from flask_flatpages import pygments_style_defs
-from flask_security import current_user, login_required, roles_required
-from flask_security.utils import encrypt_password
-from flask_flatpages import FlatPages
+#from flask_flatpages import pygments_style_defs
+from flask_login import login_required
+#from flask_flatpages import FlatPages
 from sqlalchemy import func
+
 from app import models
 from app.config import BASE_DIR
-from app.main.forms import RegistrationForm
 from app.extensions import db, pages
+from app.auth.forms import LocalUserForm, DirectoryUserForm
+from app.auth.views import requires_roles
+
+from app.main.models import Document, Term, TermStatus, \
+                            Category, Location, Table, \
+                            Column, Rule
+
+from app.auth.models import User
+
 from . import main
 
-from app.main.models import Document, DocumentType, Term, TermStatus, \
-    Category, Person, Link, Location, Table, \
-    Column, Rule, Note
+#from app.app import app
 
-from app.users.models import User
+#from flask import current_app
 
+#print(app.config)
 
 ###############################################################################
 # Filters
 
 @main.app_template_filter('env')
 def env(value, key):
-    '''Return environment variables for use on the admin settings page'''
+    """Return environment variables for use on the admin settings page"""
     if key == 'BG_DATABASE_URL' and value != 'None':
         # Obfuscate the password from the database URL.
         from urllib.parse import urlparse
@@ -63,7 +68,7 @@ def env(value, key):
 
 @main.context_processor
 def inject_pages():
-    '''Returns pages that will be avaiables in every template view'''
+    """Returns pages that will be avaiables in every template view"""
     tagged = [p for p in pages if 'index' in p.meta.get('tags', [])]
     ordered = sorted(tagged, key=lambda p: p.meta['title'])
     return dict(tagged=ordered)
@@ -74,16 +79,17 @@ def inject_pages():
 
 @main.route('/about')
 def about():
-    '''Present the about page'''
+    """Present the about page"""
     from app import __VERSION__
     return render_template('about.html', version=__VERSION__)
 
 
 @main.route('/')
 @main.route('/glossary/')
+@main.route('/home/')
 @login_required
-def glossary():
-    '''Display the glossary main list of terms'''
+def home():
+    """Display the glossary main list of terms"""
     glossary = models.Term.query.order_by(Term.name).all()
     return render_template('show_glossary.html', glossary=glossary)
 
@@ -97,7 +103,7 @@ def glossary_rules():
 
 @main.route('/<path:path>/')
 def page(path):
-    '''Serve up markdown pages using Flask-FlatPages'''
+    """Serve up markdown pages using Flask-FlatPages"""
     from app.extensions import pages
     page = pages.get_or_404(path)
     return render_template('flatpages/page.html', page=page)
@@ -105,7 +111,7 @@ def page(path):
 
 @main.route('/tag/<string:tag>/')
 def tag(tag):
-    '''Handle FlatPages tags'''
+    """Handle FlatPages tags"""
     from app.extensions import pages
     tagged = [p for p in pages if tag in p.meta.get('tags', [])]
     return render_template('flatpages/tag.html', pages=tagged, tag=tag)
@@ -119,12 +125,12 @@ def abbreviations():
 
 
 @main.route('/admin/backup/')
-@roles_required('admin')
+@requires_roles('admin')
 def show_backup():
-    '''
+    """
     This route presents the backup and restore page from which the do_backup
     is called.
-    '''
+    """
     return render_template('backup/backup_restore.html')
 
 
@@ -145,6 +151,7 @@ def do_backup():
 @main.route('/do_column_association_export/', methods=['POST'])
 @login_required
 def do_column_association_export():
+    """Export column to term associations to CSV file"""
     from app.loader import export
     import time
     timestr = time.strftime("%Y%m%d-%H%M%S")
@@ -159,9 +166,7 @@ def do_column_association_export():
 @main.route('/generate_pdf/', methods=['POST'])
 @login_required
 def do_print():
-    '''
-    Generate a PDF of all glossary content
-    '''
+    """Generate a PDF of all glossary content"""
     categories = request.form.getlist("category")
 
     from app.print import generate_pdf
@@ -175,6 +180,7 @@ def do_print():
 @main.route('/download/<string:selected_filename>/')
 @login_required
 def download(selected_filename):
+    """Download a file"""
     try:
         return send_file(join(dirname(BASE_DIR), 'bg_interface', selected_filename),
                          as_attachment=True,
@@ -186,7 +192,7 @@ def download(selected_filename):
 @main.route('/profile/')
 @login_required
 def profile():
-    '''Present the user profile'''
+    """Present the user profile"""
     return render_template('users/show_profile.html')
 
 
@@ -194,11 +200,15 @@ def profile():
 @main.route('/terms/status/<int:selected_status>')
 @login_required
 def show_terms(selected_category=None, selected_status=None):
-    '''List of terms queryable by category'''
+    """List of terms queryable by category"""
     if selected_category:
-        terms = Term.query.join(Term.categories).filter(Category.id == selected_category).order_by(Term.name).all()
-    if selected_status:        
-        terms = Term.query.join(Term.status).filter(TermStatus.id == selected_status).order_by(Term.name).all()
+        terms = Term.query.join(Term.categories). \
+                           filter(Category.id == selected_category). \
+                           order_by(Term.name).all()
+    if selected_status:
+        terms = Term.query.join(Term.status). \
+                           filter(TermStatus.id == selected_status). \
+                           order_by(Term.name).all()
     return render_template('show_terms.html', terms=terms)
 
 
@@ -211,13 +221,11 @@ def show_term(selected_term=None, selected_term_name=None):
         term = Term.query.filter(func.lower(Term.name) == func.lower(selected_term_name)).first()
         if not term:
             return render_template('errors/404.html')
-        else:
-            return render_template('show_term.html',
-                                   term=Term.query.filter(func.lower(Term.name) == \
-                                                          func.lower(selected_term_name)).first())
-    else:
         return render_template('show_term.html',
-                               term=Term.query.filter_by(id=selected_term).first())
+                               term=Term.query.filter(func.lower(Term.name) == \
+                                                      func.lower(selected_term_name)).first())
+    return render_template('show_term.html',
+                            term=Term.query.filter_by(id=selected_term).first())
 
 
 @main.route('/documents/<int:selected_term>')
@@ -290,6 +298,7 @@ def show_location_details(selected_location):
 @main.route('/location/<selected_location>/tables')
 @login_required
 def show_location_tables(selected_location):
+    """Show physical table locations, i.e. databases"""
 
     location = Location.query.filter_by(id=selected_location).first()
     tables = location.tables
@@ -300,6 +309,7 @@ def show_location_tables(selected_location):
 @main.route('/tables')
 @login_required
 def show_tables():
+    """Show tables"""
 
     tables = Table.query.all()
 
@@ -352,9 +362,9 @@ def search():
 @main.route('/full_glossary')
 @login_required
 def full_glossary():
-    '''
+    """
     Produce a PDF of the full glossary.
-    '''
+    """
     terms = Term.query.order_by(Term.name).all()
     return render_template('print/full_glossary.html', terms=terms)
 
@@ -373,31 +383,50 @@ def show_user(selected_user):
     return render_template('users/user.html', user=user)
 
 
-@main.route('/admin/user/create', methods=['GET', 'POST'])
-@roles_required('admin')
-def admin_create_user():
-    form = RegistrationForm(request.form)
+@main.route('/admin/create_local_user', methods=['GET', 'POST'])
+@requires_roles('admin')
+def create_local_user():
+    """Create a new user"""
+    form = LocalUserForm(request.form)
     if request.method == 'POST' and form.validate_on_submit():
-        name = form.name.data
-        email = form.email.data
-        password = encrypt_password(form.password.data)
-        user_exists = User.query.filter_by(email=email).first()
-        if user_exists:
-            form.email.errors.append(email + ' is already associated with another user')
-            form.email.data = email
-            email = ''
-            return render_template('users/user_create.html', form=form)
-        else:
-            security = current_app.extensions.get('security')
-            security.datastore.create_user(name=name,
-                                           email=email,
-                                           password=password,
-                                           confirmed_at=datetime.now())
-            db.session.commit()
-            user = security.datastore.get_user(email)
-            flash('User added successfully.')
-            return redirect(url_for('main.show_users'))
-    return render_template('users/user_create.html', form=form)
+
+        user = User(username=form.username.data,
+                    email=form.email.data,
+                    name=form.name.data,
+                    roles=[form.roles.data])
+        user.set_password(form.password.data)
+
+        db.session.add(user)
+        db.session.commit()
+
+        flash('User added successfully.')
+        return redirect(url_for('main.show_users'))
+
+    return render_template('users/create_local_user.html', form=form)
+
+
+@main.route('/admin/register_directory_user', methods=['GET', 'POST'])
+@requires_roles('admin')
+def register_directory_user():
+    """Register a new user from a directory"""
+    form = DirectoryUserForm(request.form)
+    if request.method == 'POST' and form.validate_on_submit():
+
+        print(".....")
+        print(form.roles.data)
+
+        user = User(username=form.username.data,
+                    name=form.name.data,
+                    local_user=False,
+                    roles=[form.roles.data])
+
+        db.session.add(user)
+        db.session.commit()
+
+        flash('User added registered.')
+        return redirect(url_for('main.show_users'))
+
+    return render_template('users/register_directory_user.html', form=form)
 
 
 @main.route('/admin/settings/')

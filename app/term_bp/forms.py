@@ -1,13 +1,23 @@
+"""
+    business_glossary.term.forms
+    ~~~~~~~~~~~~~~~~~~~~~~~~
+
+    This module contains an forms for term management.
+
+    :copyright: (c) 2017 by Alan Tindale.
+    :license: Apache, see LICENSE for more details.
+"""
+
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, FileField
 from flask_wtf.file import FileField, FileRequired
+
+from wtforms import StringField, SubmitField, TextAreaField, SelectField, SelectMultipleField
+from wtforms.validators import DataRequired, Required, Length
 from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
+
 from flask_admin.form.widgets import Select2Widget
-from wtforms.validators import DataRequired, URL, Required, Length
 
-from wtforms import SelectField, SelectMultipleField, SubmitField
-
-from ..models import Term, TermStatus, Person, Category, DocumentType, Rule, Column
+from app.main.models import TermStatus, Person, Category, DocumentType, Column
 
 
 class TermForm(FlaskForm):
@@ -18,9 +28,9 @@ class TermForm(FlaskForm):
     short_description = TextAreaField('Short Description', [
         Length(max=200, message='Short description should be less than 200 characters.'),
         DataRequired(message='Please enter a short description')
-    ])                                     
+    ])
     long_description = TextAreaField('Long Description',
-        validators=[DataRequired('Please enter a long description.')])
+                                     validators=[DataRequired('Please enter a long description.')])
     abbreviation = StringField('Abbrevation')
     categories = QuerySelectMultipleField(query_factory=lambda: Category.query.all(),
                                           get_label="name",
@@ -78,8 +88,6 @@ class RelatedTermForm(FlaskForm):
     Form for entering related links
     '''
     terms = QuerySelectMultipleField(get_label="name")
-#    terms = QuerySelectMultipleField(query_factory=lambda: Term.query.order_by(Term.name).all(),
- #                                    get_label="name")
     submit = SubmitField("Submit")
 
 

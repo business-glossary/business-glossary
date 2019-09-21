@@ -15,9 +15,8 @@
 import os
 from flask_admin import Admin, BaseView, form, expose, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
-from flask_security import current_user
+from flask_login import current_user
 
-#from app.term_bp.forms import PrintForm
 from app.extensions import db
 from app.models import Category, Term, Rule, Document, Link
 

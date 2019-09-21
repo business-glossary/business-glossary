@@ -5,8 +5,8 @@
     <h1>{{ title }}</h1>
 </div>
 
-<h2>{{ function }} Successful</h2>
-<p>The {{ function.lower() }} was successfully created at <strong>{{ filename }}</strong>.</p>
+<p class="lead">{{ function }} Successful</p>
+<p class="lead">The {{ function.lower() }} was successfully created at <strong>{{ filename }}</strong>.</p>
 <a href="{{ url_for('main.download', selected_filename=filename) }}" class="btn btn-default">Download</a>
 
 {% endblock %}

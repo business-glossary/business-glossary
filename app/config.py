@@ -1,4 +1,15 @@
+"""
+    business_glossary.config
+    ~~~~~~~~~~~~~~~~~~~~~~~~
+
+    This module defines config classes.
+
+    :copyright: (c) 2017 by Alan Tindale.
+    :license: Apache, see LICENSE for more details.
+"""
+
 import os
+
 from app.extensions import tables, fenced_code, wikilinks, footnotes
 
 BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -21,6 +32,12 @@ class Config(object):
     ADMINS_FROM_EMAIL = ['admin@example.com']
 
     APPLICATION_NAME = 'Business Glossary'
+
+    LDAP_HOST = ''
+    LDAP_PORT = 389
+    LDAP_USER_ATTR = ''
+    LDAP_USER_DN = ''
+    LDAP_BASE_DN = ''
 
     # Flask-Security flags
     SECURITY_CONFIRMABLE = False
@@ -53,6 +70,7 @@ class DevelopmentConfig(Config):
         'sqlite:///' + os.path.join(BASE_DIR, 'glossary_dev.db')
     SQLALCHEMY_ECHO = True
 
+
 class TestingConfig(Config):
     '''Define the test configuration object'''
     TESTING = True
@@ -60,10 +78,12 @@ class TestingConfig(Config):
         'sqlite:///' + os.path.join(BASE_DIR, 'glossary_test.db')
     SQLALCHEMY_ECHO = False
 
+
 class ProductionConfig(Config):
     '''Define the production configuration object'''
     SQLALCHEMY_DATABASE_URI = os.environ.get('BG_DATABASE_URL') or \
         'sqlite:///' + os.path.join(BASE_DIR, 'glossary.db')
+
 
 config = {
     'development': DevelopmentConfig,

@@ -13,4 +13,3 @@
 #   under the License.
 
 from app.main.models import *
-from app.users.models import *

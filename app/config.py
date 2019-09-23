@@ -33,8 +33,15 @@ class Config(object):
 
     APPLICATION_NAME = 'Business Glossary'
 
+    # Use the Active Directory sAMAccountName and domain to login.
+    # This is used in the form of domain\\username.
+    LDAP_AD_USE_SAN = True
+    LDAP_AD_DOMAIN = 'tindale'
+
+    # Host and port are manditory required fields.
     LDAP_HOST = ''
     LDAP_PORT = 389
+    # If LDAP_AD_USE_SAN is False then we need these options to be specified.
     LDAP_USER_ATTR = ''
     LDAP_USER_DN = ''
     LDAP_BASE_DN = ''

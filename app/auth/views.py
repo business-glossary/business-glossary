@@ -62,6 +62,10 @@ def login():
 
         user = User.query.filter_by(username=username).first()
 
+        if not user:
+            flash('User has not been created. Please request access from the administrator.')
+            return render_template('login.html', form=form)
+
         if user.local_user:
             # Authenticate against password stored in database.
 

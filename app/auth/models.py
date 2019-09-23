@@ -103,15 +103,25 @@ class User(db.Model, UserMixin):
     @staticmethod
     def try_login(username, password):
         """Attempt to authenticate against LDAP"""
+
+        print("Attempting login")
+
         server = Server(app.config['LDAP_HOST'], port=app.config['LDAP_PORT'], get_info=ALL)
 
-        conn = Connection(server,
-                          user="{}={},{},{}".format(app.config['LDAP_USER_ATTR'],
-                                                    username,
-                                                    app.config['LDAP_USER_DN'],
-                                                    app.config['LDAP_BASE_DN']),
-                          password=password,
-                          raise_exceptions=True)
+        if app.config['LDAP_AD_USE_SAN'] == True:
+            conn = Connection(server,
+                              user="{}\\{}".format(app.config['LDAP_AD_DOMAIN'],
+                                                   username),
+                              password=password,
+                              raise_exceptions=True)
+        else:
+            conn = Connection(server,
+                              user="{}={},{},{}".format(app.config['LDAP_USER_ATTR'],
+                                                        username,
+                                                        app.config['LDAP_USER_DN'],
+                                                        app.config['LDAP_BASE_DN']),
+                              password=password,
+                              raise_exceptions=True)
         print(conn)
         conn.bind()
 
